@@ -160,7 +160,7 @@ function create_UIBox_your_collection_jokers()
   local deck_tables = {}
 
   G.your_collection = {}
-  for j = 1, 2 do
+  for j = 1, tonumber(numCollectionRows) or 3 do
     G.your_collection[j] = CardArea(
       G.ROOM.T.x + 0.2 * G.ROOM.T.w / 2, G.ROOM.T.h,
       5 * G.CARD_W,
@@ -262,5 +262,22 @@ G.FUNCS.your_collection_joker_page = function(args)
 end
 
 
-
+local curmod = SMODS.current_mod
+numCollectionRows = ""
+curmod.config_tab = function()
+  return {n = G.UIT.ROOT, config = {r = 0.1, minw = 5, align = "cm", padding = 0.2, colour = G.C.BLACK}, nodes = {
+    create_text_input({
+      colour = G.C.RED,
+      hooked_colour = darken(copy_table(G.C.RED), 0.3),
+      w = 4.5,
+      h = 1,
+      max_length = 1,
+      extended_corpus = true,
+      prompt_text = "Number of collection rows",
+      ref_table = _G,
+      ref_value = "numCollectionRows",
+      keyboard_offset = 1,
+    }),
+  }}
+end
 
