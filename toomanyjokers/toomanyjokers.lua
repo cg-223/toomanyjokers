@@ -224,22 +224,12 @@ function create_UIBox_your_collection_jokers()
 						ref_table = G,
 						ref_value = "ENTERED_FILTER",
 						keyboard_offset = 1,
+            callback = function()
+              G.FUNCS.reloadJoker()
+            end
 					}),
 				},
 			}, --textbox
-      {
-        n = G.UIT.R,
-        config = { align = "cm" },
-        nodes = {
-          UIBox_button({
-            colour = G.C.RED,
-            button = "reloadJoker",
-            label = { "Filter" },
-            minw = 4.5,
-            focus_args = { snap_to = true },
-          }),
-        },
-      }, --reload button
     }
   })
 
