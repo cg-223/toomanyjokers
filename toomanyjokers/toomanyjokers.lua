@@ -211,7 +211,7 @@ function create_UIBox_your_collection_jokers()
       },
       {
 				n = G.UIT.R,
-        config = { align = "cm" },
+        config = { align = "cl" },
 				nodes = {
 					create_text_input({
 						colour = G.C.RED,
@@ -225,21 +225,15 @@ function create_UIBox_your_collection_jokers()
 						ref_value = "ENTERED_FILTER",
 						keyboard_offset = 1,
 					}),
-				},
-			}, --textbox
-      {
-        n = G.UIT.R,
-        config = { align = "cm" },
-        nodes = {
           UIBox_button({
             colour = G.C.RED,
             button = "reloadJoker",
-            label = { "Filter" },
+            label = { "Search" },
             minw = 4.5,
             focus_args = { snap_to = true },
           }),
-        },
-      }, --reload button
+				},
+			}, --textbox
     }
   })
 
