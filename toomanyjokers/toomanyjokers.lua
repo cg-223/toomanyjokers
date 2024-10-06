@@ -139,6 +139,7 @@ end
 function G.FUNCS.reloadJoker()
   local filter = G.ENTERED_FILTER or ""
   filter = string.gsub(filter, " ", "")
+  filter = string.lower(filter)
   filter = string.split(filter) --remove spaces from filter and separate via commas
   _G.thegreatfilter = filter
   G.FUNCS.your_collection_jokers() --reload joker collection page
