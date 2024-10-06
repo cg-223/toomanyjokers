@@ -160,7 +160,7 @@ function create_UIBox_your_collection_jokers()
   local deck_tables = {}
 
   G.your_collection = {}
-  for j = 1, 3 do
+  for j = 1, 2 do
     G.your_collection[j] = CardArea(
       G.ROOM.T.x + 0.2 * G.ROOM.T.w / 2, G.ROOM.T.h,
       5 * G.CARD_W,
