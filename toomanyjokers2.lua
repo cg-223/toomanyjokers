@@ -16,7 +16,7 @@ local nfs = require("nativefs")
 local function filterCenters(filters, list) --Filter list using filters. filters must be a table of strings. list must be a table of centers (see G.P_CENTERS)
     local matchedCenters = {}
     for i, center in pairs(list) do
-        if (center.collectionInfo or {}).centerPoolName == "Stake" or center.set == "Seal" then goto continue end
+        if (center.collectionInfo or {}).centerPoolName == "Stake" or center.set == "Seal" or  (center.collectionInfo or {}).centerPoolName == "Tag" then goto continue end
         local matchAgainst = {} --all strings in this table will be matched against all filters in {filters}
 
 
