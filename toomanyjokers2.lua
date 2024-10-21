@@ -362,47 +362,59 @@ numCollectionRows = ""
 numCollectionColumns = ""
 curmod.config_tab = function()
     return {
-        n = 7,
-        config = { r = 0.1, minw = 5, align = "cm", padding = 0.2, colour = G.C.BLACK },
-        nodes = {
-            {
-                n = G.UIT.C,
-                config = {align = "cl", padding = 0, minh = 0.1},
+                n = G.UIT.ROOT,
+                config = {
+                    emboss = 0.05,
+                    r = 0.1,
+                    minh = 4,
+                    minw = 3,
+                    align = 'cm',
+                    padding = 0.2,
+                    colour = G.C.BLACK,
+                },
                 nodes = {
-                    create_text_input({
-                        colour = G.C.RED,
-                        hooked_colour = darken(copy_table(G.C.RED), 0.3),
-                        w = 4.5,
-                        h = 1,
-                        max_length = 2,
-                        extended_corpus = true,
-                        prompt_text = "Number of collection rows",
-                        ref_table = _G,
-                        ref_value = "numCollectionRows",
-                        keyboard_offset = 1,
-                    }),
-                    create_text_input({
-                        colour = G.C.RED,
-                        hooked_colour = darken(copy_table(G.C.RED), 0.3),
-                        w = 4.5,
-                        h = 1,
-                        max_length = 2,
-                        extended_corpus = true,
-                        prompt_text = "Number of collection columns",
-                        ref_table = _G,
-                        ref_value = "numCollectionColumns",
-                        keyboard_offset = 1,
-                    }),
-                }
-            },
+                    {
+                        n = G.UIT.R,
+                        config = {
+                            align = "cm",
+                        },
+                        nodes = {
+                            create_text_input({
+                                colour = G.C.RED,
+                                hooked_colour = darken(copy_table(G.C.RED), 0.3),
+                                w = 1,
+                                h = 1,
+                                max_length = 2,
+                                extended_corpus = true,
+                                prompt_text = "Number of collection rows",
+                                ref_table = _G,
+                                ref_value = "numCollectionRows",
+                                keyboard_offset = 1,
+                            }),
+                            {n=G.UIT.T, config={text = " / ",colour = G.C.WHITE, scale = 0.35}},
+                            create_text_input({
+                                colour = G.C.RED,
+                                hooked_colour = darken(copy_table(G.C.RED), 0.3),
+                                w = 1,
+                                h = 1,
+                                max_length = 2,
+                                extended_corpus = true,
+                                prompt_text = "Number of collection columns",
+                                ref_table = _G,
+                                ref_value = "numCollectionColumns",
+                                keyboard_offset = 1,
+                            }),
+                        }
+                    },
 
-            {n=G.UIT.C, config={align = "cm", minh = 1}, nodes={
-                {n=G.UIT.C, config={align = "cm"}, nodes={
-                  {n=G.UIT.C, config={align = "cm", minw = 0.1}, nodes={{n=G.UIT.T, config={text = "Rows / Columns",colour = G.C.WHITE, scale = 0.35}}},
-                }},
-            }}},
-        }
-    }
+
+
+                    {n=G.UIT.R, config={align = "cm", minh = 1}, nodes={
+                          {n=G.UIT.T, config={text = "Rows / Columns",colour = G.C.WHITE, scale = 0.35}},
+                    }},
+                }
+            }
+            
 end
 
 
