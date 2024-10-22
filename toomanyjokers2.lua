@@ -16,7 +16,7 @@ local nfs = require("nativefs")
 local function filterCenters(filters, list) --Filter list using filters. filters must be a table of strings. list must be a table of centers (see G.P_CENTERS)
     local matchedCenters = {}
     for i, center in pairs(list) do
-        if (center.collectionInfo or {}).centerPoolName == "Stake" or center.set == "Seal" or  (center.collectionInfo or {}).centerPoolName == "Tag" then goto continue end
+        if (center.collectionInfo or {}).centerPoolName == "Stake" or center.set == "Seal" or (center.collectionInfo or {}).centerPoolName == "Tag" then goto continue end
         local matchAgainst = {} --all strings in this table will be matched against all filters in {filters}
 
 
@@ -155,13 +155,13 @@ local function getPCenterPoolsSorted(...) --Iterates through G.P_CENTER_POOLS, r
     local centerTable = {}
     local seenPools = {}
     for i, poolName in pairs({ ... }) do
-        for l, center in pairs(G.P_CENTER_POOLS[poolName] or { print("Invalid argument to getPCenterPoolsSorted. Invalid argument: " .. poolName) }) do
+        for l, center in pairs(G.P_CENTER_POOLS[poolName] or { print("Invalid argument to getPCenterPoolsSorted. Invalid argument: " .. poolName) }) do --not a serious error so just print
             table.insert(centerTable, center)
         end
         seenPools[poolName] = true
     end
 
-    for poolName, pool in pairs(G.P_CENTER_POOLS) do
+    for poolName, pool in pairs(G.P_CENTER_POOLS) do --second loop so that unspecified pools are added last
         if not seenPools[pool] then
             for l, center in pairs(pool) do
                 center.collectionInfo = {
@@ -182,23 +182,23 @@ end
 local function filterListFromString(str)
     str = string.gsub(str, " ", "")
     str = string.lower(str)
-    str = string.split(str) --remove spaces from filter and separate via commas
+    str = string.split(str) --remove spaces from filter and separate via commas for compat with above functions
     return str
 end
 
-function G.FUNCS.reloadCollection()
+function G.FUNCS.reloadCollection()     --what it says on the tin, except this is for the TMJ collection
     _G.thegreatfilter = filterListFromString(G.ENTERED_FILTER or "")
-    G.FUNCS.tmjcollection("fromScript") --reload joker collection page
+    G.FUNCS.tmjcollection("fromScript") --so that thegreatfilter is reset
 end
 
-function string.split(input)
+function string.split(input) --TERRIBLE practice i just needed a splitting function and i decided to implement it in string
+                             --if an actual string.split is ever implemented by another mod with an earlier priority than TMJ this will override it and break that mod
     local result = {}
     for match in (input .. ","):gmatch("(.-),") do --split up the string by its commas
         table.insert(result, match)
     end
     return result
-end
-
+end 
 
 SMODS.Keybind({
     key = "openTMJ",
@@ -211,41 +211,42 @@ SMODS.Keybind({
 
 function G.FUNCS.tmjcollection(e)
     if e ~= "fromScript" then
-        thegreatfilter = { "" }
+        thegreatfilter = { "" } --we dont want the filter resetting unless we want it to
     end
 
-    G.SETTINGS.paused = true
+    G.SETTINGS.paused = true --generic things for an overlay
     G.FUNCS.overlay_menu {
         definition = Create_UIBox_TMJCollection(),
     }
-    G.OVERLAY_MENU:recalculate()
+    G.OVERLAY_MENU:recalculate() --necessary, ui doesnt load until you click the textbox otherwise
 end
 
 function Create_UIBox_TMJCollection()
     nfs.write(SMODS.Mods.toomanyjokers.path .. "config.txt",
-        (tostring(numCollectionRows) or "3") .. "," .. (tostring(numCollectionColumns) or "5"))
+        (tostring(CGNUMROWS) or "3") .. "," .. (tostring(CGNUMCOLUMNS) or "5") .. "," .. (tostring(CGSIZEDIVISOR) or "1"))
     --save any config changes
-    G.ENTERED_FILTER = "" --change filter textbox back to blank when we load/reload the page
-    G.your_collection = {}
-    local rows = tonumber(numCollectionRows) or 3
-    local columns = tonumber(numCollectionColumns) or 5
-
+    G.ENTERED_FILTER = ""  --change filter textbox back to blank when we load/reload the page
+    G.your_collection = {} --contains our cardareas
+    local rows = tonumber(CGNUMROWS) or 3
+    local columns = tonumber(CGNUMCOLUMNS) or 5
+    local sizeDivisor = tonumber(CGSIZEDIVISOR) or 1
+    --error avoidance mainly, these should never be anything except strings containing numbers
 
     local deck_tables = {}
-    for j = 1, rows do
-        G.your_collection[j] = CardArea(
-            G.ROOM.T.x + 0.2 * G.ROOM.T.w / 2, G.ROOM.T.h,
-            columns * G.CARD_W,
-            0.95 * G.CARD_H,
-            { card_limit = columns, type = 'title', highlight_limit = 0, collection = true })
+    for j = 1, rows do                                                                        --row loop
+        G.your_collection[j] = CardArea(                                                      --insert this cardarea into the table we feed to our ui
+            G.ROOM.T.x + 0.2 * G.ROOM.T.w / 2, G.ROOM.T.h,                                    --position
+            columns * G.CARD_W / sizeDivisor,                                                 --width of cardarea
+            0.95 * G.CARD_H / sizeDivisor,                                                    --height of cardarea
+            { card_limit = columns, type = 'title', highlight_limit = 0, collection = true }) --basic config for a cardarea
         table.insert(deck_tables,
             {
                 n = G.UIT.R,
-                config = { align = "cm", padding = 0.07, no_fill = true },
+                config = { align = "cm", padding = 0.07 / sizeDivisor, no_fill = true, scale = 1 / sizeDivisor },
                 nodes = {
                     { n = G.UIT.O, config = { object = G.your_collection[j] } }
                 }
-            }
+            } --actual ui form for the cardarea
         )
     end
     local centerPool = filterCenters(thegreatfilter or { "" }, getPCenterPoolsSorted("Joker")) --get the filtered out pool
@@ -254,17 +255,19 @@ function Create_UIBox_TMJCollection()
     for i = 1, math.ceil(#centerPool / (columns * #G.your_collection)) do
         table.insert(center_options,
             localize('k_page') ..
-            ' ' .. tostring(i) .. '/' .. tostring(math.ceil(#centerPool / (columns * #G.your_collection))))
+            ' ' .. tostring(i) .. '/' .. tostring(math.ceil(#centerPool / (columns * #G.your_collection)))) --ignore weird formatting i just use the luals automation because
+                                                                                                            --a lot of this is copypasted from vanilla sources   
+                                                                                                            --anyways thats just for the page switching buttons
     end
 
 
-    for i = 1, columns do
+    for i = 1, columns do --big loop that just inserts the proper cards into the cardarea 
         for j = 1, #G.your_collection do
             local center = centerPool[i + (j - 1) * columns]
             if center then
                 local card = Card(G.your_collection[j].T.x + G.your_collection[j].T.w / 2, G.your_collection[j].T.y,
-                    G.CARD_W,
-                    G.CARD_H, nil, center)
+                    G.CARD_W / (sizeDivisor or 1),
+                    G.CARD_H / (sizeDivisor or 1), nil, center)
                 card.sticker = get_joker_win_sticker(center)
                 G.your_collection[j]:emplace(card)
             end
@@ -275,9 +278,9 @@ function Create_UIBox_TMJCollection()
     INIT_COLLECTION_CARD_ALERTS()
 
     local t = create_UIBox_generic_options({
-        back_func = 'exit_overlay_menu',
+        back_func = 'exit_overlay_menu', --not the default for a collection because this is brought up solo
         contents = {
-            { n = G.UIT.R, config = { align = "cm", r = 0.1, colour = G.C.BLACK, emboss = 0.05 }, nodes = deck_tables },
+            { n = G.UIT.R, config = { align = "cm", r = 0.1, colour = G.C.BLACK, emboss = 0.05 }, nodes = deck_tables }, --cardareas
             {
                 n = G.UIT.R,
                 config = { align = "cm" },
@@ -294,7 +297,7 @@ function Create_UIBox_TMJCollection()
                         focus_args = { snap_to = true, nav = 'wide' }
                     })
                 }
-            },
+            }, --page switcher
             {
                 n = G.UIT.R,
                 config = { align = "cm" },
@@ -328,10 +331,10 @@ function G.FUNCS.remove_collection(e)
 end
 
 function G.FUNCS.TMJCollectionPage(args)
-    if not args or not args.cycle_config then return end
-    local rows = tonumber(numCollectionRows) or 3
-    local columns = tonumber(numCollectionColumns) or 5
-
+    if not args or not args.cycle_config then return end --this is leftover from source i dont think it serves a purpose
+    local rows = tonumber(CGNUMROWS) or 3 --unused but keep it
+    local columns = tonumber(CGNUMCOLUMNS) or 5
+    local sizeDivisor = tonumber(CGSIZEDIVISOR) or 1
 
     local centerPool = filterCenters(thegreatfilter or { "" }, getPCenterPoolsSorted("Joker")) --get our filtered joker list
 
@@ -341,90 +344,129 @@ function G.FUNCS.TMJCollectionPage(args)
             c:remove()
             c = nil
         end
-    end
+    end --remove old cards
     for i = 1, columns do
         for j = 1, #G.your_collection do
             local center = centerPool
                 [i + (j - 1) * columns + (columns * #G.your_collection * (args.cycle_config.current_option - 1))]
             if not center then break end
             local card = Card(G.your_collection[j].T.x + G.your_collection[j].T.w / 2, G.your_collection[j].T.y, G
-                .CARD_W,
-                G.CARD_H, G.P_CARDS.empty, center)
+                .CARD_W / sizeDivisor,
+                G.CARD_H / sizeDivisor, G.P_CARDS.empty, center)
             card.sticker = get_joker_win_sticker(center)
             G.your_collection[j]:emplace(card)
         end
-    end
-    INIT_COLLECTION_CARD_ALERTS()
+    end --add new cards
+    INIT_COLLECTION_CARD_ALERTS() --alerts for unhovered new discoveries
 end
 
 local curmod = SMODS.current_mod
-numCollectionRows = ""
-numCollectionColumns = ""
+CGNUMROWS = ""
+CGNUMCOLUMNS = ""
+CGSIZEDIVISOR = ""
+
+CGNUMROWS1 = ""
+CGNUMCOLUMNS1 = ""
+CGSIZEDIVISOR1 = ""
+
+--first ones are backed by the second ones, which back the actual ui
+
 curmod.config_tab = function()
     return {
-                n = G.UIT.ROOT,
-                config = {
-                    emboss = 0.05,
-                    r = 0.1,
-                    minh = 4,
-                    minw = 3,
-                    align = 'cm',
-                    padding = 0.2,
-                    colour = G.C.BLACK,
-                },
+        n = G.UIT.ROOT,
+        config = {
+            emboss = 0.05,
+            r = 0.1,
+            minh = 4,
+            minw = 3,
+            align = 'cm',
+            padding = 0.2,
+            colour = G.C.BLACK,
+        },
+        nodes = {
+            {
+                n = G.UIT.R,
+                config = { align = "cm" },
                 nodes = {
-                    {
-                        n = G.UIT.R,
-                        config = {
-                            align = "cm",
-                        },
-                        nodes = {
-                            create_text_input({
-                                colour = G.C.RED,
-                                hooked_colour = darken(copy_table(G.C.RED), 0.3),
-                                w = 1,
-                                h = 1,
-                                max_length = 2,
-                                extended_corpus = true,
-                                prompt_text = "Number of collection rows",
-                                ref_table = _G,
-                                ref_value = "numCollectionRows",
-                                keyboard_offset = 1,
-                            }),
-                            {n=G.UIT.T, config={text = " / ",colour = G.C.WHITE, scale = 0.35}},
-                            create_text_input({
-                                colour = G.C.RED,
-                                hooked_colour = darken(copy_table(G.C.RED), 0.3),
-                                w = 1,
-                                h = 1,
-                                max_length = 2,
-                                extended_corpus = true,
-                                prompt_text = "Number of collection columns",
-                                ref_table = _G,
-                                ref_value = "numCollectionColumns",
-                                keyboard_offset = 1,
-                            }),
-                        }
-                    },
+                    create_text_input({
+                        colour = G.C.RED,
+                        hooked_colour = darken(copy_table(G.C.RED), 0.3),
+                        w = 5,
+                        h = 1,
+                        max_length = 3,
+                        extended_corpus = true,
+                        prompt_text = "Number of collection rows",
+                        ref_table = _G,
+                        ref_value = "CGNUMROWS1"
+
+                    }),
+                    { n = G.UIT.T, config = { text = " / ", colour = G.C.WHITE, scale = 0.35 } },
+                    create_text_input({
+                        colour = G.C.RED,
+                        hooked_colour = darken(copy_table(G.C.RED), 0.3),
+                        w = 5,
+                        h = 1,
+                        max_length = 3,
+                        extended_corpus = true,
+                        prompt_text = "Number of collection columns",
+                        ref_table = _G,
+                        ref_value = "CGNUMCOLUMNS1"
+                    }),
+                }
+            },
 
 
 
-                    {n=G.UIT.R, config={align = "cm", minh = 1}, nodes={
-                          {n=G.UIT.T, config={text = "Rows / Columns",colour = G.C.WHITE, scale = 0.35}},
-                    }},
+            {
+                n = G.UIT.R,
+                config = { align = "cm", minh = 1 },
+                nodes = {
+                    { n = G.UIT.T, config = { text = "Rows / Columns", colour = G.C.WHITE, scale = 0.35 } },
+                }
+            },
+            {
+                n = G.UIT.R,
+                config = { minh = 1, minw = 5, align = "cm" },
+                nodes = {
+                    create_text_input({
+                        colour = G.C.RED,
+                        hooked_colour = darken(copy_table(G.C.RED), 0.3),
+                        w = 5,
+                        h = 1,
+                        max_length = 5,
+                        extended_corpus = true,
+                        prompt_text = "Size divisor (higher=smaller)",
+                        ref_table = _G,
+                        ref_value = "CGSIZEDIVISOR1"
+                    }),
                 }
             }
-            
+        }
+    }
 end
 
+local f = { "CGSIZEDIVISOR", "CGNUMROWS", "CGNUMCOLUMNS" }
 
-local config = nfs.read(SMODS.Mods.toomanyjokers.path .. "config.txt") or "3,5"
+local oldupd = love.update
+function love.update(...)
+    oldupd(...)
+    for _, i in pairs(f) do
+        i = i
+        if _G[i .. "1"] ~= '' then
+            _G[i] = _G[i .. "1"]
+        end
+    end
+end
+
+local config = nfs.read(SMODS.Mods.toomanyjokers.path .. "config.txt") or "3,5,1"
+--fetch config
 
 local s = string.split(config)
-numCollectionRows, numCollectionColumns = s[1], s[2]
+CGNUMROWS, CGNUMCOLUMNS, CGSIZEDIVISOR = s[1] or "3", s[2] or "5", s[3] or "1"
+--this is peak..
 
 local oldcuib = create_UIBox_generic_options
-create_UIBox_generic_options = function(arg1, ...)
+create_UIBox_generic_options = function(arg1, ...) --inserts the text into most collection pages without needing to hook each individual function
     if arg1.back_func == "your_collection" and arg1.contents[1].n == 4 then
         table.insert(arg1.contents, {
             n = 4,
