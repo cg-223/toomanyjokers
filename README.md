@@ -1,5 +1,5 @@
 # toomanyjokers
-Adds a search bar to the Joker collection in Balatro.
+Adds a UI allowing for searching of cards.
 
 Usage:
 Press T to open TMJ.
