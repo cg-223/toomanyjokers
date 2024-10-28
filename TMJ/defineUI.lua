@@ -1,5 +1,5 @@
 G.ENTERED_FILTER = ""
-
+local nfs = require("nativefs")
 function G.FUNCS.TMJUIBOX(e)
     if G.TMJUI then
         G.TMJUI:remove()
@@ -23,9 +23,17 @@ function G.FUNCS.TMJUIBOX(e)
 end
 
 function G.FUNCS.TMJMAINNODES()
-    local rowcount = 6   --use config at this point
-    local columncount = 3 --use config at this point
-    local sizediv = 1.5
+    TMJ.config.rows = TMJ.config.rows or "5"
+    TMJ.config.columns = TMJ.config.columns or "3"
+    TMJ.config.size = TMJ.config.size or "0.75"
+
+    nfs.write(SMODS.Mods.toomanyjokers.path .. "config.txt",
+    (tostring(TMJ.config.rows) or "5") .. "," .. (tostring(TMJ.config.columns) or "3") .. "," .. (tostring(TMJ.config.size) or "0.75"))
+
+
+    local rowcount = tonumber(TMJ.config.rows) or 5  --use config at this point
+    local columncount = tonumber(TMJ.config.columns) or 3 --use config at this point
+    local sizediv = (1/(tonumber(TMJ.config.size) or 0.75)) or 1.5
     TMJ.TMJCurCardIndex = 0
     local cardAreas = {}
     G.your_collection = {}
@@ -100,7 +108,14 @@ function G.FUNCS.TMJMAINNODES()
                     end
                 }),
             },
-        },     --textbox]]
+        },     --textbox
+        {
+            n = G.UIT.R,
+            config = { minw = G.ROOM.T.w * 0.25, padding = 0.05, align = "cm" },
+            nodes = {
+                { n = G.UIT.T, config = { text = "Type keywords, separated by commas", colour = G.C.WHITE, scale = 0.35 } },
+            }
+        },
     }
 
 
@@ -110,9 +125,12 @@ end
 function G.FUNCS.TMJSCROLLUI(num)
     if G.TMJUI and next(G.TMJUI) then
         local centerPool = TMJ.FUNCS.filterCenters(TMJ.thegreatfilter or { "" }, TMJ.FUNCS.getPCenterPoolsSorted("Joker"))
-        local rowcount = 6   --use config at this point
-        local columncount = 3 --use config at this point
-        local sizediv = 1.5
+        TMJ.config.rows = TMJ.config.rows or "5"
+        TMJ.config.columns = TMJ.config.columns or "3"
+        TMJ.config.size = TMJ.config.size or "0.75"
+        local rowcount = tonumber(TMJ.config.rows) or 5  --use config at this point
+        local columncount = tonumber(TMJ.config.columns) or 3 --use config at this point
+        local sizediv = (1/(tonumber(TMJ.config.size) or 0.75)) or 1.5
         TMJ.TMJCurCardIndex = TMJ.TMJCurCardIndex + (num * columncount)
         for i = 1, #G.your_collection do
             for j = 1, #G.your_collection[i].cards do
