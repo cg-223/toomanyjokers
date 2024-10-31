@@ -27,7 +27,7 @@ function G.FUNCS.TMJMAINNODES()
     TMJ.config.columns = TMJ.config.columns or "3"
     TMJ.config.size = TMJ.config.size or "0.75"
 
-    nfs.write(SMODS.Mods.toomanyjokers.path .. "config.txt",
+    nfs.write("config/toomanyjokers.txt",
     (tostring(TMJ.config.rows) or "5") .. "," .. (tostring(TMJ.config.columns) or "3") .. "," .. (tostring(TMJ.config.size) or "0.75"))
 
 

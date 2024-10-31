@@ -1,6 +1,6 @@
 local nfs = require("nativefs")
 TMJ.config = {}
-local config = nfs.read(SMODS.Mods.toomanyjokers.path .. "config.txt") or "5,3,0.75"
+local config = nfs.read("config/toomanyjokers.txt") or "5,3,0.75"
 local s = TMJ.FUNCS.commaSplit(config)
 TMJ.config.rows, TMJ.config.columns, TMJ.config.size = s[1] or "5", s[2] or "3", s[3] or "0.75"
 
