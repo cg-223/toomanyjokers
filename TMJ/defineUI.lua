@@ -28,18 +28,19 @@ function G.FUNCS.TMJMAINNODES()
     TMJ.config.size = TMJ.config.size or "0.75"
 
     nfs.write("config/toomanyjokers.txt",
-    (tostring(TMJ.config.rows) or "5") .. "," .. (tostring(TMJ.config.columns) or "3") .. "," .. (tostring(TMJ.config.size) or "0.75"))
+        (tostring(TMJ.config.rows) or "5") ..
+        "," .. (tostring(TMJ.config.columns) or "3") .. "," .. (tostring(TMJ.config.size) or "0.75"))
 
 
-    local rowcount = tonumber(TMJ.config.rows) or 5  --use config at this point
+    local rowcount = tonumber(TMJ.config.rows) or 5       --use config at this point
     local columncount = tonumber(TMJ.config.columns) or 3 --use config at this point
-    local sizediv = (1/(tonumber(TMJ.config.size) or 0.75)) or 1.5
+    local sizediv = (1 / (tonumber(TMJ.config.size) or 0.75)) or 1.5
     TMJ.TMJCurCardIndex = 0
     local cardAreas = {}
     G.your_collection = {}
     for i = 1, rowcount do
         G.your_collection[i] = CardArea(                                                          --insert this cardarea into the table we feed to our ui
-            0,0,                                        --position
+            0, 0,                                                                                 --position
             columncount * G.CARD_W / sizediv,                                                     --width of cardarea
             0.95 * G.CARD_H / sizediv,                                                            --height of cardarea
             { card_limit = columncount, type = 'title', highlight_limit = 0, collection = true }) --basic config for a cardarea } }
@@ -79,7 +80,7 @@ function G.FUNCS.TMJMAINNODES()
 
 
     local t = {
-        { n = G.UIT.R, config = { align = "cm", r = 0.01, colour = G.C.BLACK, emboss = 0.05 }, nodes = cardAreas },    --cardareas
+        { n = G.UIT.R, config = { align = "cm", r = 0.01, colour = G.C.BLACK, emboss = 0.05 }, nodes = cardAreas }, --cardareas
         {
             n = G.UIT.R,
             config = { align = "cm" },
@@ -95,20 +96,20 @@ function G.FUNCS.TMJMAINNODES()
                     ref_table = G,
                     ref_value = "ENTERED_FILTER",
                     keyboard_offset = 1,
-                    config = {align = "cm"},
+                    config = { align = "cm" },
                     callback = function()
                         local tosplit = G.ENTERED_FILTER
                         tosplit = string.lower(tosplit)
                         tosplit = string.gsub(tosplit, " ", "")
                         local split = TMJ.FUNCS.commaSplit(tosplit)
-                        
+
                         TMJ.thegreatfilter = split
                         G.ENTERED_FILTER = ""
                         G.FUNCS.TMJUIBOX("reload")
                     end
                 }),
             },
-        },     --textbox
+        }, --textbox
         {
             n = G.UIT.R,
             config = { minw = G.ROOM.T.w * 0.25, padding = 0.05, align = "cm" },
@@ -128,18 +129,20 @@ function G.FUNCS.TMJSCROLLUI(num)
         TMJ.config.rows = TMJ.config.rows or "5"
         TMJ.config.columns = TMJ.config.columns or "3"
         TMJ.config.size = TMJ.config.size or "0.75"
-        local rowcount = tonumber(TMJ.config.rows) or 5  --use config at this point
+        local rowcount = tonumber(TMJ.config.rows) or 5       --use config at this point
         local columncount = tonumber(TMJ.config.columns) or 3 --use config at this point
-        local sizediv = (1/(tonumber(TMJ.config.size) or 0.75)) or 1.5
+        local sizediv = (1 / (tonumber(TMJ.config.size) or 0.75)) or 1.5
         TMJ.TMJCurCardIndex = TMJ.TMJCurCardIndex + (num * columncount)
         for i = 1, #G.your_collection do
             for j = 1, #G.your_collection[i].cards do
-                G.your_collection[i].cards[j] = nil
+                if G.your_collection[i].cards[1] then
+                    G.your_collection[i].cards[1]:remove()
+                end
             end
         end
-        for i = 1, columncount do                                                                                          --big loop that just inserts the proper cards into the cardarea
+        for i = 1, columncount do --big loop that just inserts the proper cards into the cardarea
             for j = 1, #G.your_collection do
-                local center = centerPool[(i + (j - 1) * columncount)+(TMJ.TMJCurCardIndex)]
+                local center = centerPool[(i + (j - 1) * columncount) + (TMJ.TMJCurCardIndex)]
                 if center then
                     local card = Card(G.your_collection[j].T.x + G.your_collection[j].T.w / 2, G.your_collection[j].T.y,
                         G.CARD_W / (sizediv or 1),
@@ -151,7 +154,6 @@ function G.FUNCS.TMJSCROLLUI(num)
         end
     end
 end
-
 
 TMJ.FUNCS.OPENFROMKEYBIND = function()
     G.FUNCS.TMJUIBOX()
