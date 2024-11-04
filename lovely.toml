@@ -1,0 +1,15 @@
+[manifest]
+version = "1.0.0"
+dump_lua = true
+priority = 0
+
+[[patches]]
+[patches.pattern]
+target = "engine/controller.lua"
+pattern = "if  G.OVERLAY_MENU then"
+position = "at"
+payload = '''
+if G.OVERLAY_MENU or (_card and _card.area and _card.area.config and _card.area.config.collection) then
+'''
+match_indent = true
+overwrite = false

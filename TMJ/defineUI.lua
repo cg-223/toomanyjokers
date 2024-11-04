@@ -37,9 +37,9 @@ function G.FUNCS.TMJMAINNODES()
     local sizediv = (1 / (tonumber(TMJ.config.size) or 0.75)) or 1.5
     TMJ.TMJCurCardIndex = 0
     local cardAreas = {}
-    G.your_collection = {}
+    G.TMJCOLLECTION = {}
     for i = 1, rowcount do
-        G.your_collection[i] = CardArea(                                                          --insert this cardarea into the table we feed to our ui
+        G.TMJCOLLECTION[i] = CardArea(                                                            --insert this cardarea into the table we feed to our ui
             0, 0,                                                                                 --position
             columncount * G.CARD_W / sizediv,                                                     --width of cardarea
             0.95 * G.CARD_H / sizediv,                                                            --height of cardarea
@@ -53,7 +53,7 @@ function G.FUNCS.TMJMAINNODES()
                 {
                     n = G.UIT.O,
                     config = {
-                        object = G.your_collection[i]
+                        object = G.TMJCOLLECTION[i]
                     }
                 }
             }
@@ -63,20 +63,24 @@ function G.FUNCS.TMJMAINNODES()
     local centerPool = TMJ.FUNCS.filterCenters(TMJ.thegreatfilter or { "" }, TMJ.FUNCS.getPCenterPoolsSorted("Joker")) --get the filtered out pool
 
     for i = 1, columncount do                                                                                          --big loop that just inserts the proper cards into the cardarea
-        for j = 1, #G.your_collection do
+        for j = 1, #G.TMJCOLLECTION do
             local center = centerPool[i + (j - 1) * columncount]
             if center then
-                local card = Card(G.your_collection[j].T.x + G.your_collection[j].T.w / 2, G.your_collection[j].T.y,
+                local card = Card(G.TMJCOLLECTION[j].T.x + G.TMJCOLLECTION[j].T.w / 2, G.TMJCOLLECTION[j].T.y,
                     G.CARD_W / (sizediv or 1),
                     G.CARD_H / (sizediv or 1), nil, center)
                 card.sticker = get_joker_win_sticker(center)
-                G.your_collection[j]:emplace(card)
+                G.TMJCOLLECTION[j]:emplace(card)
             end
         end
     end
 
 
-    INIT_COLLECTION_CARD_ALERTS()
+    for j = 1, #G.TMJCOLLECTION do
+        for _, v in ipairs(G.TMJCOLLECTION[j].cards) do
+            v:update_alert()
+        end
+    end
 
 
     local t = {
@@ -133,22 +137,22 @@ function G.FUNCS.TMJSCROLLUI(num)
         local columncount = tonumber(TMJ.config.columns) or 3 --use config at this point
         local sizediv = (1 / (tonumber(TMJ.config.size) or 0.75)) or 1.5
         TMJ.TMJCurCardIndex = TMJ.TMJCurCardIndex + (num * columncount)
-        for i = 1, #G.your_collection do
-            for j = 1, #G.your_collection[i].cards do
-                if G.your_collection[i].cards[1] then
-                    G.your_collection[i].cards[1]:remove()
+        for i = 1, #G.TMJCOLLECTION do
+            for j = 1, #G.TMJCOLLECTION[i].cards do
+                if G.TMJCOLLECTION[i].cards[1] then
+                    G.TMJCOLLECTION[i].cards[1]:remove()
                 end
             end
         end
         for i = 1, columncount do --big loop that just inserts the proper cards into the cardarea
-            for j = 1, #G.your_collection do
+            for j = 1, #G.TMJCOLLECTION do
                 local center = centerPool[(i + (j - 1) * columncount) + (TMJ.TMJCurCardIndex)]
                 if center then
-                    local card = Card(G.your_collection[j].T.x + G.your_collection[j].T.w / 2, G.your_collection[j].T.y,
+                    local card = Card(G.TMJCOLLECTION[j].T.x + G.TMJCOLLECTION[j].T.w / 2, G.TMJCOLLECTION[j].T.y,
                         G.CARD_W / (sizediv or 1),
                         G.CARD_H / (sizediv or 1), nil, center)
                     card.sticker = get_joker_win_sticker(center)
-                    G.your_collection[j]:emplace(card)
+                    G.TMJCOLLECTION[j]:emplace(card)
                 end
             end
         end
