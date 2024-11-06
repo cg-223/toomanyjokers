@@ -1,4 +1,9 @@
-function TMJ.FUNCS.filterCenters(filters, list) --Filter list using filters. filters must be a table of strings. list must be a table of centers (see G.P_CENTERS)
+function TMJ.FUNCS.filterCenters(prefilters, list) --Filter list using filters. filters must be a table of strings. list must be a table of centers (see G.P_CENTERS)
+    local dontuseregex = true
+    local filters, args = TMJ.FUNCS.processFilters(prefilters)
+
+
+
     local matchedCenters = {}
     for i, center in pairs(list) do
         if (center.collectionInfo or {}).centerPoolName == "Stake" or center.set == "Seal" or center.set == "Back" or (center.collectionInfo or {}).centerPoolName == "Tag" then goto continue end
@@ -27,6 +32,8 @@ function TMJ.FUNCS.filterCenters(filters, list) --Filter list using filters. fil
             modname = string.lower(modname)
             modname = string.gsub(modname, " ", "")
             table.insert(matchAgainst, modname) --match against the name of the mod that implemented this center
+        else
+            table.insert(matchAgainst, "vanilla")
         end
 
         if center.set then
@@ -44,9 +51,8 @@ function TMJ.FUNCS.filterCenters(filters, list) --Filter list using filters. fil
         end
 
         if center.rarity then
-
             local raritystring = ""
-            if not SMODS.Rarity then --backwards compat
+            --if not SMODS.Rarity then --backwards compat
                 --this only supports a handful of mods, its fine though!
                 if type(center.rarity) == "string" then
                     if center.rarity == "cry_exotic" then
@@ -68,12 +74,13 @@ function TMJ.FUNCS.filterCenters(filters, list) --Filter list using filters. fil
                 raritystring = string.lower(raritystring)
                 raritystring = string.gsub(raritystring, " ", "")
                 table.insert(matchAgainst, raritystring)
-            else
+            --[[else
+                print(center.rarity)
                 raritystring = center.rarity 
                 raritystring = string.lower(raritystring)
                 raritystring = string.gsub(raritystring, " ", "")
                 table.insert(matchAgainst, raritystring)
-            end
+            end]]
 
             
         end
@@ -118,23 +125,23 @@ function TMJ.FUNCS.filterCenters(filters, list) --Filter list using filters. fil
             mastermatcher = mastermatcher .. vcascsaz  --combine all of our matchers (description, name, mod, etc)
         end
         local flag = false
-        local dontuseregex = true
-        if filters[1] == "{regex}" then
-            dontuseregex = false
-            table.remove(filters, 1)
-        end
+        local flag2 = false
         for _, filter in pairs(filters) do
             if string.sub(filter, 1, 1) ~= "!" then
-                if not string.find(mastermatcher, filter, 1, dontuseregex) then --is filter contained in matcher, starting at the first character, using a raw text search as to ignore characters like ^?
+                if not string.find(mastermatcher, filter, 1, not args.regex) then --is filter contained in matcher, starting at the first character, using a raw text search as to ignore characters like ^?
                     flag = true
+                else
+                    flag2 = true
                 end
             else
-                if string.find(mastermatcher, string.sub(filter, 2), 1, dontuseregex) then
+                if string.find(mastermatcher, string.sub(filter, 2), 1, not args.regex) then
                     flag = true
+                else
+                    flag2 = true
                 end
             end
         end
-        if not flag then
+        if not flag or (args.any and flag2) then
             table.insert(matchedCenters, center)
         end
         ::continue::
@@ -179,4 +186,20 @@ function TMJ.FUNCS.getPCenterPoolsSorted(...) --Iterates through G.P_CENTER_POOL
     end
 
     return centerTable
+end
+
+function TMJ.FUNCS.processFilters(filters)
+    local args = {}
+    while true and filters[1] do
+        local curfilter = filters[1]
+        local filterlen = string.len(curfilter)
+        if string.sub(curfilter, 1, 1) ~= "{" or string.sub(curfilter, filterlen) ~= "}" then
+            break
+        else
+            table.remove(filters, 1)
+            args.regex = args.regex or (curfilter == "{regex}")
+            args.any = args.any or (curfilter == "{any}")
+        end
+    end
+    return filters, args
 end
