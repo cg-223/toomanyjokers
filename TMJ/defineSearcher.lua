@@ -1,7 +1,7 @@
 function TMJ.FUNCS.filterCenters(filters, list) --Filter list using filters. filters must be a table of strings. list must be a table of centers (see G.P_CENTERS)
     local matchedCenters = {}
     for i, center in pairs(list) do
-        if (center.collectionInfo or {}).centerPoolName == "Stake" or center.set == "Seal" or (center.collectionInfo or {}).centerPoolName == "Tag" then goto continue end
+        if (center.collectionInfo or {}).centerPoolName == "Stake" or center.set == "Seal" or center.set == "Back" or (center.collectionInfo or {}).centerPoolName == "Tag" then goto continue end
         local matchAgainst = {} --all strings in this table will be matched against all filters in {filters}
 
 
@@ -44,28 +44,38 @@ function TMJ.FUNCS.filterCenters(filters, list) --Filter list using filters. fil
         end
 
         if center.rarity then
+
             local raritystring = ""
-            --this only supports a handful of mods, its fine though!
-            if type(center.rarity) == "string" then
-                if center.rarity == "cry_exotic" then
-                    raritystring = "Exotic"
-                elseif center.rarity == "cry_epic" then
-                    raritystring = "Epic"
-                else
-                    raritystring = center.rarity
+            if not SMODS.Rarity then --backwards compat
+                --this only supports a handful of mods, its fine though!
+                if type(center.rarity) == "string" then
+                    if center.rarity == "cry_exotic" then
+                        raritystring = "Exotic"
+                    elseif center.rarity == "cry_epic" then
+                        raritystring = "Epic"
+                    else
+                        raritystring = center.rarity
+                    end
+                elseif center.rarity == 1 then
+                    raritystring = "Common"
+                elseif center.rarity == 2 then
+                    raritystring = "Uncommon"
+                elseif center.rarity == 3 then
+                    raritystring = "Rare"
+                elseif center.rarity == 4 then
+                    raritystring = "Legendary"
                 end
-            elseif center.rarity == 1 then
-                raritystring = "Common"
-            elseif center.rarity == 2 then
-                raritystring = "Uncommon"
-            elseif center.rarity == 3 then
-                raritystring = "Rare"
-            elseif center.rarity == 4 then
-                raritystring = "Legendary"
+                raritystring = string.lower(raritystring)
+                raritystring = string.gsub(raritystring, " ", "")
+                table.insert(matchAgainst, raritystring)
+            else
+                raritystring = center.rarity 
+                raritystring = string.lower(raritystring)
+                raritystring = string.gsub(raritystring, " ", "")
+                table.insert(matchAgainst, raritystring)
             end
-            raritystring = string.lower(raritystring)
-            raritystring = string.gsub(raritystring, " ", "")
-            table.insert(matchAgainst, raritystring)
+
+            
         end
 
         for _, loclist in pairs(G.localization.descriptions) do
@@ -104,13 +114,25 @@ function TMJ.FUNCS.filterCenters(filters, list) --Filter list using filters. fil
         end --lower all our filters, and remove sapces
         --main loop
         local mastermatcher = ""
+        local untrueMatching = {}
         for iaasdf, vcascsaz in pairs(matchAgainst) do --cant do this no more
             mastermatcher = mastermatcher .. vcascsaz  --combine all of our matchers (description, name, mod, etc)
         end
         local flag = false
+        local dontuseregex = true
+        if filters[1] == "{regex}" then
+            dontuseregex = false
+            table.remove(filters, 1)
+        end
         for _, filter in pairs(filters) do
-            if not string.find(mastermatcher, filter, 1, true) then --is filter contained in matcher, starting at the first character, using a raw text search as to ignore characters like ^?
-                flag = true
+            if string.sub(filter, 1, 1) ~= "!" then
+                if not string.find(mastermatcher, filter, 1, useregex) then --is filter contained in matcher, starting at the first character, using a raw text search as to ignore characters like ^?
+                    flag = true
+                end
+            else
+                if string.find(mastermatcher, string.sub(filter, 2), 1, useregex) then
+                    flag = true
+                end
             end
         end
         if not flag then
