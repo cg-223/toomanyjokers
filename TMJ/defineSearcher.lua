@@ -114,7 +114,6 @@ function TMJ.FUNCS.filterCenters(filters, list) --Filter list using filters. fil
         end --lower all our filters, and remove sapces
         --main loop
         local mastermatcher = ""
-        local untrueMatching = {}
         for iaasdf, vcascsaz in pairs(matchAgainst) do --cant do this no more
             mastermatcher = mastermatcher .. vcascsaz  --combine all of our matchers (description, name, mod, etc)
         end
@@ -126,11 +125,11 @@ function TMJ.FUNCS.filterCenters(filters, list) --Filter list using filters. fil
         end
         for _, filter in pairs(filters) do
             if string.sub(filter, 1, 1) ~= "!" then
-                if not string.find(mastermatcher, filter, 1, useregex) then --is filter contained in matcher, starting at the first character, using a raw text search as to ignore characters like ^?
+                if not string.find(mastermatcher, filter, 1, dontuseregex) then --is filter contained in matcher, starting at the first character, using a raw text search as to ignore characters like ^?
                     flag = true
                 end
             else
-                if string.find(mastermatcher, string.sub(filter, 2), 1, useregex) then
+                if string.find(mastermatcher, string.sub(filter, 2), 1, dontuseregex) then
                     flag = true
                 end
             end
