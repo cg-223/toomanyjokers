@@ -52,7 +52,7 @@ function TMJ.FUNCS.filterCenters(prefilters, list) --Filter list using filters. 
 
         if center.rarity then
             local raritystring = ""
-            --if not SMODS.Rarity then --backwards compat
+            if not SMODS.Rarity then --backwards compat
                 --this only supports a handful of mods, its fine though!
                 if type(center.rarity) == "string" then
                     if center.rarity == "cry_exotic" then
@@ -70,17 +70,23 @@ function TMJ.FUNCS.filterCenters(prefilters, list) --Filter list using filters. 
                     raritystring = "Rare"
                 elseif center.rarity == 4 then
                     raritystring = "Legendary"
+                else
+                    raritystring = tostring(center.rarity)
                 end
                 raritystring = string.lower(raritystring)
                 raritystring = string.gsub(raritystring, " ", "")
                 table.insert(matchAgainst, raritystring)
-            --[[else
-                print(center.rarity)
-                raritystring = center.rarity 
+            else
+                if type(center.rarity) == "string" or (type(center.rarity) == "number" and center.rarity < 5) then
+                    raritystring = SMODS.Rarity:get_rarity_badge(center.rarity)
+                end
+                if raritystring == "ERROR" or not raritystring then
+                    raritystring = tostring(center.rarity)
+                end
                 raritystring = string.lower(raritystring)
                 raritystring = string.gsub(raritystring, " ", "")
                 table.insert(matchAgainst, raritystring)
-            end]]
+            end
 
             
         end
