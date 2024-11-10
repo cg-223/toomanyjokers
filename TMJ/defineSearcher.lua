@@ -6,7 +6,7 @@ function TMJ.FUNCS.filterCenters(prefilters, list) --Filter list using filters. 
 
     local matchedCenters = {}
     for i, center in pairs(list) do
-        if (center.collectionInfo or {}).centerPoolName == "Stake" or center.set == "Seal" or center.set == "Back" or (center.collectionInfo or {}).centerPoolName == "Tag" then goto continue end
+        if (center.collectionInfo or {}).centerPoolName == "Stake" or center.set == "Seal" or center.set == "Back" or center.set == "Sleeve" or (center.collectionInfo or {}).centerPoolName == "Tag" then goto continue end
         local matchAgainst = {} --all strings in this table will be matched against all filters in {filters}
 
 
@@ -208,4 +208,26 @@ function TMJ.FUNCS.processFilters(filters)
         end
     end
     return filters, args
+end
+
+
+
+function TMJ.FUNCS.cacheSearchIntermediary(...)
+    local argspacked = {...}
+    if TMJ.SEARCHERCACHE[argspacked] then
+        return TMJ.SEARCHERCACHE[argspacked]
+    else
+        TMJ.SEARCHERCACHE[argspacked] = TMJ.FUNCS.filterCenters(...)
+        return TMJ.SEARCHERCACHE[argspacked]
+    end
+end
+
+function TMJ.FUNCS.cacheSorterIntermediary(...)
+    local argspacked = {...}
+    if TMJ.SORTERCACHE[argspacked] then
+        return TMJ.SORTERCACHE[argspacked]
+    else
+        TMJ.SORTERCACHE[argspacked] = TMJ.FUNCS.getPCenterPoolsSorted(...)
+        return TMJ.SORTERCACHE[argspacked]
+    end
 end

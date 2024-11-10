@@ -13,7 +13,8 @@ TMJ = {}
 TMJ.SMODSmodtable = tmj
 TMJ.FUNCS = {}
 TMJ.PATH = tmj.path
-
+TMJ.SEARCHERCACHE = {}
+TMJ.SORTERCACHE = {}
 local scripts = NFS.getDirectoryItems(TMJ.PATH.."/TMJ")
 for i, v in pairs(scripts) do
     local lua = NFS.read(TMJ.PATH.."/TMJ/"..v)

@@ -60,7 +60,7 @@ function G.FUNCS.TMJMAINNODES()
         }
     end
 
-    local centerPool = TMJ.FUNCS.filterCenters(TMJ.thegreatfilter or { "" }, TMJ.FUNCS.getPCenterPoolsSorted("Joker")) --get the filtered out pool
+    local centerPool = TMJ.FUNCS.cacheSearchIntermediary(TMJ.thegreatfilter or { "" }, TMJ.FUNCS.cacheSorterIntermediary("Joker")) --get the filtered out pool
 
     for i = 1, columncount do                                                                                          --big loop that just inserts the proper cards into the cardarea
         for j = 1, #G.TMJCOLLECTION do
@@ -129,7 +129,7 @@ end
 
 function G.FUNCS.TMJSCROLLUI(num)
     if G.TMJUI and next(G.TMJUI) then
-        local centerPool = TMJ.FUNCS.filterCenters(TMJ.thegreatfilter or { "" }, TMJ.FUNCS.getPCenterPoolsSorted("Joker"))
+        local centerPool = TMJ.FUNCS.cacheSearchIntermediary(TMJ.thegreatfilter or { "" }, TMJ.FUNCS.cacheSorterIntermediary("Joker"))
         TMJ.config.rows = TMJ.config.rows or "5"
         TMJ.config.columns = TMJ.config.columns or "3"
         TMJ.config.size = TMJ.config.size or "0.75"
