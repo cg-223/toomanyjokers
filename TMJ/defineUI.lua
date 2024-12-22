@@ -22,9 +22,6 @@ function G.FUNCS.TMJUIBOX(e)
                 UIBox_dyn_container(def) } },
             config = { align = 'cl', offset = { x = 4, y = G.ROOM.T.h - 2.333 }, major = G.ROOM_ATTACH, bond = 'Weak' }
         }
-        G.TMJUI:recalculate(true)
-        local text = G.TMJUI:get_UIE_by_ID("TMJTEXTINP")
-        G.FUNCS.select_text_input(text.children[1])
         return G.TMJUI
     end
 end
