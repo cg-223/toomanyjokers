@@ -6,7 +6,7 @@
 --- MOD_DESCRIPTION: Adds a filtering system to the Joker collection.
 --- PRIORITY: 1000000
 
-local NFS = require("nativefs")
+local NFS = NFS or require("nativefs")
 
 local tmj = SMODS.current_mod
 TMJ = {}
@@ -46,14 +46,6 @@ SMODS.Keybind({
     end
 })
 
-SMODS.Keybind({
-    key = "forceCloseTMJ",
-    key_pressed = "t",
-    held_keys = {'lctrl'},
-    action = function(controller)
-        TMJ.FUNCS.OPENFROMKEYBIND(true)
-    end
-})
 
 SMODS.Atlas {
     key = "modicon",
