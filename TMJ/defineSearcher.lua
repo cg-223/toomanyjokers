@@ -1,6 +1,6 @@
 function TMJ.FUNCS.filterCenters(prefilters, list) --Filter list using filters. filters must be a table of strings. list must be a table of centers (see G.P_CENTERS)
     local dontuseregex = true
-    local filters, args = TMJ.FUNCS.processFilters(prefilters)
+    local filters, args = TMJ.FUNCS.processFilters(copy_table(prefilters))
 
 
 
