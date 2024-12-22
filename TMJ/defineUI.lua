@@ -5,19 +5,26 @@ function G.FUNCS.TMJUIBOX(e)
         G.TMJUI:remove()
         G.TMJUI = nil
     else
+        local def = G.FUNCS.TMJMAINNODES()
         G.TMJUI = UIBox {
             definition = { n = G.UIT.ROOT, config = { align = 'cm', r = 0.01 }, nodes = {
-                UIBox_dyn_container(G.FUNCS.TMJMAINNODES()) } },
+                UIBox_dyn_container(def) } },
             config = { align = 'cl', offset = { x = 4, y = G.ROOM.T.h - 2.333 }, major = G.ROOM_ATTACH, bond = 'Weak' }
         }
+        local text = G.TMJUI:get_UIE_by_ID("TMJTEXTINP")
+        G.FUNCS.select_text_input(text.children[1])
         return G.TMJUI
     end
     if e == "reload" then
+        local def = G.FUNCS.TMJMAINNODES()
         G.TMJUI = UIBox {
             definition = { n = G.UIT.ROOT, config = { align = 'cm', r = 0.01 }, nodes = {
-                UIBox_dyn_container(G.FUNCS.TMJMAINNODES()) } },
+                UIBox_dyn_container(def) } },
             config = { align = 'cl', offset = { x = 4, y = G.ROOM.T.h - 2.333 }, major = G.ROOM_ATTACH, bond = 'Weak' }
         }
+        G.TMJUI:recalculate(true)
+        local text = G.TMJUI:get_UIE_by_ID("TMJTEXTINP")
+        G.FUNCS.select_text_input(text.children[1])
         return G.TMJUI
     end
 end
@@ -82,38 +89,52 @@ function G.FUNCS.TMJMAINNODES()
         end
     end
 
+    local text = create_text_input({
+        colour = G.C.RED,
+        hooked_colour = darken(copy_table(G.C.RED), 0.3),
+        w = 3,
+        h = 1,
+        max_length = 100,
+        extended_corpus = true,
+        prompt_text = "",
+        ref_table = G,
+        ref_value = "ENTERED_FILTER",
+        keyboard_offset = 1,
+        config = { align = "cm", id = "TMJTEXTINP" },
+        callback = function()
+            local tosplit = G.ENTERED_FILTER
+            tosplit = string.lower(tosplit)
+            tosplit = string.gsub(tosplit, " ", "")
+            local split = TMJ.FUNCS.commaSplit(tosplit)
 
+            TMJ.thegreatfilter = split
+            G.ENTERED_FILTER = ""
+            G.FUNCS.TMJUIBOX("reload")
+        end
+    })
+    text.config.id = "TMJTEXTINP"
     local t = {
         { n = G.UIT.R, config = { align = "cm", r = 0.01, colour = G.C.BLACK, emboss = 0.05 }, nodes = cardAreas }, --cardareas
         {
             n = G.UIT.R,
             config = { align = "cm" },
             nodes = {
-                create_text_input({
-                    colour = G.C.RED,
-                    hooked_colour = darken(copy_table(G.C.RED), 0.3),
-                    w = 3,
-                    h = 1,
-                    max_length = 100,
-                    extended_corpus = true,
-                    prompt_text = "",
-                    ref_table = G,
-                    ref_value = "ENTERED_FILTER",
-                    keyboard_offset = 1,
-                    config = { align = "cm" },
-                    callback = function()
-                        local tosplit = G.ENTERED_FILTER
-                        tosplit = string.lower(tosplit)
-                        tosplit = string.gsub(tosplit, " ", "")
-                        local split = TMJ.FUNCS.commaSplit(tosplit)
-
-                        TMJ.thegreatfilter = split
-                        G.ENTERED_FILTER = ""
-                        G.FUNCS.TMJUIBOX("reload")
-                    end
-                }),
+                text,
             },
         }, --textbox
+        {
+            n = G.UIT.R,
+            config = {align = "cm", maxh = 1},
+            nodes = {
+                UIBox_button({
+                    colour = G.C.RED,
+                    button = "CloseTMJ",
+                    label = { "Close" },
+                    minw = 3,
+                    focus_args = { snap_to = true },
+                }),
+            }
+        },
         {
             n = G.UIT.R,
             config = { minw = G.ROOM.T.w * 0.25, padding = 0.05, align = "cm" },
@@ -160,5 +181,9 @@ function G.FUNCS.TMJSCROLLUI(num)
 end
 
 TMJ.FUNCS.OPENFROMKEYBIND = function()
+    G.FUNCS.TMJUIBOX()
+end
+
+G.FUNCS.CloseTMJ = function(e)
     G.FUNCS.TMJUIBOX()
 end

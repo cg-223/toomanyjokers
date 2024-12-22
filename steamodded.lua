@@ -46,6 +46,15 @@ SMODS.Keybind({
     end
 })
 
+SMODS.Keybind({
+    key = "forceCloseTMJ",
+    key_pressed = "t",
+    held_keys = {'lctrl'},
+    action = function(controller)
+        TMJ.FUNCS.OPENFROMKEYBIND(true)
+    end
+})
+
 SMODS.Atlas {
     key = "modicon",
     path = "icon.png",
