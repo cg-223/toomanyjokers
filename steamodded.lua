@@ -52,6 +52,7 @@ SMODS.Keybind({
     key = "openTMJ",
     key_pressed = "t",
     action = function(controller)
+        controller = G.CONTROLLER
         local reload
         if controller.hovering.target and controller.hovering.target:is(Card) then
             if controller.held_keys.lctrl and not controller.held_keys.lshift then
