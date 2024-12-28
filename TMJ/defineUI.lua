@@ -177,8 +177,8 @@ function G.FUNCS.TMJSCROLLUI(num)
     end
 end
 
-TMJ.FUNCS.OPENFROMKEYBIND = function()
-    G.FUNCS.TMJUIBOX()
+TMJ.FUNCS.OPENFROMKEYBIND = function(bool)
+    G.FUNCS.TMJUIBOX(bool and "reload")
 end
 
 G.FUNCS.CloseTMJ = function(e)

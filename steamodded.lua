@@ -38,14 +38,39 @@ function love.wheelmoved(x, y)
     end
 end
 
+local function getCenterKeyFromCard(card)
+    local center = card.config.center
+    for i, v in pairs(G.P_CENTERS) do
+        if v == center then
+            return i
+        end
+    end
+    return card.config.center.key
+end
+
 SMODS.Keybind({
     key = "openTMJ",
     key_pressed = "t",
     action = function(controller)
-        TMJ.FUNCS.OPENFROMKEYBIND()
+        local reload
+        if controller.hovering.target and controller.hovering.target:is(Card) then
+            if controller.held_keys.lctrl and not controller.held_keys.lshift then
+                local card = controller.hovering.target
+                TMJ.thegreatfilter = {"{key="..getCenterKeyFromCard(card)..",mod}"}
+                reload = true
+            elseif not controller.held_keys.lctrl and controller.held_keys.lshift then
+                local card = controller.hovering.target
+                TMJ.thegreatfilter = {"{key="..getCenterKeyFromCard(card)..",rarity}"}
+                reload = true
+            elseif controller.held_keys.lctrl and controller.held_keys.lshift then
+                local card = controller.hovering.target
+                TMJ.thegreatfilter = {"{key="..getCenterKeyFromCard(card)..",mod}", "{key="..getCenterKeyFromCard(card)..",rarity}"}
+                reload = true
+            end
+        end
+        TMJ.FUNCS.OPENFROMKEYBIND(reload)
     end
 })
-
 
 SMODS.Atlas {
     key = "modicon",
