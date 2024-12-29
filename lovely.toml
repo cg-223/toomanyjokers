@@ -13,3 +13,12 @@ if G.OVERLAY_MENU or (_card and _card.area and _card.area.config and _card.area.
 '''
 match_indent = true
 overwrite = false
+
+[[patches]]
+[patches.pattern]
+target = "engine/controller.lua"
+pattern = '''    if key == "a" and self.held_keys["g"] and not _RELEASE_MODE then'''
+position = "at"
+payload = '''    if key == "a" and self.held_keys["g"] and not _RELEASE_MODE and not G.TMJUI then'''
+match_indent = true
+overwrite = false

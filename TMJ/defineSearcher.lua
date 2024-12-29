@@ -154,10 +154,15 @@ function TMJ.FUNCS.filterCenters(prefilters, list) --Filter list using filters. 
     end
     local seen = {}
     local indicesToRemove = {}
+    local center = G.P_CENTERS[args.key or ""]
     for i, v in ipairs(matchedCenters) do
         if seen[v.collectionInfo.key] then --this code is redundant; we combine all our matchers so we cant get duplicates anymore. im keeping it here just in case
             --this code isnt redundant anymore
             table.insert(indicesToRemove, i - #indicesToRemove)
+        elseif args.mod and center and (v.mod ~= center.mod) then
+            table.insert(indicesToRemove, i-#indicesToRemove)
+        elseif args.rarity and center and (v.rarity ~= center.rarity) then
+            table.insert(indicesToRemove, i-#indicesToRemove)
         end
         seen[v.collectionInfo.key] = true
     end
@@ -205,6 +210,21 @@ function TMJ.FUNCS.processFilters(filters)
             table.remove(filters, 1)
             args.regex = args.regex or (curfilter == "{regex}")
             args.any = args.any or (curfilter == "{any}")
+            if string.sub(curfilter, 1, 5) == "{key=" then
+                print(curfilter)
+                local key, mode = unpack(TMJ.FUNCS.commaSplit( string.sub(curfilter, 6, #curfilter-1) ))
+                print(key)
+                print(mode)
+                if not (key and mode) then return filters, args end
+                args.key = key
+                if mode == "name" then
+                    args.name = true
+                elseif mode == "rarity" then
+                    args.rarity = true
+                elseif mode == "mod" then
+                    args.mod = true
+                end
+            end
         end
     end
     return filters, args

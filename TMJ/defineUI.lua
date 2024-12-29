@@ -4,7 +4,7 @@ function G.FUNCS.TMJUIBOX(e)
     if G.TMJUI then
         G.TMJUI:remove()
         G.TMJUI = nil
-    else
+    elseif e ~= "reload" then
         local def = G.FUNCS.TMJMAINNODES()
         G.TMJUI = UIBox {
             definition = { n = G.UIT.ROOT, config = { align = 'cm', r = 0.01 }, nodes = {
@@ -177,8 +177,8 @@ function G.FUNCS.TMJSCROLLUI(num)
     end
 end
 
-TMJ.FUNCS.OPENFROMKEYBIND = function()
-    G.FUNCS.TMJUIBOX()
+TMJ.FUNCS.OPENFROMKEYBIND = function(bool)
+    G.FUNCS.TMJUIBOX(bool and "reload")
 end
 
 G.FUNCS.CloseTMJ = function(e)
