@@ -7,7 +7,7 @@
 --- PRIORITY: 1000000
 
 local NFS = NFS or require("nativefs")
---test 5??
+--test 6!??
 local tmj = SMODS.current_mod
 TMJ = {}
 TMJ.SMODSmodtable = tmj
