@@ -17,17 +17,7 @@ TMJ.SEARCHERCACHE = {}
 TMJ.SORTERCACHE = {}
 local scripts = NFS.getDirectoryItems(TMJ.PATH.."/TMJ")
 for i, v in pairs(scripts) do
-    local lua = NFS.read(TMJ.PATH.."/TMJ/"..v)
-    if lua then
-        local chunk = loadstring(lua)
-        if chunk then
-            chunk()
-        else
-            print("Bad chunk at "..v)
-        end
-    else
-        print("Bad filename at "..TMJ.PATH.."/TMJ/"..v)
-    end
+    assert(loadfile(NFS.read(TMJ.PATH.."/TMJ/"..v)), "Bad file at "..TMJ.PATH.."/TMJ/"..v)()
 end
 
 local ourref = love.wheelmoved or function() end
