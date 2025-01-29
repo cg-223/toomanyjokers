@@ -234,20 +234,22 @@ end
 
 function TMJ.FUNCS.cacheSearchIntermediary(...)
     local argspacked = {...}
-    if TMJ.SEARCHERCACHE[argspacked] then
-        return TMJ.SEARCHERCACHE[argspacked]
-    else
-        TMJ.SEARCHERCACHE[argspacked] = TMJ.FUNCS.filterCenters(...)
-        return TMJ.SEARCHERCACHE[argspacked]
+    for i, v in pairs(TMJ.SEARCHERCACHE) do
+        if TMJ.FUNCS.shallowTableComp(v, argspacked) then
+            return v
+        end
     end
+    TMJ.SEARCHERCACHE[argspacked] = TMJ.FUNCS.filterCenters(...)
+    return TMJ.SEARCHERCACHE[argspacked]
 end
 
 function TMJ.FUNCS.cacheSorterIntermediary(...)
     local argspacked = {...}
-    if TMJ.SORTERCACHE[argspacked] then
-        return TMJ.SORTERCACHE[argspacked]
-    else
-        TMJ.SORTERCACHE[argspacked] = TMJ.FUNCS.getPCenterPoolsSorted(...)
-        return TMJ.SORTERCACHE[argspacked]
+    for i, v in pairs(TMJ.SORTERCACHE) do
+        if TMJ.FUNCS.shallowTableComp(v, argspacked) then
+            return v
+        end
     end
+    TMJ.SORTERCACHE[argspacked] = TMJ.FUNCS.getPCenterPoolsSorted(...)
+    return TMJ.SORTERCACHE[argspacked]
 end
