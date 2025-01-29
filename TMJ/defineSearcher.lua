@@ -178,8 +178,8 @@ end
 function TMJ.FUNCS.getPCenterPoolsSorted(...) --Iterates through G.P_CENTER_POOLS, returns a table similar to G.P_CENTERS but with keys replaced with number indices. Any number of arguments can be supplied, these dictate which pools go first.
     local centerTable = {}
     local seenPools = {}
-    for i, poolName in pairs({ ... }) do
-        for l, center in pairs(G.P_CENTER_POOLS[poolName] or { print("Invalid argument to getPCenterPoolsSorted. Invalid argument: " .. poolName) }) do --not a serious error so just print
+    for i, poolName in ipairs({ ... }) do
+        for l, center in ipairs(G.P_CENTER_POOLS[poolName] or { print("Invalid argument to getPCenterPoolsSorted. Invalid argument: " .. poolName) }) do --not a serious error so just print
             table.insert(centerTable, center)
         end
         seenPools[poolName] = true
@@ -232,21 +232,20 @@ end
 
 
 
-function TMJ.FUNCS.cacheSearchIntermediary(...)
-    local argspacked = {...}
+function TMJ.FUNCS.cacheSearchIntermediary(argspacked, pool)
     for i, v in pairs(TMJ.SEARCHERCACHE) do
-        if TMJ.FUNCS.shallowTableComp(v, argspacked) then
+        if TMJ.FUNCS.shallowTableComp(i, argspacked) then
             return v
         end
     end
-    TMJ.SEARCHERCACHE[argspacked] = TMJ.FUNCS.filterCenters(...)
+    TMJ.SEARCHERCACHE[argspacked] = TMJ.FUNCS.filterCenters(argspacked, pool)
     return TMJ.SEARCHERCACHE[argspacked]
 end
 
 function TMJ.FUNCS.cacheSorterIntermediary(...)
     local argspacked = {...}
     for i, v in pairs(TMJ.SORTERCACHE) do
-        if TMJ.FUNCS.shallowTableComp(v, argspacked) then
+        if TMJ.FUNCS.shallowTableComp(i, argspacked) then
             return v
         end
     end
