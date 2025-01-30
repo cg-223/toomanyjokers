@@ -181,6 +181,17 @@ TMJ.FUNCS.OPENFROMKEYBIND = function(bool)
     G.FUNCS.TMJUIBOX(bool and "reload")
 end
 
+
+--fix cards being left in crt background
+--slightly bandage fix but thats fine
+--im pretty sure it happens because of ui recalculating bs. nothing i can fix
+local olddraw = love.draw
+function love.draw()
+    love.graphics.setColor(0, 0, 0)
+    love.graphics.rectangle("fill", 0, 0, love.graphics.getWidth(), love.graphics.getHeight())
+    olddraw()
+end
+
 G.FUNCS.CloseTMJ = function(e)
     G.FUNCS.TMJUIBOX()
 end
