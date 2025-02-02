@@ -70,11 +70,15 @@ function G.FUNCS.TMJMAINNODES()
         for j = 1, #G.TMJCOLLECTION do
             local center = centerPool[i + (j - 1) * columncount]
             if center then
+                local old = copy_table(G.GAME.used_jokers)
+
                 local card = Card(G.TMJCOLLECTION[j].T.x + G.TMJCOLLECTION[j].T.w / 2, G.TMJCOLLECTION[j].T.y,
                     G.CARD_W / (sizediv or 1),
                     G.CARD_H / (sizediv or 1), nil, center)
                 card.sticker = get_joker_win_sticker(center)
                 G.TMJCOLLECTION[j]:emplace(card)
+
+                G.GAME.used_jokers = old
             end
         end
     end
@@ -166,11 +170,15 @@ function G.FUNCS.TMJSCROLLUI(num)
             for j = 1, #G.TMJCOLLECTION do
                 local center = centerPool[(i + (j - 1) * columncount) + (TMJ.TMJCurCardIndex)]
                 if center then
+                    local old = copy_table(G.GAME.used_jokers)
+
                     local card = Card(G.TMJCOLLECTION[j].T.x + G.TMJCOLLECTION[j].T.w / 2, G.TMJCOLLECTION[j].T.y,
                         G.CARD_W / (sizediv or 1),
                         G.CARD_H / (sizediv or 1), nil, center)
                     card.sticker = get_joker_win_sticker(center)
                     G.TMJCOLLECTION[j]:emplace(card)
+
+                    G.GAME.used_jokers = old
                 end
             end
         end
