@@ -23,3 +23,28 @@ payload = '''    if key == "a" and self.held_keys["g"] and not _RELEASE_MODE and
 match_indent = true
 overwrite = false
 
+[[patches]]
+[patches.pattern]
+target = "functions/button_callbacks.lua"
+pattern = '''if args.key == '[' or args.key == ']' then return end'''
+position = "at"
+payload = ""
+match_indent = true
+overwrite = false
+
+[[patches]]
+[patches.pattern]
+target = "functions/button_callbacks.lua"
+pattern = '''    local lower_ext = '1234567890-=;\',./'
+    local upper_ext = '!@#$%^&*()_+:"<>?'
+    if string.find(lower_ext, args.key) and args.caps then 
+      args.key = string.sub(string.sub(upper_ext,string.find(lower_ext, args.key)), 0, 1)
+    end'''
+position = "at"
+payload = '''    local lower_ext = '1234567890-=;\',./[]'
+    local upper_ext = '!@#$%^&*()_+:"<>?{}'
+        if string.find(lower_ext, args.key, nil, true) and args.caps then 
+          args.key = string.sub(string.sub(upper_ext,string.find(lower_ext, args.key, nil, true)), 0, 1)
+        end'''
+match_indent = true
+overwrite = false
