@@ -77,7 +77,7 @@ function TMJ.FUNCS.filterCenters(prefilters, list) --Filter list using filters. 
                 raritystring = string.gsub(raritystring, " ", "")
                 table.insert(matchAgainst, raritystring)
             else
-                if type(center.rarity) == "string" or (type(center.rarity) == "number" and center.rarity < 5) then
+                if type(center.rarity) == "string" or (type(center.rarity) == "number" and center.rarity < 5 and center.rarity == math.floor(center.rarity) and center.rarity > 0) then
                     raritystring = SMODS.Rarity:get_rarity_badge(center.rarity)
                 end
                 if raritystring == "ERROR" or not raritystring then
