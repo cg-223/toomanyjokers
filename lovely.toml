@@ -48,3 +48,17 @@ payload = '''    local lower_ext = '1234567890-=;\',./[]'
         end'''
 match_indent = true
 overwrite = false
+
+
+[[patches]]
+[patches.pattern]
+target = '''=[SMODS FlushHotkeys "FlushHotkeys.lua"]'''
+pattern = '''local function handle_hotkeys(key, handle_ref)'''
+position = "after"
+payload = '''
+if G.CONTROLLER and G.CONTROLLER.text_input_hook then
+  return handle_ref()
+end
+'''
+match_indent = false
+overwrite = false
