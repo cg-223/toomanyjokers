@@ -96,7 +96,7 @@ function TMJ.FUNCS.filterCenters(prefilters, list) --Filter list using filters. 
                 --i originally intended this to be usable for all cards, but in the end I decided to keep it to just jokers
                 local ourDescription = loclist[ourkey]
                 table.insert(matchAgainst, ourDescription.name) --this is localized name
-                local descText = ourDescription.text            --description
+                local descText = ourDescription.text or {}                --description
                 local lineConcat = ""
                 for _, descLine in ipairs(descText) do
                     local processedLine = descLine
