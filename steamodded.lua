@@ -17,7 +17,7 @@ TMJ.SEARCHERCACHE = {}
 TMJ.SORTERCACHE = {}
 local scripts = NFS.getDirectoryItems(TMJ.PATH.."/TMJ")
 for i, v in pairs(scripts) do
-    assert(SMODS.loadfile("TMJ/"..v))()
+    assert(SMODS.load_file("TMJ/"..v))()
 end
 
 local ourref = love.wheelmoved or function() end
