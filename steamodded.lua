@@ -91,7 +91,7 @@ create_UIBox_generic_options = function(arg1, ...) --inserts the text into most 
                     n = G.UIT.R,
                     config = { align = "cm" },
                     nodes = {
-                        { n = G.UIT.C, config = { align = "cl", minw = 5 }, nodes = { { n = G.UIT.T, config = { text = "Press T to access Too Many Jokers", colour = G.C.WHITE, shadow = true, scale = 0.3 } } } }
+                        { n = G.UIT.C, config = { align = "cl", minw = 5 }, nodes = { { n = G.UIT.T, config = { text = "Press T (outside of collection) to access Too Many Jokers", colour = G.C.WHITE, shadow = true, scale = 0.3 } } } }
                     }
                 }
             }
