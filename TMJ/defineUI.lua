@@ -5,6 +5,7 @@ function G.FUNCS.TMJUIBOX(e)
         G.TMJUI:remove()
         G.TMJUI = nil
     elseif e ~= "reload" then
+        G.FUNCS.exit_overlay_menu()
         local def = G.FUNCS.TMJMAINNODES()
         G.TMJUI = UIBox {
             definition = { n = G.UIT.ROOT, config = { align = 'cm', r = 0.01 }, nodes = {
