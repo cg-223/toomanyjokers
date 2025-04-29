@@ -91,6 +91,9 @@ function G.FUNCS.TMJMAINNODES()
     for j = 1, #G.TMJCOLLECTION do
         for _, v in ipairs(G.TMJCOLLECTION[j].cards) do
             v:update_alert()
+            if BANNERMOD and BANNERMOD.is_disabled(v.config.center.key) then
+                v.debuff = true
+            end
         end
     end
 
