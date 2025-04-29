@@ -184,6 +184,9 @@ function G.FUNCS.TMJSCROLLUI(num)
                         G.CARD_H / (sizediv or 1), nil, center)
                     card.sticker = get_joker_win_sticker(center)
                     G.TMJCOLLECTION[j]:emplace(card)
+                    if BANNERMOD and BANNERMOD.is_disabled(card.config.center.key) then
+                        card.debuff = true
+                    end
                     if string.sub(center.key, 1, 1) == "e" then
                         if not card.edition then card.edition = {} end
                         card.edition[string.sub(center.key, 3)] = true
