@@ -10,7 +10,7 @@ function G.FUNCS.TMJUIBOX(e)
         G.TMJUI = UIBox {
             definition = { n = G.UIT.ROOT, config = { align = 'cm', r = 0.01 }, nodes = {
                 UIBox_dyn_container(def) } },
-            config = { align = 'cli', offset = { x = 0, y = G.ROOM.T.h - 2.333 }, major = G.ROOM_ATTACH, bond = 'Weak' }
+            config = { align = 'cli', offset = { x = -1, y = G.ROOM.T.h - 2.333 }, major = G.ROOM_ATTACH, bond = 'Weak' }
         }
         local text = G.TMJUI:get_UIE_by_ID("TMJTEXTINP")
         G.FUNCS.select_text_input(text.children[1])
@@ -21,7 +21,7 @@ function G.FUNCS.TMJUIBOX(e)
         G.TMJUI = UIBox {
             definition = { n = G.UIT.ROOT, config = { align = 'cm', r = 0.01 }, nodes = {
                 UIBox_dyn_container(def) } },
-            config = { align = 'cli', offset = { x = 0, y = G.ROOM.T.h - 2.333 }, major = G.ROOM_ATTACH, bond = 'Weak' }
+            config = { align = 'cli', offset = { x = -1, y = G.ROOM.T.h - 2.333 }, major = G.ROOM_ATTACH, bond = 'Weak' }
         }
         return G.TMJUI
     end
