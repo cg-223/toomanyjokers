@@ -30,16 +30,16 @@ end
 function G.FUNCS.TMJMAINNODES()
     TMJ.config.rows = TMJ.config.rows or "5"
     TMJ.config.columns = TMJ.config.columns or "3"
-    TMJ.config.size = TMJ.config.size or "0.75"
+    TMJ.config.size = TMJ.config.size or "0.7"
 
     nfs.write("config/toomanyjokers.txt",
         (tostring(TMJ.config.rows) or "5") ..
-        "," .. (tostring(TMJ.config.columns) or "3") .. "," .. (tostring(TMJ.config.size) or "0.75"))
+        "," .. (tostring(TMJ.config.columns) or "3") .. "," .. (tostring(TMJ.config.size) or "0.7"))
 
 
     local rowcount = tonumber(TMJ.config.rows) or 5       --use config at this point
     local columncount = tonumber(TMJ.config.columns) or 3 --use config at this point
-    local sizediv = (1 / (tonumber(TMJ.config.size) or 0.75)) or 1.5
+    local sizediv = (1 / (tonumber(TMJ.config.size) or 0.7)) or 1.5
     TMJ.TMJCurCardIndex = 0
     local cardAreas = {}
     G.TMJCOLLECTION = {}
@@ -161,10 +161,10 @@ function G.FUNCS.TMJSCROLLUI(num)
         local centerPool = TMJ.FUNCS.cacheSearchIntermediary(TMJ.thegreatfilter or { "" }, TMJ.FUNCS.cacheSorterIntermediary("Joker"))
         TMJ.config.rows = TMJ.config.rows or "5"
         TMJ.config.columns = TMJ.config.columns or "3"
-        TMJ.config.size = TMJ.config.size or "0.75"
+        TMJ.config.size = TMJ.config.size or "0.7"
         local rowcount = tonumber(TMJ.config.rows) or 5       --use config at this point
         local columncount = tonumber(TMJ.config.columns) or 3 --use config at this point
-        local sizediv = (1 / (tonumber(TMJ.config.size) or 0.75)) or 1.5
+        local sizediv = (1 / (tonumber(TMJ.config.size) or 0.7)) or 1.5
         TMJ.TMJCurCardIndex = TMJ.TMJCurCardIndex + (num * columncount)
         for i = 1, #G.TMJCOLLECTION do
             for j = 1, #G.TMJCOLLECTION[i].cards do
