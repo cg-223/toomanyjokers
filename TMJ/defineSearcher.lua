@@ -100,6 +100,14 @@ function TMJ.FUNCS.filterCenters(prefilters, list) --Filter list using filters. 
                 local lineConcat = ""
                 for _, descLine in ipairs(descText) do
                     local processedLine = descLine
+                    if type(proccessedLine) == "table" then
+                        local n = next(processedLine)
+                        if type(n) == "string" then
+                            processedLine = n
+                        else
+                            processedLine = ""
+                        end
+                    end
                     processedLine = string.gsub(processedLine, "{[^}]+}", "") --remove any formatting tags, e.g. {C:legendary}
                     processedLine = string.gsub(processedLine, "#[^#]+#", "") --remove locvar tags, e.g. #1#
                     processedLine = string.gsub(processedLine, "{}", "")      --remove ending formatting tags, e.g. {}
