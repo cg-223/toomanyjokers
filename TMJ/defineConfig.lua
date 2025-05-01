@@ -1,8 +1,37 @@
 local nfs = require("nativefs")
 TMJ.config = {}
-local config = nfs.read("config/toomanyjokers.txt") or "5,4,0.7"
+local config = nfs.read("config/toomanyjokers.txt") or "5,4,0.65"
 local s = TMJ.FUNCS.commaSplit(config)
-TMJ.config.rows, TMJ.config.columns, TMJ.config.size = s[1] or "5", s[2] or "4", s[3] or "0.7"
+TMJ.config.rows, TMJ.config.columns, TMJ.config.size = s[1] or "5", s[2] or "4", s[3] or "0.65"
+
+function TMJ.FUNCS.register_config_after_load()
+    TMJ.CONFIG_REGISTERED = true
+    local valid_keys = {}
+    for i = 4, #s do
+        local cur = s[i]
+        if G.P_CENTERS[cur] then
+            valid_keys[cur] = true
+        end
+    end
+    TMJ.PINNED_KEYS = valid_keys
+end
+
+function TMJ.FUNCS.save_config()
+    local tmjpath = "config/toomanyjokers.txt"
+    local rows = tostring(TMJ.config.rows) or "5"
+    local cols = tostring(TMJ.config.columns) or "3"
+    local size = tostring(TMJ.config.size) or "0.65"
+    local pinned_keys = TMJ.PINNED_KEYS
+    local pkeystr = ""
+    for i, v in pairs(pinned_keys) do
+        if v then
+            pkeystr = pkeystr .. i
+            pkeystr = pkeystr .. ","
+        end
+    end
+    pkeystr = TMJ.FUNCS.stripFinal(pkeystr) --totally needed the extra function for this
+    nfs.write(tmjpath, rows .. "," .. cols .. "," .. size .. "," .. pkeystr)
+end
 
 SMODS.current_mod.config_tab = function()
     return {

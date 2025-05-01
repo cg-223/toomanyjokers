@@ -1,6 +1,9 @@
 G.ENTERED_FILTER = ""
 local nfs = require("nativefs")
 function G.FUNCS.TMJUIBOX(e)
+    if not TMJ.CONFIG_REGISTERED then
+        TMJ.FUNCS.register_config_after_load()
+    end
     if G.TMJUI then
         G.TMJUI:remove()
         G.TMJUI = nil
@@ -30,16 +33,14 @@ end
 function G.FUNCS.TMJMAINNODES()
     TMJ.config.rows = TMJ.config.rows or "5"
     TMJ.config.columns = TMJ.config.columns or "3"
-    TMJ.config.size = TMJ.config.size or "0.7"
+    TMJ.config.size = TMJ.config.size or "0.65"
 
-    nfs.write("config/toomanyjokers.txt",
-        (tostring(TMJ.config.rows) or "5") ..
-        "," .. (tostring(TMJ.config.columns) or "3") .. "," .. (tostring(TMJ.config.size) or "0.7"))
+    TMJ.FUNCS.save_config()
 
 
     local rowcount = tonumber(TMJ.config.rows) or 5       --use config at this point
     local columncount = tonumber(TMJ.config.columns) or 3 --use config at this point
-    local sizediv = (1 / (tonumber(TMJ.config.size) or 0.7)) or 1.5
+    local sizediv = (1 / (tonumber(TMJ.config.size) or 0.65)) or 1.5
     TMJ.TMJCurCardIndex = 0
     local cardAreas = {}
     G.TMJCOLLECTION = {}
@@ -76,6 +77,9 @@ function G.FUNCS.TMJMAINNODES()
                 local card = Card(G.TMJCOLLECTION[j].T.x + G.TMJCOLLECTION[j].T.w / 2, G.TMJCOLLECTION[j].T.y,
                     G.CARD_W / (sizediv or 1),
                     G.CARD_H / (sizediv or 1), nil, center)
+                if TMJ.PINNED_KEYS[center.key] then
+                    card.pinned = true
+                end
                 card.sticker = get_joker_win_sticker(center)
                 G.TMJCOLLECTION[j]:emplace(card)
                 if string.sub(center.key, 1, 1) == "e" then
@@ -150,6 +154,13 @@ function G.FUNCS.TMJMAINNODES()
                 { n = G.UIT.T, config = { text = "Type keywords, separated by commas", colour = G.C.WHITE, scale = 0.35 } },
             }
         },
+        {
+            n = G.UIT.R,
+            config = { minw = G.ROOM.T.w * 0.25, padding = 0.05, align = "cm" },
+            nodes = {
+                { n = G.UIT.T, config = { text = "Ctrl+click to pin a card", colour = G.C.WHITE, scale = 0.35 } },
+            }
+        },
     }
 
 
@@ -161,10 +172,10 @@ function G.FUNCS.TMJSCROLLUI(num)
         local centerPool = TMJ.FUNCS.cacheSearchIntermediary(TMJ.thegreatfilter or { "" }, TMJ.FUNCS.cacheSorterIntermediary("Joker"))
         TMJ.config.rows = TMJ.config.rows or "5"
         TMJ.config.columns = TMJ.config.columns or "3"
-        TMJ.config.size = TMJ.config.size or "0.7"
+        TMJ.config.size = TMJ.config.size or "0.65"
         local rowcount = tonumber(TMJ.config.rows) or 5       --use config at this point
         local columncount = tonumber(TMJ.config.columns) or 3 --use config at this point
-        local sizediv = (1 / (tonumber(TMJ.config.size) or 0.7)) or 1.5
+        local sizediv = (1 / (tonumber(TMJ.config.size) or 0.65)) or 1.5
         TMJ.TMJCurCardIndex = TMJ.TMJCurCardIndex + (num * columncount)
         for i = 1, #G.TMJCOLLECTION do
             for j = 1, #G.TMJCOLLECTION[i].cards do
@@ -182,6 +193,9 @@ function G.FUNCS.TMJSCROLLUI(num)
                     local card = Card(G.TMJCOLLECTION[j].T.x + G.TMJCOLLECTION[j].T.w / 2, G.TMJCOLLECTION[j].T.y,
                         G.CARD_W / (sizediv or 1),
                         G.CARD_H / (sizediv or 1), nil, center)
+                    if TMJ.PINNED_KEYS[center.key] then
+                        card.pinned = true
+                    end
                     card.sticker = get_joker_win_sticker(center)
                     G.TMJCOLLECTION[j]:emplace(card)
                     if BANNERMOD and BANNERMOD.is_disabled(card.config.center.key) then
