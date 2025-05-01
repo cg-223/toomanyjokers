@@ -279,7 +279,7 @@ function Card:click(...)
     if not TMJ.FUNCS.isCtrlDown() then
         flag = false
     end
-    if not flag then return end
+    if not flag then return old(self, ...) end
     --self is in tmj and we clicked with ctrl down
     TMJ.PINNED_KEYS[self.config.center.key] = not TMJ.PINNED_KEYS[self.config.center.key]
     TMJ.SEARCHERCACHE = {}
