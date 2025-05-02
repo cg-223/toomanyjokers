@@ -98,28 +98,25 @@ function TMJ.FUNCS.filterCenters(prefilters, list) --Filter list using filters. 
                 table.insert(matchAgainst, ourDescription.name) --this is localized name
                 local descText = ourDescription.text or {}                --description
                 local lineConcat = ""
-                for _, descLine in ipairs(descText) do
-                    local processedLine = descLine
-                    if type(proccessedLine) == "table" then
-                        local n = next(processedLine)
-                        if type(n) == "string" then
-                            processedLine = n
-                        else
-                            processedLine = ""
-                        end
+                if type(descText[1]) ~= "table" then
+                    descText = {descText}
+                end
+                for _, box in ipairs(descText) do
+                    for _, descLine in ipairs(box) do
+                        local processedLine = descLine
+                        processedLine = string.gsub(processedLine, "{[^}]+}", "") --remove any formatting tags, e.g. {C:legendary}
+                        processedLine = string.gsub(processedLine, "#[^#]+#", "") --remove locvar tags, e.g. #1#
+                        processedLine = string.gsub(processedLine, "{}", "")      --remove ending formatting tags, e.g. {}
+                        processedLine = string.gsub(processedLine, " ", "")
+                        processedLine = string.lower(processedLine)
+                        --EXAMPLE: "{X:dark_edition,C:white}^#1#{} Mult only after"
+                        -->> "^#1#{} Mult only after"
+                        -->> "^{} Mult only after"
+                        -->> "^ Mult only after"
+                        -->> "^Multonlyafter"
+                        -->>"^multonlyafter"
+                        lineConcat = lineConcat .. processedLine
                     end
-                    processedLine = string.gsub(processedLine, "{[^}]+}", "") --remove any formatting tags, e.g. {C:legendary}
-                    processedLine = string.gsub(processedLine, "#[^#]+#", "") --remove locvar tags, e.g. #1#
-                    processedLine = string.gsub(processedLine, "{}", "")      --remove ending formatting tags, e.g. {}
-                    processedLine = string.gsub(processedLine, " ", "")
-                    processedLine = string.lower(processedLine)
-                    --EXAMPLE: "{X:dark_edition,C:white}^#1#{} Mult only after"
-                    -->> "^#1#{} Mult only after"
-                    -->> "^{} Mult only after"
-                    -->> "^ Mult only after"
-                    -->> "^Multonlyafter"
-                    -->>"^multonlyafter"
-                    lineConcat = lineConcat .. processedLine
                 end
                 table.insert(matchAgainst, lineConcat) --this is a concatenation of every line in the description, with all formatting removed.
             end
