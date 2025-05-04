@@ -6,7 +6,7 @@ function TMJ.FUNCS.filterCenters(prefilters, list) --Filter list using filters. 
 
     local matchedCenters = {}
     for i, center in pairs(list) do
-        if (center.collectionInfo or {}).centerPoolName == "Stake" or center.set == "Seal" or center.set == "Back" or center.set == "Sleeve" or (center.collectionInfo or {}).centerPoolName == "Tag" then goto continue end
+        if (center.collectionInfo or {}).centerPoolName == "Stake" or center.set == "Seal" or center.set == "Back" or center.set == "Sleeve" or (center.collectionInfo or {}).centerPoolName == "Tag" or center.no_collection then goto continue end
         local matchAgainst = {} --all strings in this table will be matched against all filters in {filters}
 
 
