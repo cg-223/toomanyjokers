@@ -3,7 +3,8 @@ TMJ.config = {}
 local config = nfs.read("config/toomanyjokers.txt") or "5,4,0.65"
 local s = TMJ.FUNCS.commaSplit(config)
 TMJ.config.rows, TMJ.config.columns, TMJ.config.size = s[1] or "5", s[2] or "4", s[3] or "0.65"
-
+TMJ.config.placeholder = ""
+TMJ.config.currentMode = "Rows"
 function TMJ.FUNCS.register_config_after_load()
     TMJ.CONFIG_REGISTERED = true
     local valid_keys = {}
@@ -34,6 +35,7 @@ function TMJ.FUNCS.save_config()
 end
 
 SMODS.current_mod.config_tab = function()
+    TMJ.config.currentMode = "Rows"
     return {
         n = G.UIT.ROOT,
         config = { align = "cm", minh = G.ROOM.T.h * 0.25, padding = 0.0, r = 0.1, colour = G.C.GREY },
@@ -53,59 +55,59 @@ SMODS.current_mod.config_tab = function()
                                 h = 1,
                                 max_length = 3,
                                 extended_corpus = true,
-                                prompt_text = "Number of collection rows",
+                                prompt_text = "",
                                 ref_table = TMJ.config,
-                                ref_value = "rows"
-                                
+                                ref_value = "placeholder"
                             }),
-                            { n = G.UIT.T, config = { text = " / ", colour = G.C.WHITE, scale = 0.35 } },
-                            create_text_input({
-                                colour = G.C.RED,
-                                hooked_colour = darken(copy_table(G.C.RED), 0.3),
-                                w = 5,
-                                h = 1,
-                                max_length = 3,
-                                extended_corpus = true,
-                                prompt_text = "Number of collection columns",
-                                ref_table = TMJ.config,
-                                ref_value = "columns"
-                            }),
-                        }
-                    },
-                    {
-                        n = G.UIT.R,
-                        config = { minw = G.ROOM.T.w * 0.25, padding = 0.05, align = "cm" },
-                        nodes = {
-                            { n = G.UIT.T, config = { text = "Rows / Columns", colour = G.C.WHITE, scale = 0.35 } },
                         }
                     },
                     {
                         n = G.UIT.R,
                         config = { align = "cm", minw = G.ROOM.T.w * 0.25, padding = 0.05 },
                         nodes = {
-                            create_text_input({
+                            create_option_cycle({
+                                options = {"Rows", "Columns", "Card Scale"},
+                                w = 4.5,
+                                cycle_shoulders = true,
+                                opt_callback = "TMJ_SET_CONFIG",
+                                current_option = 1,
                                 colour = G.C.RED,
-                                hooked_colour = darken(copy_table(G.C.RED), 0.3),
-                                w = 5,
-                                h = 1,
-                                max_length = 5,
-                                extended_corpus = true,
-                                prompt_text = "Card scale",
-                                ref_table = TMJ.config,
-                                ref_value = "size",
-                                align = "cm"
+                                no_pips = true,
+                                focus_args = { snap_to = true, nav = "wide" },
                             }),
                         }
                     },
                     {
                         n = G.UIT.R,
-                        config = { minw = G.ROOM.T.w * 0.25, padding = 0.05, align = "cm" },
+                        config = { align = "cm", minw = G.ROOM.T.w * 0.25, padding = 0.05 },
                         nodes = {
-                            { n = G.UIT.T, config = { text = "Card Scale", colour = G.C.WHITE, scale = 0.35 } },
+                            UIBox_button({
+                                colour = G.C.RED,
+                                button = "TMJ_SAVE_CONFIG",
+                                label = {"Save current"},
+                                minw = 4.5,
+                                focus_args = { snap_to = true },
+                            }),
                         }
                     },
+
                 }
             }
         }
     }
+end
+local opttbl = {"Rows", "Columns", "Card Scale"}
+G.FUNCS.TMJ_SET_CONFIG = function(args)
+    local option = opttbl[args.cycle_config.current_option]
+    TMJ.config.currentMode = option
+end
+
+G.FUNCS.TMJ_SAVE_CONFIG = function(args)
+    if TMJ.config.currentMode == "Rows" then
+        TMJ.config.rows = TMJ.config.placeholder
+    elseif TMJ.config.currentMode == "Columns" then
+        TMJ.config.columns = TMJ.config.placeholder
+    else
+        TMJ.config.size = TMJ.config.placeholder
+    end
 end
