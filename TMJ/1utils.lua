@@ -12,6 +12,11 @@ function TMJ.FUNCS.shallowTableComp(tbl1, tbl2)
             return false
         end
     end
+    for i, v in pairs(tbl2) do
+        if tbl1[i] ~= v then
+            return false
+        end
+    end
     if getmetatable(tbl1) ~= getmetatable(tbl2) then
         return false
     end

@@ -135,24 +135,24 @@ function TMJ.FUNCS.filterCenters(prefilters, list) --Filter list using filters. 
         for iaasdf, vcascsaz in pairs(matchAgainst) do --cant do this no more
             mastermatcher = mastermatcher .. vcascsaz  --combine all of our matchers (description, name, mod, etc)
         end
-        local flag = false
-        local flag2 = false
+        local allFlag = true
+        local anyFlag = false
         for _, filter in pairs(filters) do
-            if string.sub(filter, 1, 1) ~= "!" then
-                if not string.find(mastermatcher, filter, 1, not args.regex) then --is filter contained in matcher, starting at the first character, using a raw text search as to ignore characters like ^?
-                    flag = true
+            if string.sub(filter, 1, 1) == "!" then
+                if not string.find(mastermatcher, string.sub(filter, 2), 1, not args.regex) then
+                    anyFlag = true
                 else
-                    flag2 = true
+                    allFlag = false
                 end
             else
-                if string.find(mastermatcher, string.sub(filter, 2), 1, not args.regex) then
-                    flag = true
+                if string.find(mastermatcher, filter, 1, not args.regex) then
+                    anyFlag = true
                 else
-                    flag2 = true
+                    allFlag = false
                 end
             end
         end
-        if not flag or (args.any and flag2) then
+        if allFlag or (args.any and anyFlag) then
             table.insert(matchedCenters, center)
         end
         ::continue::
