@@ -16,7 +16,9 @@ function G.FUNCS.TMJUIBOX(e)
             config = { align = 'cli', offset = { x = -1, y = G.ROOM.T.h - 2.333 }, major = G.ROOM_ATTACH, bond = 'Weak' }
         }
         local text = G.TMJUI:get_UIE_by_ID("TMJTEXTINP")
-        G.FUNCS.select_text_input(text.children[1])
+        if TMJ.config.autoselect == "1" then
+            G.FUNCS.select_text_input(text.children[1])
+        end
         return G.TMJUI
     end
     if e == "reload" then
