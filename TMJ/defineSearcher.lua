@@ -95,7 +95,16 @@ function TMJ.FUNCS.filterCenters(prefilters, list) --Filter list using filters. 
             if loclist[ourkey] then --G.localization.descriptions contains tables for tarots, tags, jokers, etc, this function covers all types of centers so we can iterate through
                 --i originally intended this to be usable for all cards, but in the end I decided to keep it to just jokers
                 local ourDescription = loclist[ourkey]
-                table.insert(matchAgainst, ourDescription.name) --this is localized name
+                local nameText = ourDescription.name
+                if type(nameText) == 'table' then
+                    local name = ""
+                    for _, t in ipairs(nameText) do
+                        name = name .. t
+                    end
+                    table.insert(matchAgainst, name) --this is localized name
+                else
+                    table.insert(matchAgainst, nameText) --this is localized name
+                end
                 local descText = ourDescription.text or {}                --description
                 local lineConcat = ""
                 if type(descText[1]) ~= "table" then
