@@ -69,9 +69,10 @@ function G.FUNCS.TMJMAINNODES()
         }
     end
 
-    local centerPool = TMJ.FUNCS.cacheSearchIntermediary(TMJ.thegreatfilter or { "" }, TMJ.FUNCS.cacheSorterIntermediary("Joker")) --get the filtered out pool
+    local centerPool = TMJ.FUNCS.cacheSearchIntermediary(TMJ.thegreatfilter or { "" },
+        TMJ.FUNCS.cacheSorterIntermediary("Joker")) --get the filtered out pool
 
-    for i = 1, columncount do                                                                                          --big loop that just inserts the proper cards into the cardarea
+    for i = 1, columncount do                       --big loop that just inserts the proper cards into the cardarea
         for j = 1, #G.TMJCOLLECTION do
             local center = centerPool[i + (j - 1) * columncount]
             if center then
@@ -139,7 +140,7 @@ function G.FUNCS.TMJMAINNODES()
         }, --textbox
         {
             n = G.UIT.R,
-            config = {align = "cm", maxh = 1},
+            config = { align = "cm", maxh = 1 },
             nodes = {
                 UIBox_button({
                     colour = G.C.RED,
@@ -172,7 +173,8 @@ end
 
 function G.FUNCS.TMJSCROLLUI(num)
     if G.TMJUI and next(G.TMJUI) then
-        local centerPool = TMJ.FUNCS.cacheSearchIntermediary(TMJ.thegreatfilter or { "" }, TMJ.FUNCS.cacheSorterIntermediary("Joker"))
+        local centerPool = TMJ.FUNCS.cacheSearchIntermediary(TMJ.thegreatfilter or { "" },
+            TMJ.FUNCS.cacheSorterIntermediary("Joker"))
         TMJ.config.rows = TMJ.config.rows or "5"
         TMJ.config.columns = TMJ.config.columns or "3"
         TMJ.config.size = TMJ.config.size or "0.65"
@@ -233,4 +235,85 @@ end
 
 G.FUNCS.CloseTMJ = function(e)
     G.FUNCS.TMJUIBOX()
+end
+G.FUNCS.tmj_spawn = function(self)
+    local card = SMODS.deepfind(self, "tmj_marker", "i", true)[1]
+    if not card then return end
+    card = card.table[card.index]
+    local _area
+    if card.ability.set == 'Joker' then
+        _area = G.jokers
+    elseif card.playing_card then
+        if G.hand and G.hand.config.card_count ~= 0 then
+            _area = G.hand
+        else
+            _area = G.deck
+        end
+    elseif card.ability.consumeable then
+        _area = G.consumeables
+    end
+    if not _area then return end
+    local new_card = copy_card(card, nil, nil, card.playing_card)
+    new_card:add_to_deck()
+    if card.playing_card then
+        table.insert(G.playing_cards, new_card)
+    end
+    _area:emplace(new_card)
+end
+
+local tmj_card_buttons = function(card)
+    local sell = {
+        n = G.UIT.C,
+        config = { align = "cm" },
+        nodes = {
+            {
+                n = G.UIT.C,
+                config = { ref_table = card, align = "cm", padding = 0, r = 0, minw = 1, hover = true, shadow = true, colour = G.C.GREEN, button = 'tmj_spawn' },
+                nodes = {
+                    { n = G.UIT.B, config = { w = 0.1, h = 0.5 } },
+
+                    { n = G.UIT.T, config = { text = "Spawn", colour = G.C.UI.TEXT_LIGHT, scale = 0.4, shadow = true, tmj_marker = card } }
+
+                }
+            },
+        }
+    }
+    local t = {
+        n = G.UIT.ROOT,
+        config = { padding = 0, colour = G.C.CLEAR },
+        nodes = {
+            {
+                n = G.UIT.C,
+                config = { padding = 0.15, align = 'cm' },
+                nodes = {
+                    {
+                        n = G.UIT.R,
+                        config = { align = 'cm' },
+                        nodes = {
+                            sell
+                        }
+                    },
+                }
+            },
+        }
+    }
+    return t
+end
+
+
+
+local old = Card.click
+function Card:click(...)
+    old(self, ...)
+    if self.area.config.collection then
+        self:highlight(not self.highlighted)
+    end
+end
+
+local old2 = G.UIDEF.use_and_sell_buttons
+function G.UIDEF.use_and_sell_buttons(card, ...)
+    if card.area.config.collection then
+        return tmj_card_buttons(card)
+    end
+    return old2(card, ...)
 end
