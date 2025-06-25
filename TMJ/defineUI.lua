@@ -309,11 +309,11 @@ local tmj_card_buttons = function(card)
 end
 
 
-
+TMJ.ALLOW_HIGHLIGHT = true
 local old = Card.click
 function Card:click(...)
     old(self, ...)
-    if next(SMODS.find_mod("Multiplayer")) then
+    if next(SMODS.find_mod("Multiplayer")) or not TMJ.ALLOW_HIGHLIGHT then
         return
     end
 
