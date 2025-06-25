@@ -218,6 +218,8 @@ function G.FUNCS.TMJSCROLLUI(num)
     end
 end
 
+
+
 TMJ.FUNCS.OPENFROMKEYBIND = function(bool)
     G.FUNCS.TMJUIBOX(bool and "reload")
 end
@@ -236,7 +238,13 @@ end
 G.FUNCS.CloseTMJ = function(e)
     G.FUNCS.TMJUIBOX()
 end
+
+
+
 G.FUNCS.tmj_spawn = function(self)
+    if next(SMODS.find_mod("Multiplayer")) then
+        return
+    end
     local card = SMODS.deepfind(self, "tmj_marker", "i", true)[1]
     if not card then return end
     card = card.table[card.index]
@@ -305,6 +313,10 @@ end
 local old = Card.click
 function Card:click(...)
     old(self, ...)
+    if next(SMODS.find_mod("Multiplayer")) then
+        return
+    end
+
     if self.area.config.collection then
         self:highlight(not self.highlighted)
     end
