@@ -242,6 +242,9 @@ end
 
 
 G.FUNCS.tmj_spawn = function(self)
+        if next(SMODS.find_mod("Multiplayer")) then
+        return
+    end
     local card = SMODS.deepfind(self, "tmj_marker", "i", true)[1]
     if not card then return end
     card = card.table[card.index]
@@ -310,6 +313,9 @@ TMJ.ALLOW_HIGHLIGHT = true
 local old = Card.click
 function Card:click(...)
     old(self, ...)
+     if next(SMODS.find_mod("Multiplayer")) or not TMJ.ALLOW_HIGHLIGHT then
+        return
+    end
     if self.area and self.area.config and self.area.config.collection and TMJ.ALLOW_HIGHLIGHT then
         self:highlight(not self.highlighted)
     end
