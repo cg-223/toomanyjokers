@@ -1,9 +1,10 @@
+TMJ.MATCHERCACHE = {}
 function TMJ.FUNCS.filterCenters(prefilters, list) --Filter list using filters. filters must be a table of strings. list must be a table of centers (see G.P_CENTERS)
     local dontuseregex = true
     local filters, args = TMJ.FUNCS.processFilters(copy_table(prefilters))
 
 
-
+    
     local matchedCenters = {}
     for i, center in pairs(list) do
         if (center.collectionInfo or {}).centerPoolName == "Stake" or center.set == "Seal" or center.set == "Back" or center.set == "Sleeve" or (center.collectionInfo or {}).centerPoolName == "Tag" or center.no_collection then goto continue end
@@ -18,131 +19,131 @@ function TMJ.FUNCS.filterCenters(prefilters, list) --Filter list using filters. 
                 ourkey = key
             end
         end
+        local mastermatcher = TMJ.MATCHERCACHE[ourkey] or ""
         center.collectionInfo.key = ourkey
-        if center.name then
-            local sub = string.gsub(string.lower(center.name), " ", "")
-            table.insert(matchAgainst, sub) --match against the centers name
-        end
+        if not TMJ.MATCHERCACHE[ourkey] then
+            if center.name then
+                local sub = string.gsub(string.lower(center.name), " ", "")
+                table.insert(matchAgainst, sub) --match against the centers name
+            end
 
-        local sub = string.gsub(string.lower(ourkey), " ", "")
-        table.insert(matchAgainst, sub) --match against the key
+            local sub = string.gsub(string.lower(ourkey), " ", "")
+            table.insert(matchAgainst, sub) --match against the key
 
-        if center.mod then
-            local modname = center.mod.name or ""
-            modname = string.lower(modname)
-            modname = string.gsub(modname, " ", "")
-            table.insert(matchAgainst, modname) --match against the name of the mod that implemented this center
-        else
-            table.insert(matchAgainst, "vanilla")
-        end
-
-        if center.set then
-            local setname = center.set
-            setname = string.lower(setname)
-            setname = string.gsub(setname, " ", "")
-            table.insert(matchAgainst, setname)
-        end
-
-        if center.collectionInfo and center.collectionInfo.centerPoolName then --custom
-            local poolname = center.collectionInfo.centerPoolName
-            poolname = string.lower(poolname)
-            poolname = string.gsub(poolname, " ", "")
-            table.insert(matchAgainst, poolname .. "s") --often these pools are named things like "joker", so if you search "jokers" it wouldnt pick up on this one
-        end
-
-        if center.rarity then
-            local raritystring = ""
-            if not SMODS.Rarity then --backwards compat
-                --this only supports a handful of mods, its fine though!
-                if type(center.rarity) == "string" then
-                    if center.rarity == "cry_exotic" then
-                        raritystring = "Exotic"
-                    elseif center.rarity == "cry_epic" then
-                        raritystring = "Epic"
-                    else
-                        raritystring = center.rarity
-                    end
-                elseif center.rarity == 1 then
-                    raritystring = "Common"
-                elseif center.rarity == 2 then
-                    raritystring = "Uncommon"
-                elseif center.rarity == 3 then
-                    raritystring = "Rare"
-                elseif center.rarity == 4 then
-                    raritystring = "Legendary"
-                else
-                    raritystring = tostring(center.rarity)
-                end
-                raritystring = string.lower(raritystring)
-                raritystring = string.gsub(raritystring, " ", "")
-                table.insert(matchAgainst, raritystring)
+            if center.mod then
+                local modname = center.mod.name or ""
+                modname = string.lower(modname)
+                modname = string.gsub(modname, " ", "")
+                table.insert(matchAgainst, modname) --match against the name of the mod that implemented this center
             else
-                if type(center.rarity) == "string" or (type(center.rarity) == "number" and center.rarity < 5 and center.rarity == math.floor(center.rarity) and center.rarity > 0) then
-                    raritystring = SMODS.Rarity:get_rarity_badge(center.rarity)
-                end
-                if raritystring == "ERROR" or not raritystring then
-                    raritystring = tostring(center.rarity)
-                end
-                raritystring = string.lower(raritystring)
-                raritystring = string.gsub(raritystring, " ", "")
-                table.insert(matchAgainst, raritystring)
+                table.insert(matchAgainst, "vanilla")
             end
 
-            
-        end
+            if center.set then
+                local setname = center.set
+                setname = string.lower(setname)
+                setname = string.gsub(setname, " ", "")
+                table.insert(matchAgainst, setname)
+            end
 
-        for _, loclist in pairs(G.localization.descriptions) do
-            if loclist[ourkey] then --G.localization.descriptions contains tables for tarots, tags, jokers, etc, this function covers all types of centers so we can iterate through
-                --i originally intended this to be usable for all cards, but in the end I decided to keep it to just jokers
-                local ourDescription = loclist[ourkey]
-                local nameText = ourDescription.name
-                if type(nameText) == 'table' then
-                    local name = ""
-                    for _, t in ipairs(nameText) do
-                        name = name .. t
+            if center.collectionInfo and center.collectionInfo.centerPoolName then --custom
+                local poolname = center.collectionInfo.centerPoolName
+                poolname = string.lower(poolname)
+                poolname = string.gsub(poolname, " ", "")
+                table.insert(matchAgainst, poolname .. "s") --often these pools are named things like "joker", so if you search "jokers" it wouldnt pick up on this one
+            end
+
+            if center.rarity then
+                local raritystring = ""
+                if not SMODS.Rarity then --backwards compat
+                    --this only supports a handful of mods, its fine though!
+                    if type(center.rarity) == "string" then
+                        if center.rarity == "cry_exotic" then
+                            raritystring = "Exotic"
+                        elseif center.rarity == "cry_epic" then
+                            raritystring = "Epic"
+                        else
+                            raritystring = center.rarity
+                        end
+                    elseif center.rarity == 1 then
+                        raritystring = "Common"
+                    elseif center.rarity == 2 then
+                        raritystring = "Uncommon"
+                    elseif center.rarity == 3 then
+                        raritystring = "Rare"
+                    elseif center.rarity == 4 then
+                        raritystring = "Legendary"
+                    else
+                        raritystring = tostring(center.rarity)
                     end
-                    table.insert(matchAgainst, string.lower(string.gsub(name, " ", ""))) --this is localized name
+                    raritystring = string.lower(raritystring)
+                    raritystring = string.gsub(raritystring, " ", "")
+                    table.insert(matchAgainst, raritystring)
                 else
-                    table.insert(matchAgainst, string.lower(string.gsub(nameText, " ", ""))) --this is localized name
-                end
-                local descText = ourDescription.text or {}                --description
-                local lineConcat = ""
-                if type(descText[1]) ~= "table" then
-                    descText = {descText}
-                end
-                for _, box in ipairs(descText) do
-                    for _, descLine in ipairs(box) do
-                        local processedLine = descLine
-                        processedLine = string.gsub(processedLine, "{[^}]+}", "") --remove any formatting tags, e.g. {C:legendary}
-                        processedLine = string.gsub(processedLine, "#[^#]+#", "") --remove locvar tags, e.g. #1#
-                        processedLine = string.gsub(processedLine, "{}", "")      --remove ending formatting tags, e.g. {}
-                        processedLine = string.gsub(processedLine, " ", "")
-                        processedLine = string.lower(processedLine)
-                        --EXAMPLE: "{X:dark_edition,C:white}^#1#{} Mult only after"
-                        -->> "^#1#{} Mult only after"
-                        -->> "^{} Mult only after"
-                        -->> "^ Mult only after"
-                        -->> "^Multonlyafter"
-                        -->>"^multonlyafter"
-                        lineConcat = lineConcat .. processedLine
+                    if type(center.rarity) == "string" or (type(center.rarity) == "number" and center.rarity < 5 and center.rarity == math.floor(center.rarity) and center.rarity > 0) then
+                        raritystring = SMODS.Rarity:get_rarity_badge(center.rarity)
                     end
+                    if raritystring == "ERROR" or not raritystring then
+                        raritystring = tostring(center.rarity)
+                    end
+                    raritystring = string.lower(raritystring)
+                    raritystring = string.gsub(raritystring, " ", "")
+                    table.insert(matchAgainst, raritystring)
                 end
-                table.insert(matchAgainst, lineConcat) --this is a concatenation of every line in the description, with all formatting removed.
-            end
-        end
 
-        for iiii, vvvv in pairs(filters) do
-            vvvv = string.gsub(vvvv, " ", "")
-            vvvv = string.lower(vvvv)
-        end
-        for iiii, vvvv in pairs(matchAgainst) do
-            vvvv = string.gsub(vvvv, " ", "")
-            vvvv = string.lower(vvvv)
-        end --lower all our filters, and remove sapces
-        --main loop
-        local mastermatcher = ""
-        for iaasdf, vcascsaz in pairs(matchAgainst) do --cant do this no more
-            mastermatcher = mastermatcher .. vcascsaz  --combine all of our matchers (description, name, mod, etc)
+                
+            end
+
+            for _, loclist in pairs(G.localization.descriptions) do
+                if loclist[ourkey] then --G.localization.descriptions contains tables for tarots, tags, jokers, etc, this function covers all types of centers so we can iterate through
+                    --i originally intended this to be usable for all cards, but in the end I decided to keep it to just jokers
+                    local ourDescription = loclist[ourkey]
+                    local nameText = ourDescription.name
+                    if type(nameText) == 'table' then
+                        local name = ""
+                        for _, t in ipairs(nameText) do
+                            name = name .. t
+                        end
+                        table.insert(matchAgainst, string.lower(string.gsub(name, " ", ""))) --this is localized name
+                    elseif type(nameText) == "string" then
+                        table.insert(matchAgainst, string.lower(string.gsub(nameText, " ", ""))) --this is localized name
+                    end
+                    local descText = ourDescription.text or {}                --description
+                    local lineConcat = ""
+                    if type(descText[1]) ~= "table" then
+                        descText = {descText}
+                    end
+                    for _, box in ipairs(descText) do
+                        for _, descLine in ipairs(box) do
+                            local processedLine = descLine
+                            processedLine = string.gsub(processedLine, "{[^}]+}", "") --remove any formatting tags, e.g. {C:legendary}
+                            processedLine = string.gsub(processedLine, "#[^#]+#", "") --remove locvar tags, e.g. #1#
+                            processedLine = string.gsub(processedLine, "{}", "")      --remove ending formatting tags, e.g. {}
+                            processedLine = string.gsub(processedLine, " ", "")
+                            processedLine = string.lower(processedLine)
+                            --EXAMPLE: "{X:dark_edition,C:white}^#1#{} Mult only after"
+                            -->> "^#1#{} Mult only after"
+                            -->> "^{} Mult only after"
+                            -->> "^ Mult only after"
+                            -->> "^Multonlyafter"
+                            -->>"^multonlyafter"
+                            lineConcat = lineConcat .. processedLine
+                        end
+                    end
+                    table.insert(matchAgainst, lineConcat) --this is a concatenation of every line in the description, with all formatting removed.
+                end
+            end
+
+            for iiii, vvvv in pairs(matchAgainst) do
+                matchAgainst[iiii] = string.lower(string.gsub(vvvv, " ", ""))
+
+            end --lower all our filters, and remove sapces
+            --main loop
+            local mastermatcher = ""
+            for iaasdf, vcascsaz in pairs(matchAgainst) do --cant do this no more
+                mastermatcher = mastermatcher .. vcascsaz  --combine all of our matchers (description, name, mod, etc)
+            end
+            TMJ.MATCHERCACHE[ourkey] = mastermatcher
         end
         local allFlag = true
         local anyFlag = false
@@ -170,7 +171,7 @@ function TMJ.FUNCS.filterCenters(prefilters, list) --Filter list using filters. 
     local indicesToRemove = {}
     local center = G.P_CENTERS[args.key or ""]
     for i, v in ipairs(matchedCenters) do
-        if seen[v.collectionInfo.key] then --this code is redundant; we combine all our matchers so we cant get duplicates anymore. im keeping it here just in case
+        if seen[v.key] then --this code is redundant; we combine all our matchers so we cant get duplicates anymore. im keeping it here just in case
             --this code isnt redundant anymore
             table.insert(indicesToRemove, i - #indicesToRemove)
         elseif args.mod and center and (v.mod ~= center.mod) then
@@ -178,13 +179,13 @@ function TMJ.FUNCS.filterCenters(prefilters, list) --Filter list using filters. 
         elseif args.rarity and center and (v.rarity ~= center.rarity) then
             table.insert(indicesToRemove, i-#indicesToRemove)
         end
-        seen[v.collectionInfo.key] = true
+        seen[v.key] = true
     end
     for i, v in ipairs(indicesToRemove) do
         table.remove(matchedCenters, v)
     end
     for k, v in ipairs(matchedCenters) do
-        if TMJ.PINNED_KEYS[v.collectionInfo.key] then
+        if TMJ.PINNED_KEYS[v.key] then
             table.remove(matchedCenters, k)
             table.insert(matchedCenters, 1, v)
         end
