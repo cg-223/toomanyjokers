@@ -33,8 +33,5 @@ function TMJ.FUNCS.stripFinal(a)
 end
 
 function TMJ.FUNCS.isCtrlDown()
-    if global and global.isCtrlDown then
-        return global.isCtrlDown() --debugplus
-    end
     return love.keyboard.isDown('lctrl') or love.keyboard.isDown('rctrl')
 end
