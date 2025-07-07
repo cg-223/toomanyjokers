@@ -29,7 +29,7 @@ function TMJ.FUNCS.filterCenters(prefilters, list) --Filter list using filters. 
 
 
             --joyousspring
-            if center.config and center.config.extra and center.config.extra.joyous_spring then
+            if center.config and center.config.extra and type(center.config.extra) == "table" and center.config.extra.joyous_spring then
                 if center.config.extra.joyous_spring.attribute and type(center.config.extra.joyous_spring.attribute) == "string" then
                     local sub = string.gsub(string.lower(center.config.extra.joyous_spring.attribute), " ", "")
                     table.insert(matchAgainst, sub)
