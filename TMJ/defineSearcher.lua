@@ -31,12 +31,12 @@ function TMJ.FUNCS.filterCenters(prefilters, list) --Filter list using filters. 
             --joyousspring
             if center.config and center.config.extra and center.config.extra.joyous_spring then
                 if center.config.extra.joyous_spring.attribute and type(center.config.extra.joyous_spring.attribute) == "string" then
-                    local sub = string.gsub(string.lower(center.attribute), " ", "")
+                    local sub = string.gsub(string.lower(center.config.extra.joyous_spring.attribute), " ", "")
                     table.insert(matchAgainst, sub)
                 end
 
                 if center.config.extra.joyous_spring.monster_type and type(center.config.extra.joyous_spring.monster_type) == "string" then
-                    local sub = string.gsub(string.lower(center.monster_type), " ", "")
+                    local sub = string.gsub(string.lower(center.config.extra.joyous_spring.monster_type), " ", "")
                     table.insert(matchAgainst, sub)
                 end
             end
