@@ -218,8 +218,6 @@ function G.FUNCS.TMJSCROLLUI(num)
     end
 end
 
-
-
 TMJ.FUNCS.OPENFROMKEYBIND = function(bool)
     G.FUNCS.TMJUIBOX(bool and "reload")
 end
@@ -241,13 +239,11 @@ end
 
 
 
-G.FUNCS.tmj_spawn = function(self)
-        if next(SMODS.find_mod("Multiplayer")) then
+G.FUNCS.tmj_spawn = function(card)
+    if next(SMODS.find_mod("Multiplayer")) then
         return
     end
-    local card = SMODS.deepfind(self, "tmj_marker", "i", true)[1]
     if not card then return end
-    card = card.table[card.index]
     local _area
     if card.ability.set == 'Joker' then
         _area = G.jokers
@@ -269,62 +265,25 @@ G.FUNCS.tmj_spawn = function(self)
     _area:emplace(new_card)
 end
 
-local tmj_card_buttons = function(card)
-    local sell = {
-        n = G.UIT.C,
-        config = { align = "cm" },
-        nodes = {
-            {
-                n = G.UIT.C,
-                config = { ref_table = card, align = "cm", padding = 0, r = 0, minw = 1, hover = true, shadow = true, colour = G.C.GREEN, button = 'tmj_spawn' },
-                nodes = {
-                    { n = G.UIT.B, config = { w = 0.1, h = 0.5 } },
 
-                    { n = G.UIT.T, config = { text = "Spawn", colour = G.C.UI.TEXT_LIGHT, scale = 0.4, shadow = true, tmj_marker = card } }
-
-                }
-            },
-        }
-    }
-    local t = {
-        n = G.UIT.ROOT,
-        config = { padding = 0, colour = G.C.CLEAR },
-        nodes = {
-            {
-                n = G.UIT.C,
-                config = { padding = 0.15, align = 'cm' },
-                nodes = {
-                    {
-                        n = G.UIT.R,
-                        config = { align = 'cm' },
-                        nodes = {
-                            sell
-                        }
-                    },
-                }
-            },
-        }
-    }
-    return t
-end
-
-
-TMJ.ALLOW_HIGHLIGHT = true
+TMJ.ALLOW_HIGHLIGHT = (TMJ.ALLOW_HIGHLIGHT == nil) and true
 local old = Card.click
 function Card:click(...)
     old(self, ...)
-     if next(SMODS.find_mod("Multiplayer")) or not TMJ.ALLOW_HIGHLIGHT then
+    if next(SMODS.find_mod("Multiplayer")) or not TMJ.ALLOW_HIGHLIGHT then
         return
     end
-    if self.area and self.area.config and self.area.config.collection and TMJ.ALLOW_HIGHLIGHT then
-        self:highlight(not self.highlighted)
+    if self.area and self.area.config and self.area.config.collection and TMJ.ALLOW_HIGHLIGHT and TMJ.FUNCS.isShiftDown() and not TMJ.FUNCS.isCtrlDown() then
+        G.FUNCS.tmj_spawn(self)
     end
 end
 
-local old2 = G.UIDEF.use_and_sell_buttons
-function G.UIDEF.use_and_sell_buttons(card, ...)
-    if card.area.config.collection then
-        return tmj_card_buttons(card)
+
+--some mod incorrectly highlights tmj cards when clicked on
+local old = Card.highlight
+function Card:highlight(toggle)
+    if self.area and self.area.config.collection then
+        return
     end
-    return old2(card, ...)
+    return old(self, toggle)
 end

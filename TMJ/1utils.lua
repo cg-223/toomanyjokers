@@ -35,3 +35,7 @@ end
 function TMJ.FUNCS.isCtrlDown()
     return love.keyboard.isDown('lctrl') or love.keyboard.isDown('rctrl')
 end
+
+function TMJ.FUNCS.isShiftDown()
+    return love.keyboard.isDown('lshift') or love.keyboard.isDown('rshift')
+end

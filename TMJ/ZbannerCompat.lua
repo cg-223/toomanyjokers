@@ -15,7 +15,7 @@ end
 local oldCardClick = Card.click
 function Card:click(...)
     local card = self
-    if is_in_tmj(card) then
+    if is_in_tmj(card) and not TMJ.FUNCS.isCtrlDown() and not TMJ.FUNCS.isShiftDown()  then
         --card is in tmj
         card:juice_up(0.3, 0.3)
         local key = card.config.center.key
