@@ -39,6 +39,11 @@ function TMJ.FUNCS.filterCenters(prefilters, list) --Filter list using filters. 
                     local sub = string.gsub(string.lower(center.config.extra.joyous_spring.monster_type), " ", "")
                     table.insert(matchAgainst, sub)
                 end
+
+                if center.config.extra.joyous_spring.summon_type and type(center.config.extra.joyous_spring.summon_type) == "string" then
+                    local sub = string.gsub(string.lower(center.config.extra.joyous_spring.summon_type), " ", "")
+                    table.insert(matchAgainst, sub)
+                end
             end
 
             local sub = string.gsub(string.lower(ourkey), " ", "")
