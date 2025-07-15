@@ -24,7 +24,7 @@ function TMJ.FUNCS.filterCenters(prefilters, list) --Filter list using filters. 
         if not TMJ.MATCHERCACHE[ourkey] then
             if center.name then
                 local sub = string.gsub(string.lower(center.name), " ", "")
-                table.insert(matchAgainst, sub) --match against the centers name
+                table.insert(matchAgainst, "name:"..sub) --match against the centers name
             end
 
 
@@ -42,29 +42,30 @@ function TMJ.FUNCS.filterCenters(prefilters, list) --Filter list using filters. 
             end
 
             local sub = string.gsub(string.lower(ourkey), " ", "")
-            table.insert(matchAgainst, sub) --match against the key
+            table.insert(matchAgainst, "key:"..sub) --match against the key
+            
 
             if center.mod then
                 local modname = center.mod.name or ""
                 modname = string.lower(modname)
                 modname = string.gsub(modname, " ", "")
-                table.insert(matchAgainst, modname) --match against the name of the mod that implemented this center
+                table.insert(matchAgainst, "mod:"..modname) --match against the name of the mod that implemented this center
             else
-                table.insert(matchAgainst, "vanilla")
+                table.insert(matchAgainst, "mod:vanilla")
             end
 
             if center.set then
                 local setname = center.set
                 setname = string.lower(setname)
                 setname = string.gsub(setname, " ", "")
-                table.insert(matchAgainst, setname)
+                table.insert(matchAgainst, "set:"..setname)
             end
 
             if center.collectionInfo and center.collectionInfo.centerPoolName then --custom
                 local poolname = center.collectionInfo.centerPoolName
                 poolname = string.lower(poolname)
                 poolname = string.gsub(poolname, " ", "")
-                table.insert(matchAgainst, poolname .. "s") --often these pools are named things like "joker", so if you search "jokers" it wouldnt pick up on this one
+                table.insert(matchAgainst, "pool:"..poolname .. "s") --often these pools are named things like "joker", so if you search "jokers" it wouldnt pick up on this one
             end
 
             if center.rarity then
@@ -102,7 +103,7 @@ function TMJ.FUNCS.filterCenters(prefilters, list) --Filter list using filters. 
                     end
                     raritystring = string.lower(raritystring)
                     raritystring = string.gsub(raritystring, " ", "")
-                    table.insert(matchAgainst, raritystring)
+                    table.insert(matchAgainst, "rarity:"..raritystring)
                 end
 
                 
