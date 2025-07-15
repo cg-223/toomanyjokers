@@ -119,9 +119,9 @@ function TMJ.FUNCS.filterCenters(prefilters, list) --Filter list using filters. 
                         for _, t in ipairs(nameText) do
                             name = name .. t
                         end
-                        table.insert(matchAgainst, string.lower(string.gsub(name, " ", ""))) --this is localized name
+                        table.insert(matchAgainst, "name:"..string.lower(string.gsub(name, " ", ""))) --this is localized name
                     elseif type(nameText) == "string" then
-                        table.insert(matchAgainst, string.lower(string.gsub(nameText, " ", ""))) --this is localized name
+                        table.insert(matchAgainst, "name:"..string.lower(string.gsub(nameText, " ", ""))) --this is localized name
                     end
                     local descText = ourDescription.text or {}                --description
                     local lineConcat = ""
