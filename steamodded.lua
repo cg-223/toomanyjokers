@@ -1,14 +1,5 @@
---- STEAMODDED HEADER
---- MOD_NAME: Too Many Jokers
---- MOD_ID: toomanyjokers
---- MOD_AUTHOR: [cg]
---- PREFIX: tmj
---- MOD_DESCRIPTION: Adds a filtering system to the Joker collection.
---- PRIORITY: 1000000
-
-
 local NFS = NFS or require("nativefs")
-local tmj = SMODS.current_mod
+local tmj = assert(SMODS.current_mod)
 TMJ = {}
 TMJ.SMODSmodtable = tmj
 TMJ.FUNCS = {}

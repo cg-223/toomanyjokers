@@ -1,0 +1,15 @@
+{
+	"id": "toomanyjokers",
+	"name": "Too Many Jokers",
+	"display_name": "Too Many Jokers",
+	"author": [
+		"cg"
+	],
+	"description": "Adds a filtering system to the Joker collection.",
+	"prefix": "tmj",
+	"main_file": "steamodded.lua",
+	"priority": 1000000,
+	"badge_colour": "FFFFFF",
+	"badge_text_colour": "FFFFFF",
+	"version": "3.0.0"
+}
