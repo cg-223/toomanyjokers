@@ -11,5 +11,6 @@
 	"priority": 1000000,
 	"badge_colour": "FFFFFF",
 	"badge_text_colour": "FFFFFF",
+    "allow_redistribution": true,
 	"version": "3.0.0"
 }
