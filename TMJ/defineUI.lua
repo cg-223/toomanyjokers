@@ -81,9 +81,6 @@ function G.FUNCS.TMJMAINNODES()
                 local card = Card(G.TMJCOLLECTION[j].T.x + G.TMJCOLLECTION[j].T.w / 2, G.TMJCOLLECTION[j].T.y,
                     G.CARD_W / (sizediv or 1),
                     G.CARD_H / (sizediv or 1), nil, center)
-                if TMJ.PINNED_KEYS[center.key] then
-                    card.pinned = true
-                end
                 card.sticker = get_joker_win_sticker(center)
                 G.TMJCOLLECTION[j]:emplace(card)
                 if string.sub(center.key, 1, 1) == "e" then
@@ -198,9 +195,6 @@ function G.FUNCS.TMJSCROLLUI(num)
                     local card = Card(G.TMJCOLLECTION[j].T.x + G.TMJCOLLECTION[j].T.w / 2, G.TMJCOLLECTION[j].T.y,
                         G.CARD_W / (sizediv or 1),
                         G.CARD_H / (sizediv or 1), nil, center)
-                    if TMJ.PINNED_KEYS[center.key] then
-                        card.pinned = true
-                    end
                     card.sticker = get_joker_win_sticker(center)
                     G.TMJCOLLECTION[j]:emplace(card)
                     if BANNERMOD and BANNERMOD.is_disabled(card.config.center.key) then
