@@ -252,10 +252,7 @@ function TMJ.FUNCS.processFilters(filters)
             args.regex = args.regex or (curfilter == "{regex}")
             args.any = args.any or (curfilter == "{any}")
             if string.sub(curfilter, 1, 5) == "{key=" then
-                print(curfilter)
                 local key, mode = unpack(TMJ.FUNCS.commaSplit( string.sub(curfilter, 6, #curfilter-1) ))
-                print(key)
-                print(mode)
                 if not (key and mode) then return filters, args end
                 args.key = key
                 if mode == "name" then
