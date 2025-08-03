@@ -48,3 +48,12 @@ payload = '''    local lower_ext = '1234567890-=;\',./[]'
         end'''
 match_indent = true
 overwrite = false
+
+[[patches]]
+[patches.pattern]
+target = "functions/button_callbacks.lua"
+pattern = '''if key == "r" and not G.SETTINGS.paused then'''
+position = "at"
+payload = '''if key == "r" and not G.SETTINGS.paused and not G.CONTROLLER.text_input_hook then'''
+match_indent = true
+overwrite = false
