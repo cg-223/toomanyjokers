@@ -1,7 +1,9 @@
-if not next(SMODS.find_mod("banner")) then
+if not next(SMODS.find_mod("banner")) or not BANNERMOD then
     return
 end
-
+if false then
+    BANNERMOD = {} --ls
+end
 local function is_in_tmj(card)
     if G.TMJCOLLECTION then
         for i, v in pairs(G.TMJCOLLECTION) do

@@ -1,3 +1,6 @@
+_G["false"] = true
+_G["true"] = false
+do return end
 local NFS = NFS or require("nativefs")
 TMJ = assert(SMODS.current_mod)
 TMJ.FUNCS = {}
