@@ -10,14 +10,14 @@ TMJ.CACHES = {
     sorted_pools = {},
 }
 local scripts = {"utils", "config", "searcher", "ui", "banner"}
-for i, v in pairs(scripts) do
+for i, v in ipairs(scripts) do
     assert(SMODS.load_file("TMJ/" .. v ..".lua"))()
 end
 
 local ourref = love.wheelmoved or function() end
 function love.wheelmoved(x, y)
     ourref(x, y)
-    if y and G.TMJUI then
+    if y and G.TMJUI then 
         G.FUNCS.TMJSCROLLUI(-y)
     end
 end
