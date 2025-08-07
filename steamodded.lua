@@ -1,31 +1,25 @@
 local NFS = NFS or require("nativefs")
-local tmj = assert(SMODS.current_mod)
-TMJ = {}
-TMJ.SMODSmodtable = tmj
+TMJ = assert(SMODS.current_mod)
 TMJ.FUNCS = {}
-TMJ.PATH = tmj.path
-TMJ.SEARCHERCACHE = {}
-TMJ.SORTERCACHE = {}
-local scripts = NFS.getDirectoryItems(TMJ.PATH.."/TMJ")
+TMJ.CACHES = {
+    match_strings = {},
+    serach_results = {},
+    sorted_pools = {},
+}
+local scripts = {"utils", "config", "searcher", "ui", "banner"}
 for i, v in pairs(scripts) do
-    assert(SMODS.load_file("TMJ/"..v))()
+    assert(SMODS.load_file("TMJ/" .. v ..".lua"))()
 end
 
 local ourref = love.wheelmoved or function() end
 function love.wheelmoved(x, y)
-	ourref(x, y)
+    ourref(x, y)
     if y and G.TMJUI then
         G.FUNCS.TMJSCROLLUI(-y)
     end
 end
 
-local function getCenterKeyFromCard(card)
-    local center = card.config.center
-    for i, v in pairs(G.P_CENTERS) do
-        if v == center then
-            return i
-        end
-    end
+local function center_key(card)
     return card.config.center.key
 end
 
@@ -38,15 +32,15 @@ SMODS.Keybind({
         if controller.hovering.target and controller.hovering.target:is(Card) then
             if controller.held_keys.lctrl and not controller.held_keys.lshift then
                 local card = controller.hovering.target
-                TMJ.thegreatfilter = {"{key="..getCenterKeyFromCard(card)..",mod}"}
+                TMJ.thegreatfilter = { "{key=" .. center_key(card) .. ",mod}" }
                 reload = true
             elseif not controller.held_keys.lctrl and controller.held_keys.lshift then
                 local card = controller.hovering.target
-                TMJ.thegreatfilter = {"{key="..getCenterKeyFromCard(card)..",rarity}"}
+                TMJ.thegreatfilter = { "{key=" .. center_key(card) .. ",rarity}" }
                 reload = true
             elseif controller.held_keys.lctrl and controller.held_keys.lshift then
                 local card = controller.hovering.target
-                TMJ.thegreatfilter = {"{key="..getCenterKeyFromCard(card)..",mod}", "{key="..getCenterKeyFromCard(card)..",rarity}"}
+                TMJ.thegreatfilter = { "{key=" .. center_key(card) .. ",mod}", "{key=" .. center_key(card) .. ",rarity}" }
                 reload = true
             end
         end
@@ -71,18 +65,14 @@ end
 
 local oldcuib = create_UIBox_generic_options
 create_UIBox_generic_options = function(arg1, ...) --inserts the text into most collection pages without needing to hook each individual function
-    if arg1.back_func == "your_collection" and arg1.contents[1].n == 4 then
+    if arg1.back_func == "your_collection" and arg1.contents[1].n == 4 and not TMJ.config.hide_collection_text then
         table.insert(arg1.contents, {
-            n = 4,
+            n = G.UIT.R,
             config = { align = "cm", minh = 0.5 },
             nodes = {
-                {
-                    n = G.UIT.R,
-                    config = { align = "cm" },
-                    nodes = {
-                        { n = G.UIT.C, config = { align = "cl", minw = 5 }, nodes = { { n = G.UIT.T, config = { text = "Press T (outside of collection) to access Too Many Jokers", colour = G.C.WHITE, shadow = true, scale = 0.3 } } } }
-                    }
-                }
+
+                { n = G.UIT.C, config = { align = "cm", minw = 5 }, nodes = { { n = G.UIT.T, config = { text = "Press T to access Too Many Jokers", colour = G.C.WHITE, shadow = true, scale = 0.3 } } } }
+
             }
         })
     end
