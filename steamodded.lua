@@ -1,6 +1,4 @@
-_G["false"] = true
-_G["true"] = false
-do return end
+
 local NFS = NFS or require("nativefs")
 TMJ = assert(SMODS.current_mod)
 TMJ.FUNCS = {}
@@ -9,9 +7,13 @@ TMJ.CACHES = {
     serach_results = {},
     sorted_pools = {},
 }
+TMJ.DEBUG = true
 local scripts = {"utils", "config", "searcher", "ui", "banner"}
 for i, v in ipairs(scripts) do
     assert(SMODS.load_file("TMJ/" .. v ..".lua"))()
+    if TMJ.DEBUG and _G[v.."_unit_tests"] then
+        _G[v.."_unit_tests"]()
+    end
 end
 
 local ourref = love.wheelmoved or function() end
