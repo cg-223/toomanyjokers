@@ -58,15 +58,26 @@ function utils_unit_tests()
     assert(split[3] == "")
     assert(split[4] == "a")
     assert(split[5] == nil)
-    assert(spaceless("your mom  whore" == "yourmomwhore"))
-    assert(lower_spaceless("YOUR MOM    whore" == "yourmomwhore"))
+    assert(spaceless("your mom  whore") == "yourmomwhore")
+    assert(lower_spaceless("YOUR MOM    whore") == "yourmomwhore")
 end
 
 function spaceless(str)
-    return string.gsub(str, "%w", "")
+    return string.gsub(str, "%s", "")
 end
 
 function lower_spaceless(str)
     return string.lower(spaceless(str))
 end
-  
+
+---Calls func with every element of tbl (via pairs). If func returns one value, tbl[i] = ret1. If func returns two values, tbl[ret1] = ret2. If func returns no value, do nothing.
+function table.map(tbl, func)
+    for i, v in pairs(tbl) do
+        local kret, vret = func(i, v)
+        if vret then
+            tbl[kret or i] = vret
+        elseif kret then
+            tbl[i] = kret
+        end
+    end
+end

@@ -66,4 +66,25 @@ end
 function TMJ.FUNCS.make_card_areas()
     G.TMJCOLLECTION = {}
     local card_limit = tonumber(TMJ.config.columns)
+    local num_areas = tonumber(TMJ.config.rows)
+    local card_scale = tonumber(TMJ.config.size)
+    local areas = {}
+    for i = 1, num_areas do
+        local area = CardArea(                                                                   --insert this cardarea into the table we feed to our ui
+            0, 0,                                                                                --position
+            card_limit * G.CARD_W / card_scale,                                                  --width of cardarea
+            0.95 * G.CARD_H / card_scale,                                                        --height of cardarea
+            { card_limit = card_limit, type = 'title', highlight_limit = 0, collection = true }) --basic config for a cardarea
+        G.TMJCOLLECTION[i] = area
+        table.insert(areas, {
+            n = G.UIT.R,
+            config = { align = "cm", padding = 0.07 / card_scale, no_fill = true, scale = 1 / card_scale },
+            nodes = { n = G.UIT.O, config = { object = area } }
+        })
+    end
+    return areas
+end
+
+function ui_unit_tests()
+    TMJ.FUNCS.inner_nodes()
 end

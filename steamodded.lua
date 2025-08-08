@@ -7,6 +7,12 @@ TMJ.CACHES = {
     serach_results = {},
     sorted_pools = {},
 }
+local cfg = NFS.read("config/tmj.jkr")
+if not cfg then
+    cfg = "5,6,0.7"
+end
+cfg = string.split(cfg, ",");
+table.map(cfg, function(_, val) return tonumber(val) end)
 TMJ.DEBUG = true
 local scripts = {"utils", "config", "searcher", "ui", "banner"}
 for i, v in ipairs(scripts) do
