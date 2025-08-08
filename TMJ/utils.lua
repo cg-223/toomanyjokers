@@ -41,6 +41,10 @@ function table_into_hashset(tbl, oldkeys)
     return new
 end
 
+function todo()
+    error("Not yet implemented")
+end
+
 function utils_unit_tests()
     local tbl = { "1", 2, "8" }
     local tbl2 = table_into_hashset(tbl)
