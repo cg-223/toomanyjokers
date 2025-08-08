@@ -26,12 +26,7 @@ function TMJ.FUNCS.inner_nodes()
                     keyboard_offset = 1,
                     config = { align = "cm", id = "TMJTEXTINP" },
                     callback = function()
-                        local tosplit = G.ENTERED_FILTER
-                        tosplit = string.lower(tosplit)
-                        tosplit = string.gsub(tosplit, " ", "")
-                        local split = string.split(tosplit, ",")
-
-                        TMJ.thegreatfilter = split
+                        TMJ.thegreatfilter = string.split(lower_spaceless(G.ENTERED_FILTER), ",")
                         G.ENTERED_FILTER = ""
                         todo()
                     end
@@ -69,5 +64,6 @@ function TMJ.FUNCS.inner_nodes()
 end
 
 function TMJ.FUNCS.make_card_areas()
-    todo()
+    G.TMJCOLLECTION = {}
+    local card_limit = tonumber(TMJ.config.columns)
 end
