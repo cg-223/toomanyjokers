@@ -1,4 +1,3 @@
-
 local NFS = NFS or require("nativefs")
 TMJ = assert(SMODS.current_mod)
 TMJ.FUNCS = {}
@@ -7,25 +6,27 @@ TMJ.CACHES = {
     serach_results = {},
     sorted_pools = {},
 }
+TMJ.DEBUG = true
+local scripts = { "utils", "config", "searcher", "ui", "banner" }
+local tests = {}
+for i, v in ipairs(scripts) do
+    assert(SMODS.load_file("TMJ/" .. v .. ".lua"))()
+    if TMJ.DEBUG and _G[v .. "_unit_tests"] then
+        table.insert(tests, _G[v .. "_unit_tests"])
+    end
+end
 local cfg = NFS.read("config/tmj.jkr")
 if not cfg then
     cfg = "5,6,0.7"
 end
 cfg = string.split(cfg, ",");
 table.map(cfg, function(_, val) return tonumber(val) end)
-TMJ.DEBUG = true
-local scripts = {"utils", "config", "searcher", "ui", "banner"}
-for i, v in ipairs(scripts) do
-    assert(SMODS.load_file("TMJ/" .. v ..".lua"))()
-    if TMJ.DEBUG and _G[v.."_unit_tests"] then
-        _G[v.."_unit_tests"]()
-    end
-end
-
+local configs = { "columns", "rows", "size" }
+table.map(cfg, function(i, v) TMJ.config[configs[i]] = v end)
 local ourref = love.wheelmoved or function() end
 function love.wheelmoved(x, y)
     ourref(x, y)
-    if y and G.TMJUI then 
+    if y and G.TMJUI then
         G.FUNCS.TMJSCROLLUI(-y)
     end
 end
@@ -88,4 +89,9 @@ create_UIBox_generic_options = function(arg1, ...) --inserts the text into most 
         })
     end
     return oldcuib(arg1, ...)
+end
+
+
+for i, v in ipairs(tests) do
+    v()
 end

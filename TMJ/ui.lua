@@ -5,7 +5,7 @@ function TMJ.FUNCS.ui_box()
         config = { align = 'cli', offset = { x = -1, y = G.ROOM.T.h - 2.333 }, major = G.ROOM_ATTACH, bond = 'Weak' }
     }
 end
-
+G.ENTERED_FILTER = ""
 function TMJ.FUNCS.inner_nodes()
     return {
         { n = G.UIT.R, config = { align = "cm", r = 0.01, colour = G.C.BLACK, emboss = 0.05 }, nodes = TMJ.FUNCS.make_card_areas() }, --cardareas
@@ -65,9 +65,9 @@ end
 
 function TMJ.FUNCS.make_card_areas()
     G.TMJCOLLECTION = {}
-    local card_limit = tonumber(TMJ.config.columns)
-    local num_areas = tonumber(TMJ.config.rows)
-    local card_scale = tonumber(TMJ.config.size)
+    local card_limit = TMJ.config.columns
+    local num_areas = TMJ.config.rows
+    local card_scale = TMJ.config.size
     local areas = {}
     for i = 1, num_areas do
         local area = CardArea(                                                                   --insert this cardarea into the table we feed to our ui
@@ -83,8 +83,4 @@ function TMJ.FUNCS.make_card_areas()
         })
     end
     return areas
-end
-
-function ui_unit_tests()
-    TMJ.FUNCS.inner_nodes()
 end
