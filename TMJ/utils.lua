@@ -69,4 +69,4 @@ end
 function lower_spaceless(str)
     return string.lower(spaceless(str))
 end
- 
+  
