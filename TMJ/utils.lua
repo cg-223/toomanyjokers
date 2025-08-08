@@ -16,7 +16,7 @@ function string.split(str, split_by, allow_magic)
         for _, char in string.gmatch(split_by, '.') do
             if magicchars[char] then
                 error(
-                "Attempt to call string.split with a magic character in the splitter. If this is intentional, supply a third argument to string.split.")
+                    "Attempt to call string.split with a magic character in the splitter. If this is intentional, supply a third argument to string.split.")
             end
         end
     end
@@ -41,8 +41,9 @@ function table_into_hashset(tbl, oldkeys)
     return new
 end
 
-function todo()
-    error("Not yet implemented")
+function todo(msg, ...)
+    msg = msg or ""
+    error("Not yet implemented: " .. string.format(msg, ...))
 end
 
 function utils_unit_tests()
@@ -57,4 +58,14 @@ function utils_unit_tests()
     assert(split[3] == "")
     assert(split[4] == "a")
     assert(split[5] == nil)
+    assert(spaceless("your mom  whore" == "yourmomwhore"))
+    assert(lower_spaceless("YOUR MOM    whore" == "yourmomwhore"))
+end
+
+function spaceless(str)
+    return string.gsub(str, "%w", "")
+end
+
+function lower_spaceless(str)
+    return string.lower(spaceless(str))
 end
