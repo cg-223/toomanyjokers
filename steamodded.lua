@@ -39,6 +39,7 @@ SMODS.Keybind({
     key = "openTMJ",
     key_pressed = "t",
     action = function(controller)
+        do return end
         controller = G.CONTROLLER
         local reload
         if controller.hovering.target and controller.hovering.target:is(Card) then
