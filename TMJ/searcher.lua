@@ -84,7 +84,7 @@ function TMJ.FUNCS.get_center_strings(center)
     for i, v in pairs(TMJ.SEARCH_FIELD_FUNCS) do
         local ret = v(center)
         if type(ret) == "string" then ret = { ret } end
-        table.map(ret, function(i, val) 
+        table.map(ret, function(i, val)
             all[i] = lower_spaceless(val)
         end)
     end
@@ -92,11 +92,28 @@ function TMJ.FUNCS.get_center_strings(center)
     return all
 end
 
-function TMJ.FUNCS.does_match(center, match_string, use_any, use_regex)
+function TMJ.FUNCS.does_match(center, match_string)
     local strings = TMJ.FUNCS.get_center_strings(center)
     local all_match_strings = string.split(match_string, ",")
+    local use_any, use_regex
+    local remove = {}
+    --extract magic terms
+    for i, v in ipairs(all_match_strings) do
+        if v == "{any}" then
+            table.insert(remove, i)
+            use_any = true
+        elseif v == "{regex}" then
+            table.insert(remove, i)
+            use_regex = true
+        end
+    end
+    --slow but whatever
+    for _, v in pairs(remove) do
+        table.remove(all_match_strings, v)
+    end
     local any_flag = false
     local all_flag = true
+    --do matching (any hingers)
     for i, str in pairs(strings) do
         local any_matched = false
         for l, mstr in pairs(all_match_strings) do
@@ -115,18 +132,60 @@ end
 --[[
 Consists of key/value pairs of string/table, where the key is a match string. The table is an array of keys.
 ]]
+
 TMJ.center_cache_maps = {}
 TMJ.key_to_order = {}
 function TMJ.FUNCS.get_centers(match_string, range_lower, range_upper)
+    if not TMJ.all_centers then
+        TMJ.FUNCS.process_centers()
+    end
     local centers = {}
-    local tbl = TMJ.center_cache_maps[match_string] or {}
+    local cache = TMJ.center_cache_maps[match_string] or {}
     local prev;
+    local all_centers = TMJ.all_centers
     for i = range_lower, range_upper do
-        if tbl[i] then
-            prev = tbl[i]
-            table.insert(centers, tbl[i])
+        if cache[i] then
+            prev = cache[i].key
+            table.insert(centers, cache[i])
         else
-            
+            local pos = TMJ.key_to_order[prev] + 1
+            while all_centers[pos] do
+                if TMJ.FUNCS.does_match(all_centers[pos], match_string) then
+                    prev = all_centers[pos].key
+                    table.insert(centers, all_centers[pos].key)
+                    cache[i] = all_centers[pos]
+                    break
+                end
+                pos = pos + 1
+            end
+        end
+    end
+    return centers
+end
+
+---Mod makers: If your center cannot show up as a Card in TMJ, insert its pool name here. Joker is in here because it is added manually
+function TMJ.FUNCS.add_blacklisted_pool(pool)
+    TMJ.blacklisted_pools[pool] = true
+end
+TMJ.blacklisted_pools = table_into_hashset{"Joker"}
+---Mod makers: If your center cannot show up as a Card in TMJ, insert its set name here
+function TMJ.FUNCS.add_blacklisted_pool(pool)
+    TMJ.blacklisted_sets[pool] = true
+end
+TMJ.blacklisted_sets = table_into_hashset{}
+function TMJ.FUNCS.process_centers()
+    TMJ.all_centers = {}
+    --insert jokers first to be at the top of the list
+    for _, center in pairs(G.P_CENTER_POOLS.Joker) do
+        table.insert(TMJ.all_centers, center)
+    end
+    for poolName, pool in pairs(G.P_CENTER_POOLS) do
+        if not TMJ.blacklisted_pools[poolName] then
+            for l, center in pairs(pool) do
+                if not center.set or not TMJ.blacklisted_sets[center.set] then
+                    table.insert(TMJ.all_centers, center)
+                end
+            end
         end
     end
 end

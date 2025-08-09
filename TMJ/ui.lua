@@ -90,4 +90,11 @@ function TMJ.make_cards(areas)
     local num_areas = TMJ.config.rows
     local initial_offset = TMJ.config.columns * TMJ.scrolled_amount
     initial_offset = math.clamp(initial_offset, 0)
+    local centers = TMJ.FUNCS.get_centers(G.ENTERED_FILTER, initial_offset, initial_offset + (TMJ.config.columns * TMJ.config.rows))
+    for row = 1, TMJ.config.rows do
+        for col = 1, TMJ.config.columns do
+            local indice = (row-1) * TMJ.config.columns + col
+            local center = centers[indice]
+        end
+    end
 end

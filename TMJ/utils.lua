@@ -32,12 +32,27 @@ function string.split(str, split_by, allow_magic)
     return strs
 end
 
----Takes the values of a table and turns them into keys with value true (or if arg2 is true, the keys of the original table)
-function table_into_hashset(tbl, oldkeys)
+---Takes the values of a table and turns them into keys with value true 
+function table_into_hashset(tbl)
     local new = {}
     for i, v in pairs(tbl) do
-        new[v] = (oldkeys and i) or true
+        new[v] = true
     end
+    setmetatable(new, {
+        __newindex = function (t, k, v)
+            assert(type(v) == "boolean", "misuse of hashset")
+            rawset(t, k, v or nil)
+        end,
+        __index = function (t, k)
+            if k == "set" then
+                return function(self, key)
+                    rawset(self, key, true)
+                end
+            else
+                return rawget(t, k)
+            end
+        end
+    })
     return new
 end
 
@@ -49,7 +64,8 @@ end
 function utils_unit_tests()
     local tbl = { "1", 2, "8" }
     local tbl2 = table_into_hashset(tbl)
-    assert(tbl2["1"] and tbl2[2] and tbl2["8"])
+    tbl2:set("three")
+    assert(tbl2["1"] and tbl2[2] and tbl2["8"] and tbl2.three)
     assert(not (tbl2[1] or tbl2["hello"]))
     local str = "Hello, Whats up,,a"
     local split = string.split(str, ",")
