@@ -111,3 +111,22 @@ function TMJ.FUNCS.does_match(center, match_string, use_any, use_regex)
     end
     return (use_any and any_flag) or all_flag
 end
+
+--[[
+Consists of key/value pairs of string/table, where the key is a match string. The table is an array of keys.
+]]
+TMJ.center_cache_maps = {}
+TMJ.key_to_order = {}
+function TMJ.FUNCS.get_centers(match_string, range_lower, range_upper)
+    local centers = {}
+    local tbl = TMJ.center_cache_maps[match_string] or {}
+    local prev;
+    for i = range_lower, range_upper do
+        if tbl[i] then
+            prev = tbl[i]
+            table.insert(centers, tbl[i])
+        else
+            
+        end
+    end
+end

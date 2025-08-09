@@ -60,6 +60,8 @@ function utils_unit_tests()
     assert(split[5] == nil)
     assert(spaceless("your mom  whore") == "yourmomwhore")
     assert(lower_spaceless("YOUR MOM    whore") == "yourmomwhore")
+    assert(math.clamp(1, 2, 3) == 2)
+    assert(math.clamp(4, 1, 2) == 2)
 end
 
 function spaceless(str)
@@ -80,4 +82,12 @@ function table.map(tbl, func)
             tbl[i] = kret
         end
     end
+end
+
+---sometimes i wonder why these functions dont exist.
+function math.clamp(num, min, max)
+    max = max or math.huge
+    min = min or -math.huge
+    assert(min <= max)
+    return math.min(math.max(num, min), max)
 end

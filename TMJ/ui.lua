@@ -84,3 +84,10 @@ function TMJ.FUNCS.make_card_areas()
     end
     return areas
 end
+
+function TMJ.make_cards(areas)
+    local card_limit = TMJ.config.columns
+    local num_areas = TMJ.config.rows
+    local initial_offset = TMJ.config.columns * TMJ.scrolled_amount
+    initial_offset = math.clamp(initial_offset, 0)
+end
