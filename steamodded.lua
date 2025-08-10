@@ -15,14 +15,7 @@ for i, v in ipairs(scripts) do
         table.insert(tests, _G[v .. "_unit_tests"])
     end
 end
-local cfg = NFS.read("config/tmj.jkr")
-if not cfg then
-    cfg = "5,6,0.7"
-end
-cfg = string.split(cfg, ",");
-table.map(cfg, function(_, val) return tonumber(val) end)
-local configs = { "columns", "rows", "size" }
-table.map(cfg, function(i, v) TMJ.config[configs[i]] = v end)
+
 local ourref = love.wheelmoved or function() end
 function love.wheelmoved(x, y)
     ourref(x, y)
@@ -39,7 +32,6 @@ SMODS.Keybind({
     key = "openTMJ",
     key_pressed = "t",
     action = function(controller)
-        do return end
         controller = G.CONTROLLER
         local reload
         if controller.hovering.target and controller.hovering.target:is(Card) then

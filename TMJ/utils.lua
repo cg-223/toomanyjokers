@@ -1,34 +1,11 @@
 ---Essentially collects string.gmatch into a table
-function string.split(str, split_by, allow_magic)
-    local magicchars = table_into_hashset {
-        '.',
-        '(',
-        ')',
-        '%',
-        '+',
-        '-',
-        '*',
-        '?',
-        '[',
-        '^',
-        '$' }
-    if not allow_magic then
-        for _, char in string.gmatch(split_by, '.') do
-            if magicchars[char] then
-                error(
-                    "Attempt to call string.split with a magic character in the splitter. If this is intentional, supply a third argument to string.split.")
-            end
-        end
-    end
+function string.split(str, split_by)
+    str = str .. split_by
     local strs = {}
-    for strng in string.gmatch(str, ".-" .. split_by) do
-        strs[#strs + 1] = string.sub(strng, 1, #strng - 1)
+    for strng in string.gmatch(str, "(.-)" .. split_by) do
+        strs[#strs + 1] = strng
     end
-    local rev = string.reverse(str)
-    local last = string.sub(string.reverse(string.match(rev, ".-" .. split_by)), 2)
-    if last ~= "" then
-        strs[#strs + 1] = last
-    end
+
     return strs
 end
 

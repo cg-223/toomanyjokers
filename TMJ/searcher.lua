@@ -167,11 +167,13 @@ end
 function TMJ.FUNCS.add_blacklisted_pool(pool)
     TMJ.blacklisted_pools[pool] = true
 end
+
 TMJ.blacklisted_pools = table_into_hashset{"Joker"}
 ---Mod makers: If your center cannot show up as a Card in TMJ, insert its set name here
 function TMJ.FUNCS.add_blacklisted_pool(pool)
     TMJ.blacklisted_sets[pool] = true
 end
+
 TMJ.blacklisted_sets = table_into_hashset{}
 function TMJ.FUNCS.process_centers()
     TMJ.all_centers = {}
