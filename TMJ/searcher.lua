@@ -71,7 +71,7 @@ local main_funcs = {
 TMJ.SEARCH_FIELD_FUNCS = main_funcs
 
 TMJ.INVALIDATE_CENTER_FUNCS = {
-    function (center)
+    function(center)
         return not center.key
     end
 }
@@ -90,9 +90,9 @@ function TMJ.FUNCS.get_center_strings(center)
     for i, v in pairs(TMJ.SEARCH_FIELD_FUNCS) do
         local ret = v(center) or ""
         if type(ret) == "string" then ret = { ret } end
-        table.map(ret, function(i, val)
-            all[i] = lower_spaceless(val)
-        end)
+        for _, v in pairs(ret) do
+            all[#all+1] = lower_spaceless(v)
+        end
     end
     TMJ.center_string_cache[center] = all
     return all
@@ -100,7 +100,7 @@ end
 
 function TMJ.FUNCS.does_match(center, match_string)
     local strings = TMJ.FUNCS.get_center_strings(center)
-    local all_match_strings = string.split(match_string, ",")
+    local all_match_strings = string.split(lower_spaceless(match_string), ",")
     local use_any, use_regex
     local remove = {}
     for i, v in pairs(TMJ.INVALIDATE_CENTER_FUNCS) do
@@ -125,15 +125,15 @@ function TMJ.FUNCS.does_match(center, match_string)
     local any_flag = false
     local all_flag = true
     --do matching (any hingers)
-    for i, str in pairs(strings) do
-        local any_matched = false
-        for l, mstr in pairs(all_match_strings) do
-            if string.find(str, mstr, nil, not use_regex) then
+    for _, mstr in pairs(all_match_strings) do
+        local saw_any = false
+        for _, nstr in pairs(strings) do
+            if string.find(nstr, mstr, nil, not use_regex) then
                 any_flag = true
-                any_matched = true
+                saw_any = true
             end
         end
-        if not any_matched then
+        if not saw_any then
             all_flag = false
         end
     end
@@ -143,7 +143,41 @@ end
 --[[
 Consists of key/value pairs of string/table, where the key is a match string. The table is an array of keys.
 ]]
+TMJ.get_centers_caches = {
+    centers_that_match = {}
+}
+function TMJ.FUNCS.get_centers(match_string, num_ignored, num_wanted)
+    if not TMJ.all_centers then
+        TMJ.FUNCS.process_centers()
+    end
+    local results = {}
+    local centers = TMJ.all_centers
+    local num_seen = 0
+    local centers_that_match = TMJ.get_centers_caches.centers_that_match[match_string] or {}
+    TMJ.get_centers_caches.centers_that_match[match_string] = centers_that_match
+    for i = 1, #centers do
+        local center = centers[i]
+        if center then
+            if centers_that_match[center] then
+                num_seen = num_seen + 1
+                if num_seen > num_ignored then
+                    table.insert(results, center.key)
+                end
+            else
+                if TMJ.FUNCS.does_match(centers[i], match_string) then
+                    num_seen = num_seen + 1
+                    centers_that_match[center] = true
+                    if i >= num_seen then
+                        table.insert(results, center.key)
+                    end
+                end
+            end
+        end
+    end
+    return results
+end
 
+--[[
 TMJ.center_cache_maps = {}
 TMJ.key_to_order = {}
 function TMJ.FUNCS.get_centers(match_string, range_lower, range_upper)
@@ -179,19 +213,22 @@ function TMJ.FUNCS.get_centers(match_string, range_lower, range_upper)
     end
     return centers
 end
+]]
 
+
+TMJ.search_ord_to_all_ord = {}
 ---Mod makers: If your center cannot show up as a Card in TMJ, insert its pool name here. Joker is in here because it is added manually
 function TMJ.FUNCS.add_blacklisted_pool(pool)
     TMJ.blacklisted_pools[pool] = true
 end
 
-TMJ.blacklisted_pools = table_into_hashset{"Joker"}
+TMJ.blacklisted_pools = table_into_hashset { "Joker" }
 ---Mod makers: If your center cannot show up as a Card in TMJ, insert its set name here
 function TMJ.FUNCS.add_blacklisted_pool(pool)
     TMJ.blacklisted_sets[pool] = true
 end
 
-TMJ.blacklisted_sets = table_into_hashset{}
+TMJ.blacklisted_sets = table_into_hashset {}
 function TMJ.FUNCS.process_centers()
     TMJ.all_centers = {}
     --insert jokers first to be at the top of the list

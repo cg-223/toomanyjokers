@@ -6,6 +6,13 @@ TMJ.CACHES = {
     serach_results = {},
     sorted_pools = {},
 }
+if not (TMJ.config and TMJ.config.rows and TMJ.config.columns and TMJ.config.size) then
+    TMJ.config = {
+        rows = 5,
+        columns = 4,
+        size = 1.3,
+    }
+end
 TMJ.DEBUG = true
 local scripts = { "utils", "config", "searcher", "ui", "banner" }
 local tests = {}

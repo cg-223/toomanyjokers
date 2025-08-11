@@ -91,9 +91,7 @@ TMJ.scrolled_amount = 0
 function TMJ.FUNCS.make_cards()
     local size_div = TMJ.config.size
     local initial_offset = TMJ.config.columns * TMJ.scrolled_amount
-    initial_offset = math.clamp(initial_offset, 0)
-    local centers = TMJ.FUNCS.get_centers(TMJ.thegreatfilter, initial_offset + 1,
-        initial_offset + 1 + (TMJ.config.columns * TMJ.config.rows))
+    local centers = TMJ.FUNCS.get_centers(TMJ.thegreatfilter, initial_offset, TMJ.config.columns * TMJ.config.rows)
     for row = 1, TMJ.config.rows do
         for col = 1, TMJ.config.columns do
             local indice = (row - 1) * TMJ.config.columns + col
@@ -123,7 +121,11 @@ end
 
 function TMJ.FUNCS.scroll(y)
     TMJ.scrolled_amount = TMJ.scrolled_amount + y
-    TMJ.FUNCS.reload()
+    if TMJ.scrolled_amount >= 0 then
+        TMJ.FUNCS.reload()
+    else
+        TMJ.scrolled_amount = 0
+    end
 end
 
 function TMJ.FUNCS.reload()
