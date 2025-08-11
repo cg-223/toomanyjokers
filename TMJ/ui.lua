@@ -154,3 +154,14 @@ function TMJ.FUNCS.reload()
     TMJ.FUNCS.make_cards()
     G.TMJUI:recalculate()
 end
+
+local old = Card.click
+function Card:click(...)
+    if self.area and self.area.config.tmj and G.CONTROLLER.held_keys['lctrl'] then
+        TMJ.config.pinned_keys[self.config.center.key] = not TMJ.config.pinned_keys[self.config.center.key]
+        TMJ.FUNCS.process_centers()
+        TMJ.FUNCS.reload()
+        SMODS.save_mod_config(TMJ)
+    end
+    old(self, ...)
+end

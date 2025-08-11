@@ -7,11 +7,12 @@ TMJ.CACHES = {
     sorted_pools = {},
 }
 SMODS.load_mod_config(TMJ)
-if not (TMJ.config and TMJ.config.rows and TMJ.config.columns and TMJ.config.size) then
+if not (TMJ.config and TMJ.config.rows and TMJ.config.columns and TMJ.config.size and TMJ.config.pinned_keys) then
     TMJ.config = {
         rows = 4,
         columns = 4,
         size = 0.7,
+        pinned_keys = {}
     }
     SMODS.save_mod_config(TMJ)
 end
