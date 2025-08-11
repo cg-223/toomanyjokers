@@ -57,3 +57,11 @@ position = "at"
 payload = '''if key == "r" and not G.SETTINGS.paused and not G.CONTROLLER.text_input_hook then'''
 match_indent = true
 overwrite = false
+
+[[patches]]
+[patches.pattern]
+target = "card.lua"
+pattern = '''    if not G.OVERLAY_MENU and old_center and not next(SMODS.find_card(old_center.key, true)) then'''
+position = "at"
+payload = '''    if not G.OVERLAY_MENU and old_center and old_center.key and not next(SMODS.find_card(old_center.key, true)) then'''
+match_indent = true

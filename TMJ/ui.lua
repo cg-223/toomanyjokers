@@ -8,9 +8,10 @@ function TMJ.FUNCS.ui_box()
 end
 
 G.ENTERED_FILTER = ""
+TMJ.thegreatfilter = ""
 function TMJ.FUNCS.inner_nodes()
     return {
-        { n = G.UIT.R, config = { align = "cm", r = 0.01, colour = G.C.BLACK, emboss = 0.05 }, nodes = TMJ.FUNCS.make_card_areas() }, --cardareas
+        { n = G.UIT.R, config = { align = "cm", r = 0.01, colour = G.C.BLACK, emboss = 0.05 }, nodes = {{n = G.UIT.C, nodes = TMJ.FUNCS.make_card_areas()}} }, --cardareas
         {
             n = G.UIT.R,
             config = { align = "cm" },
@@ -28,9 +29,9 @@ function TMJ.FUNCS.inner_nodes()
                     keyboard_offset = 1,
                     config = { align = "cm", id = "TMJTEXTINP" },
                     callback = function()
-                        TMJ.thegreatfilter = string.split(lower_spaceless(G.ENTERED_FILTER), ",")
+                        TMJ.thegreatfilter = G.ENTERED_FILTER
                         G.ENTERED_FILTER = ""
-                        todo()
+                        TMJ.FUNCS.reload()
                     end
                 }),
             },
@@ -86,28 +87,28 @@ function TMJ.FUNCS.make_card_areas()
     end
     return areas
 end
-
-function TMJ.make_cards()
+TMJ.scrolled_amount = 0
+function TMJ.FUNCS.make_cards()
     local size_div = TMJ.config.size
     local initial_offset = TMJ.config.columns * TMJ.scrolled_amount
     initial_offset = math.clamp(initial_offset, 0)
-    local centers = TMJ.FUNCS.get_centers(G.ENTERED_FILTER, initial_offset,
-        initial_offset + (TMJ.config.columns * TMJ.config.rows))
+    local centers = TMJ.FUNCS.get_centers(TMJ.thegreatfilter, initial_offset + 1,
+        initial_offset + 1 + (TMJ.config.columns * TMJ.config.rows))
     for row = 1, TMJ.config.rows do
         for col = 1, TMJ.config.columns do
             local indice = (row - 1) * TMJ.config.columns + col
-            local center = centers[indice]
-            if center then
+            local key = centers[indice]
+            local center = G.P_CENTERS[key]
+            if center and center.key then
                 local old = copy_table(G.GAME.used_jokers)
-
                 local card = Card(G.TMJCOLLECTION[row].T.x + G.TMJCOLLECTION[row].T.w / 2, G.TMJCOLLECTION[row].T.y,
                     G.CARD_W / (size_div or 1),
-                    G.CARD_H / (size_div or 1), nil, center)
-                card.sticker = get_joker_win_sticker(center)
+                    G.CARD_H / (size_div or 1), nil, key)
+                card.sticker = get_joker_win_sticker(key)
                 G.TMJCOLLECTION[row]:emplace(card)
-                if string.sub(center.key, 1, 1) == "e" then
+                if string.sub(key, 1, 1) == "e" then
                     if not card.edition then card.edition = {} end
-                    card.edition[string.sub(center.key, 3)] = true
+                    card.edition[string.sub(key, 3)] = true
                 end
                 G.GAME.used_jokers = old
             end
@@ -117,4 +118,16 @@ end
 
 function TMJ.FUNCS.OPENFROMKEYBIND()
     G.TMJUI = TMJ.FUNCS.ui_box()
+    TMJ.FUNCS.make_cards()
+end
+
+function TMJ.FUNCS.scroll(y)
+    TMJ.scrolled_amount = TMJ.scrolled_amount + y
+    TMJ.FUNCS.reload()
+end
+
+function TMJ.FUNCS.reload()
+    G.TMJUI:remove()
+    G.TMJUI = TMJ.FUNCS.ui_box()
+    TMJ.FUNCS.make_cards()
 end

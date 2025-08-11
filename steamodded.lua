@@ -20,7 +20,7 @@ local ourref = love.wheelmoved or function() end
 function love.wheelmoved(x, y)
     ourref(x, y)
     if y and G.TMJUI then
-        G.FUNCS.TMJSCROLLUI(-y)
+        TMJ.FUNCS.scroll(-y)
     end
 end
 

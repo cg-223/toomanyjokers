@@ -70,6 +70,12 @@ local main_funcs = {
 --fun(center) -> string | {string, ...}
 TMJ.SEARCH_FIELD_FUNCS = main_funcs
 
+TMJ.INVALIDATE_CENTER_FUNCS = {
+    function (center)
+        return not center.key
+    end
+}
+
 TMJ.center_string_cache = {}
 
 --returns a table containing all relevant search information regarding a center
@@ -82,7 +88,7 @@ function TMJ.FUNCS.get_center_strings(center)
     --aggregate search fields
     local all = {}
     for i, v in pairs(TMJ.SEARCH_FIELD_FUNCS) do
-        local ret = v(center)
+        local ret = v(center) or ""
         if type(ret) == "string" then ret = { ret } end
         table.map(ret, function(i, val)
             all[i] = lower_spaceless(val)
@@ -97,6 +103,11 @@ function TMJ.FUNCS.does_match(center, match_string)
     local all_match_strings = string.split(match_string, ",")
     local use_any, use_regex
     local remove = {}
+    for i, v in pairs(TMJ.INVALIDATE_CENTER_FUNCS) do
+        if v(center) then
+            return false
+        end
+    end
     --extract magic terms
     for i, v in ipairs(all_match_strings) do
         if v == "{any}" then
@@ -141,20 +152,26 @@ function TMJ.FUNCS.get_centers(match_string, range_lower, range_upper)
     end
     local centers = {}
     local cache = TMJ.center_cache_maps[match_string] or {}
-    local prev;
+    TMJ.center_cache_maps[match_string] = cache
+    local prev = "";
     local all_centers = TMJ.all_centers
-    for i = range_lower, range_upper do
+    for i = 1, range_upper do
         if cache[i] then
             prev = cache[i].key
-            table.insert(centers, cache[i])
+            if i >= range_lower then
+                table.insert(centers, cache[i])
+            end
         else
-            local pos = TMJ.key_to_order[prev] + 1
+            local pos = (TMJ.key_to_order[prev] or 0) + 1
             while all_centers[pos] do
                 if TMJ.FUNCS.does_match(all_centers[pos], match_string) then
                     prev = all_centers[pos].key
-                    table.insert(centers, all_centers[pos].key)
                     cache[i] = all_centers[pos]
-                    break
+                    TMJ.key_to_order[all_centers[pos].key] = pos
+                    if i >= range_lower then
+                        table.insert(centers, all_centers[pos].key)
+                        break
+                    end
                 end
                 pos = pos + 1
             end

@@ -115,7 +115,7 @@ function G.FUNCS.TMJMAINNODES()
         keyboard_offset = 1,
         config = { align = "cm", id = "TMJTEXTINP" },
         callback = function()
-            local tosplit = G.ENTERED_FILTER
+            local tosplit = TMJ.thegreatfilter
             tosplit = string.lower(tosplit)
             tosplit = string.gsub(tosplit, " ", "")
             local split = TMJ.FUNCS.commaSplit(tosplit)
