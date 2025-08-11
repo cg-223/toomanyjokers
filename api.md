@@ -4,34 +4,36 @@ TMJ.SEARCH_FIELD_FUNCS contains functions that take a center and return a string
 Example:
 ```lua
 for i, v in pairs(G.P_CENTERS) do
-    v.ilove = "you"
+    center.ilove = "you"
 end
 table.insert(TMJ.SEARCH_FIELD_FUNCS, function(center)
-    return v.ilove
+    return center.ilove
 end)
 ```
 
 Alternatively, if your mod adds multiple things to search for, you can do this.
 ```lua
 for i, v in pairs(G.P_CENTERS) do
-    v.thing1 = "one"
-    v.thing2 = "two"
+    center.thing1 = "one"
+    center.thing2 = "two"
 end
 table.insert(TMJ.SEARCH_FIELD_FUNCS, function(center)
-    return {v.thing1, v.thing2}
+    return {center.thing1, center.thing2}
 end)
 ```
 
 This is equivalent to
 ```lua
 for i, v in pairs(G.P_CENTERS) do
-    v.thing1 = "one"
-    v.thing2 = "two"
+    center.thing1 = "one"
+    center.thing2 = "two"
 end
 table.insert(TMJ.SEARCH_FIELD_FUNCS, function(center)
-    return v.thing1
+    return center.thing1
 end)
 table.insert(TMJ.SEARCH_FIELD_FUNCS, function(center)
-    return v.thing2
+    return center.thing2
 end)
 ```
+
+Now if I search "two" in TMJ, center.thing1 and center.thing2 will be indexed. 
