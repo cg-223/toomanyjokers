@@ -88,6 +88,7 @@ function TMJ.FUNCS.make_card_areas()
             card_limit * G.CARD_W / card_scale,                                                  --width of cardarea
             0.95 * G.CARD_H / card_scale,                                                        --height of cardarea
             { card_limit = card_limit, type = 'title', highlight_limit = 0, collection = true }) --basic config for a cardarea
+        area.config.tmj = true
         G.TMJCOLLECTION[i] = area
         table.insert(areas, {
             n = G.UIT.R,
@@ -113,6 +114,9 @@ function TMJ.FUNCS.make_cards()
                 local card = Card(G.TMJCOLLECTION[row].T.x + G.TMJCOLLECTION[row].T.w / 2, G.TMJCOLLECTION[row].T.y,
                     G.CARD_W / (size_div or 1),
                     G.CARD_H / (size_div or 1), nil, key)
+                if BANNERMOD and BANNERMOD.is_disabled(key) then
+                    card.debuff = true
+                end
                 card.sticker = get_joker_win_sticker(key)
                 G.TMJCOLLECTION[row]:emplace(card)
                 if string.sub(key, 1, 1) == "e" then
