@@ -6,12 +6,23 @@ TMJ.CACHES = {
     serach_results = {},
     sorted_pools = {},
 }
+SMODS.load_mod_config(TMJ)
 if not (TMJ.config and TMJ.config.rows and TMJ.config.columns and TMJ.config.size) then
     TMJ.config = {
         rows = 4,
         columns = 4,
-        size = 1.3,
+        size = 0.7,
     }
+    SMODS.save_mod_config(TMJ)
+end
+local old = SMODS.save_mod_config
+function SMODS.save_mod_config(mod)
+    if mod == TMJ then
+        for i, v in pairs(TMJ.fake_config) do
+            TMJ.config[i] = tonumber(v or TMJ.config[i]) or TMJ.config[i]
+        end
+    end
+    old(mod)
 end
 TMJ.DEBUG = true
 local scripts = { "utils", "config", "searcher", "ui", "banner" }

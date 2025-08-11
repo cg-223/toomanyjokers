@@ -80,7 +80,7 @@ function TMJ.FUNCS.make_card_areas()
     G.TMJCOLLECTION = {}
     local card_limit = TMJ.config.columns
     local num_areas = TMJ.config.rows
-    local card_scale = TMJ.config.size
+    local card_scale = 1 / TMJ.config.size
     local areas = {}
     for i = 1, num_areas do
         local area = CardArea(                                                                   --insert this cardarea into the table we feed to our ui
@@ -100,7 +100,7 @@ end
 
 TMJ.scrolled_amount = 0
 function TMJ.FUNCS.make_cards()
-    local size_div = TMJ.config.size
+    local size_div = 1 / TMJ.config.size
     local initial_offset = TMJ.config.columns * TMJ.scrolled_amount
     local centers = TMJ.FUNCS.get_centers(TMJ.thegreatfilter, initial_offset, TMJ.config.columns * TMJ.config.rows)
     for row = 1, TMJ.config.rows do
