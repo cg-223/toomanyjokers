@@ -8,7 +8,7 @@ TMJ.CACHES = {
 }
 if not (TMJ.config and TMJ.config.rows and TMJ.config.columns and TMJ.config.size) then
     TMJ.config = {
-        rows = 5,
+        rows = 4,
         columns = 4,
         size = 1.3,
     }
@@ -22,7 +22,14 @@ for i, v in ipairs(scripts) do
         table.insert(tests, _G[v .. "_unit_tests"])
     end
 end
-
+G.FUNCS.CloseTMJ = function()
+    G.TMJUI:remove()
+    G.TMJUI = nil
+    for i, v in pairs(G.TMJCOLLECTION) do
+        v:remove()
+    end
+    TMJ.scrolled_amount = 0
+end
 local ourref = love.wheelmoved or function() end
 function love.wheelmoved(x, y)
     ourref(x, y)
@@ -31,34 +38,34 @@ function love.wheelmoved(x, y)
     end
 end
 
-local function center_key(card)
-    return card.config.center.key
-end
 
 SMODS.Keybind({
     key = "openTMJ",
     key_pressed = "t",
     action = function(controller)
         controller = G.CONTROLLER
-        local reload
-        if controller.hovering.target and controller.hovering.target:is(Card) then
-            if controller.held_keys.lctrl and not controller.held_keys.lshift then
-                local card = controller.hovering.target
-                TMJ.thegreatfilter = { "{key=" .. center_key(card) .. ",mod}" }
-                reload = true
-            elseif not controller.held_keys.lctrl and controller.held_keys.lshift then
-                local card = controller.hovering.target
-                TMJ.thegreatfilter = { "{key=" .. center_key(card) .. ",rarity}" }
-                reload = true
-            elseif controller.held_keys.lctrl and controller.held_keys.lshift then
-                local card = controller.hovering.target
-                TMJ.thegreatfilter = { "{key=" .. center_key(card) .. ",mod}", "{key=" .. center_key(card) .. ",rarity}" }
-                reload = true
-            end
+        if G.TMJUI then
+            G.FUNCS.CloseTMJ()
+        else
+            TMJ.FUNCS.OPENFROMKEYBIND()
         end
-        TMJ.FUNCS.OPENFROMKEYBIND(reload)
     end
 })
+
+local old = love.keypressed
+local wanted_chars = table_into_hashset(collect(string.gmatch("abcdefghijklmnopqrsuvwxyz{}!", ".")))
+local unwanted_chars = collect(string.gmatch("lctrl lshift rctrl rshift lalt ralt", "(.-) "))
+function love.keypressed(key)
+    for _, char in pairs(unwanted_chars) do
+        if G.CONTROLLER.held_keys[char] then
+            return old(key)
+        end
+    end
+    if G.TMJUI and wanted_chars[key] and G.TMJUI:get_UIE_by_ID("TMJTEXTINP") then
+        G.FUNCS.select_text_input(G.TMJUI:get_UIE_by_ID("TMJTEXTINP").children[1])
+    end
+    old(key)
+end
 
 SMODS.Atlas {
     key = "modicon",

@@ -84,3 +84,11 @@ function math.clamp(num, min, max)
     assert(min <= max)
     return math.min(math.max(num, min), max)
 end
+
+function collect(iter)
+    local ret = {}
+    for v in iter do
+        ret[#ret+1] = v
+    end
+    return ret
+end

@@ -10,30 +10,40 @@ end
 G.ENTERED_FILTER = ""
 TMJ.thegreatfilter = ""
 function TMJ.FUNCS.inner_nodes()
+    local text = create_text_input({
+        colour = G.C.RED,
+        hooked_colour = darken(copy_table(G.C.RED), 0.3),
+        w = 3,
+        h = 1,
+        max_length = 100,
+        extended_corpus = true,
+        prompt_text = "",
+        ref_table = G,
+        ref_value = "ENTERED_FILTER",
+        keyboard_offset = 1,
+        config = { align = "cm", id = "TMJTEXTINP" },
+        callback = function()
+            TMJ.thegreatfilter = G.ENTERED_FILTER
+            G.ENTERED_FILTER = ""
+            TMJ.scrolled_amount = 0
+            TMJ.FUNCS.reload()
+        end
+    })
+    text.config.id = "TMJTEXTINP"
     return {
-        { n = G.UIT.R, config = { align = "cm", r = 0.01, colour = G.C.BLACK, emboss = 0.05 }, nodes = {{n = G.UIT.C, nodes = TMJ.FUNCS.make_card_areas()}} }, --cardareas
+        {
+            n = G.UIT.R,
+            config = { minw = G.ROOM.T.w * 0.25, padding = 0.05, align = "cm" },
+            nodes = {
+                { n = G.UIT.T, config = { text = "Start typing to focus searchbar...", colour = G.C.WHITE, scale = 0.35 } },
+            }
+        },
+        { n = G.UIT.R, config = { align = "cm", r = 0.01, colour = G.C.BLACK, emboss = 0.05 }, nodes = { { n = G.UIT.C, nodes = TMJ.FUNCS.make_card_areas() } } }, --cardareas
         {
             n = G.UIT.R,
             config = { align = "cm" },
             nodes = {
-                create_text_input({
-                    colour = G.C.RED,
-                    hooked_colour = darken(copy_table(G.C.RED), 0.3),
-                    w = 3,
-                    h = 1,
-                    max_length = 100,
-                    extended_corpus = true,
-                    prompt_text = "",
-                    ref_table = G,
-                    ref_value = "ENTERED_FILTER",
-                    keyboard_offset = 1,
-                    config = { align = "cm", id = "TMJTEXTINP" },
-                    callback = function()
-                        TMJ.thegreatfilter = G.ENTERED_FILTER
-                        G.ENTERED_FILTER = ""
-                        TMJ.FUNCS.reload()
-                    end
-                }),
+                text
             },
         }, --textbox
         {
@@ -82,11 +92,12 @@ function TMJ.FUNCS.make_card_areas()
         table.insert(areas, {
             n = G.UIT.R,
             config = { align = "cm", padding = 0.07 / card_scale, no_fill = true, scale = 1 / card_scale },
-            nodes = {{ n = G.UIT.O, config = { object = area } }}
+            nodes = { { n = G.UIT.O, config = { object = area } } }
         })
     end
     return areas
 end
+
 TMJ.scrolled_amount = 0
 function TMJ.FUNCS.make_cards()
     local size_div = TMJ.config.size
@@ -117,14 +128,19 @@ end
 function TMJ.FUNCS.OPENFROMKEYBIND()
     G.TMJUI = TMJ.FUNCS.ui_box()
     TMJ.FUNCS.make_cards()
+    G.TMJUI:recalculate()
 end
 
 function TMJ.FUNCS.scroll(y)
-    TMJ.scrolled_amount = TMJ.scrolled_amount + y
-    if TMJ.scrolled_amount >= 0 then
+    local prev_amt = TMJ.scrolled_amount
+    if TMJ.scrolled_amount + y >= 0 then
+        TMJ.scrolled_amount = TMJ.scrolled_amount + y
         TMJ.FUNCS.reload()
     else
         TMJ.scrolled_amount = 0
+        if prev_amt > 0 then
+            TMJ.FUNCS.reload()
+        end
     end
 end
 
@@ -132,4 +148,5 @@ function TMJ.FUNCS.reload()
     G.TMJUI:remove()
     G.TMJUI = TMJ.FUNCS.ui_box()
     TMJ.FUNCS.make_cards()
+    G.TMJUI:recalculate()
 end

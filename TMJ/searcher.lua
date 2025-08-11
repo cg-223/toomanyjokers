@@ -3,19 +3,20 @@ local main_funcs = {
         return center.name
     end,
     function(center)
-        return center.key
+        return "key" .. (center.key or "")
     end,
     function(center)
+        local raritystring
         if type(center.rarity) == "string" or (type(center.rarity) == "number" and center.rarity < 5 and center.rarity == math.floor(center.rarity) and center.rarity > 0) then
             raritystring = SMODS.Rarity:get_rarity_badge(center.rarity)
         end
         if raritystring == "ERROR" or not raritystring then
             raritystring = tostring(center.rarity)
         end
-        return raritystring
+        return "rarity:" .. raritystring
     end,
     function(center)
-        return center.set
+        return "set:" .. (center.set or "")
     end,
     function(center)
         local strs = {}
@@ -69,10 +70,12 @@ local main_funcs = {
 }
 --fun(center) -> string | {string, ...}
 TMJ.SEARCH_FIELD_FUNCS = main_funcs
-
 TMJ.INVALIDATE_CENTER_FUNCS = {
     function(center)
         return not center.key
+    end,
+    function(center)
+        return center.no_collection
     end
 }
 
@@ -91,7 +94,7 @@ function TMJ.FUNCS.get_center_strings(center)
         local ret = v(center) or ""
         if type(ret) == "string" then ret = { ret } end
         for _, v in pairs(ret) do
-            all[#all+1] = lower_spaceless(v)
+            all[#all + 1] = lower_spaceless(v)
         end
     end
     TMJ.center_string_cache[center] = all
@@ -126,11 +129,20 @@ function TMJ.FUNCS.does_match(center, match_string)
     local all_flag = true
     --do matching (any hingers)
     for _, mstr in pairs(all_match_strings) do
-        local saw_any = false
+        local negate = false
+        if string.sub(mstr, 1, 1) == "!" then
+            mstr = mstr:sub(2)
+            negate = true
+        end
+        local saw_any = negate
         for _, nstr in pairs(strings) do
             if string.find(nstr, mstr, nil, not use_regex) then
-                any_flag = true
-                saw_any = true
+                if not negate then
+                    any_flag = true
+                    saw_any = true
+                else
+                    saw_any = false
+                end
             end
         end
         if not saw_any then
@@ -222,13 +234,13 @@ function TMJ.FUNCS.add_blacklisted_pool(pool)
     TMJ.blacklisted_pools[pool] = true
 end
 
-TMJ.blacklisted_pools = table_into_hashset { "Joker" }
+TMJ.blacklisted_pools = table_into_hashset { "Joker", "Tag" }
 ---Mod makers: If your center cannot show up as a Card in TMJ, insert its set name here
 function TMJ.FUNCS.add_blacklisted_pool(pool)
     TMJ.blacklisted_sets[pool] = true
 end
 
-TMJ.blacklisted_sets = table_into_hashset {}
+TMJ.blacklisted_sets = table_into_hashset { "Stake", "Seal", "Back", "Sleeve" }
 function TMJ.FUNCS.process_centers()
     TMJ.all_centers = {}
     --insert jokers first to be at the top of the list
