@@ -1,4 +1,5 @@
-Implementing support for TMJ:
+# Implementing support for TMJ:
+
 TMJ.SEARCH_FIELD_FUNCS contains functions that take a center and return a string that can be indexed by TMJ.
 
 Example:
