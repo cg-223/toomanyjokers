@@ -1,58 +1,83 @@
 local NFS = NFS or require("nativefs")
-local tmj = assert(SMODS.current_mod)
-TMJ = {}
-TMJ.SMODSmodtable = tmj
+TMJ = assert(SMODS.current_mod)
 TMJ.FUNCS = {}
-TMJ.PATH = tmj.path
-TMJ.SEARCHERCACHE = {}
-TMJ.SORTERCACHE = {}
-local scripts = NFS.getDirectoryItems(TMJ.PATH.."/TMJ")
-for i, v in pairs(scripts) do
-    assert(SMODS.load_file("TMJ/"..v))()
+TMJ.CACHES = {
+    match_strings = {},
+    serach_results = {},
+    sorted_pools = {},
+}
+SMODS.load_mod_config(TMJ)
+if not (TMJ.config and TMJ.config.rows and TMJ.config.columns and TMJ.config.size and TMJ.config.pinned_keys) then
+    TMJ.config = {
+        rows = 4,
+        columns = 4,
+        size = 0.7,
+        pinned_keys = {}
+    }
+    SMODS.save_mod_config(TMJ)
 end
-
-local ourref = love.wheelmoved or function() end
-function love.wheelmoved(x, y)
-	ourref(x, y)
-    if y and G.TMJUI then
-        G.FUNCS.TMJSCROLLUI(-y)
-    end
-end
-
-local function getCenterKeyFromCard(card)
-    local center = card.config.center
-    for i, v in pairs(G.P_CENTERS) do
-        if v == center then
-            return i
+local old = SMODS.save_mod_config
+function SMODS.save_mod_config(mod)
+    if mod == TMJ then
+        for i, v in pairs(TMJ.fake_config) do
+            TMJ.config[i] = tonumber(v or TMJ.config[i]) or TMJ.config[i]
         end
     end
-    return card.config.center.key
+    old(mod)
 end
+TMJ.DEBUG = true
+local scripts = { "utils", "config", "searcher", "ui", "banner" }
+local tests = {}
+for i, v in ipairs(scripts) do
+    assert(SMODS.load_file("TMJ/" .. v .. ".lua"))()
+    if TMJ.DEBUG and _G[v .. "_unit_tests"] then
+        table.insert(tests, _G[v .. "_unit_tests"])
+    end
+end
+G.FUNCS.CloseTMJ = function()
+    G.TMJUI:remove()
+    G.TMJUI = nil
+    for i, v in pairs(G.TMJCOLLECTION) do
+        v:remove()
+    end
+    TMJ.scrolled_amount = 0
+end
+local ourref = love.wheelmoved or function() end
+function love.wheelmoved(x, y)
+    ourref(x, y)
+    if y and G.TMJUI then
+        TMJ.FUNCS.scroll(-y)
+    end
+end
+
 
 SMODS.Keybind({
     key = "openTMJ",
     key_pressed = "t",
     action = function(controller)
         controller = G.CONTROLLER
-        local reload
-        if controller.hovering.target and controller.hovering.target:is(Card) then
-            if controller.held_keys.lctrl and not controller.held_keys.lshift then
-                local card = controller.hovering.target
-                TMJ.thegreatfilter = {"{key="..getCenterKeyFromCard(card)..",mod}"}
-                reload = true
-            elseif not controller.held_keys.lctrl and controller.held_keys.lshift then
-                local card = controller.hovering.target
-                TMJ.thegreatfilter = {"{key="..getCenterKeyFromCard(card)..",rarity}"}
-                reload = true
-            elseif controller.held_keys.lctrl and controller.held_keys.lshift then
-                local card = controller.hovering.target
-                TMJ.thegreatfilter = {"{key="..getCenterKeyFromCard(card)..",mod}", "{key="..getCenterKeyFromCard(card)..",rarity}"}
-                reload = true
-            end
+        if G.TMJUI then
+            G.FUNCS.CloseTMJ()
+        else
+            TMJ.FUNCS.OPENFROMKEYBIND()
         end
-        TMJ.FUNCS.OPENFROMKEYBIND(reload)
     end
 })
+
+local old = love.keypressed
+local wanted_chars = table_into_hashset(collect(string.gmatch("abcdefghijklmnopqrsuvwxyz{}!", ".")))
+local unwanted_chars = collect(string.gmatch("lctrl lshift rctrl rshift lalt ralt", "(.-) "))
+function love.keypressed(key)
+    for _, char in pairs(unwanted_chars) do
+        if G.CONTROLLER.held_keys[char] then
+            return old(key)
+        end
+    end
+    if G.TMJUI and wanted_chars[key] and G.TMJUI:get_UIE_by_ID("TMJTEXTINP") then
+        G.FUNCS.select_text_input(G.TMJUI:get_UIE_by_ID("TMJTEXTINP").children[1])
+    end
+    old(key)
+end
 
 SMODS.Atlas {
     key = "modicon",
@@ -71,20 +96,21 @@ end
 
 local oldcuib = create_UIBox_generic_options
 create_UIBox_generic_options = function(arg1, ...) --inserts the text into most collection pages without needing to hook each individual function
-    if arg1.back_func == "your_collection" and arg1.contents[1].n == 4 then
+    if arg1.back_func == "your_collection" and arg1.contents[1].n == 4 and not TMJ.config.hide_collection_text then
         table.insert(arg1.contents, {
-            n = 4,
+            n = G.UIT.R,
             config = { align = "cm", minh = 0.5 },
             nodes = {
-                {
-                    n = G.UIT.R,
-                    config = { align = "cm" },
-                    nodes = {
-                        { n = G.UIT.C, config = { align = "cl", minw = 5 }, nodes = { { n = G.UIT.T, config = { text = "Press T (outside of collection) to access Too Many Jokers", colour = G.C.WHITE, shadow = true, scale = 0.3 } } } }
-                    }
-                }
+
+                { n = G.UIT.C, config = { align = "cm", minw = 5 }, nodes = { { n = G.UIT.T, config = { text = "Press T to access Too Many Jokers", colour = G.C.WHITE, shadow = true, scale = 0.3 } } } }
+
             }
         })
     end
     return oldcuib(arg1, ...)
+end
+
+
+for i, v in ipairs(tests) do
+    v()
 end

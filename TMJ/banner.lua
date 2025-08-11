@@ -1,21 +1,15 @@
-if not next(SMODS.find_mod("banner")) then
+if not next(SMODS.find_mod("banner")) or not BANNERMOD then
     return
 end
-
-local function is_in_tmj(card)
-    if G.TMJCOLLECTION then
-        for i, v in pairs(G.TMJCOLLECTION) do
-            if v == card.area then
-                return true
-            end
-        end
-    end
+if false then
+    BANNERMOD = {} --ls
 end
 
-local oldCardClick = Card.click
+
+local old_click = Card.click
 function Card:click(...)
     local card = self
-    if is_in_tmj(card) and not TMJ.FUNCS.isCtrlDown() and not TMJ.FUNCS.isShiftDown()  then
+    if card.area and card.area.config.tmj and not G.CONTROLLER.held_keys.lctrl then
         --card is in tmj
         card:juice_up(0.3, 0.3)
         local key = card.config.center.key
@@ -34,6 +28,5 @@ function Card:click(...)
         BANNERMOD.save_disabled()
         BANNERMOD.update_disabled()
     end
-    return oldCardClick(self, ...)
+    return old_click(self, ...)
 end
-
