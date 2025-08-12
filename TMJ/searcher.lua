@@ -175,21 +175,21 @@ function TMJ.FUNCS.get_centers(match_string, num_ignored, num_wanted)
         if center then
             local matches = centers_that_match[center]
             if matches ~= nil then
-                num_seen = num_seen + 1
-                if num_seen > num_ignored then
-                    table.insert(results, center.key)
+                if matches then
+                    num_seen = num_seen + 1
+                    if num_seen > num_ignored then
+                        table.insert(results, center.key)
+                    end
                 end
             else
-                if not matches then
-                    if TMJ.FUNCS.does_match(centers[i], match_string) then
-                        num_seen = num_seen + 1
-                        centers_that_match[center] = true
-                        if i >= num_seen then
-                            table.insert(results, center.key)
-                        end
-                    else
-                        centers_that_match[center] = false
+                if TMJ.FUNCS.does_match(centers[i], match_string) then
+                    num_seen = num_seen + 1
+                    centers_that_match[center] = true
+                    if i >= num_seen then
+                        table.insert(results, center.key)
                     end
+                else
+                    centers_that_match[center] = false
                 end
             end
         end
