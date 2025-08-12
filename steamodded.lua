@@ -7,12 +7,13 @@ TMJ.CACHES = {
     sorted_pools = {},
 }
 SMODS.load_mod_config(TMJ)
-if not (TMJ.config and TMJ.config.rows and TMJ.config.columns and TMJ.config.size and TMJ.config.pinned_keys) then
+if not (TMJ.config and TMJ.config.rows and TMJ.config.columns and TMJ.config.size and TMJ.config.pinned_keys and TMJ.config.hide_undiscovered) then
     TMJ.config = {
         rows = 4,
         columns = 4,
         size = 0.7,
-        pinned_keys = {}
+        pinned_keys = {},
+        hide_undiscovered = false
     }
     SMODS.save_mod_config(TMJ)
 end
@@ -22,6 +23,7 @@ function SMODS.save_mod_config(mod)
         for i, v in pairs(TMJ.fake_config) do
             TMJ.config[i] = tonumber(v or TMJ.config[i]) or TMJ.config[i]
         end
+        TMJ.get_centers_caches.centers_that_match = {}
     end
     old(mod)
 end
@@ -54,8 +56,7 @@ end
 SMODS.Keybind({
     key = "openTMJ",
     key_pressed = "t",
-    action = function(controller)
-        controller = G.CONTROLLER
+    action = function()
         if G.TMJUI then
             G.FUNCS.CloseTMJ()
         else
@@ -66,6 +67,7 @@ SMODS.Keybind({
 
 local old = love.keypressed
 local wanted_chars = table_into_hashset(collect(string.gmatch("abcdefghijklmnopqrsuvwxyz{}!", ".")))
+wanted_chars["return"] = true
 local unwanted_chars = collect(string.gmatch("lctrl lshift rctrl rshift lalt ralt", "(.-) "))
 function love.keypressed(key)
     for _, char in pairs(unwanted_chars) do

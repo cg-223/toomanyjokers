@@ -21,7 +21,7 @@ TMJ.config_tab = function()
                                 colour = G.C.RED,
                                 align = "cl",
                                 hooked_colour = darken(copy_table(G.C.RED), 0.3),
-                                w = 5,
+                                w = 2,
                                 h = 1,
                                 max_length = 3,
                                 extended_corpus = true,
@@ -47,7 +47,7 @@ TMJ.config_tab = function()
                                 colour = G.C.RED,
                                 align = "cl",
                                 hooked_colour = darken(copy_table(G.C.RED), 0.3),
-                                w = 5,
+                                w = 2,
                                 h = 1,
                                 max_length = 3,
                                 extended_corpus = true,
@@ -74,7 +74,7 @@ TMJ.config_tab = function()
                                 align = "cl",
                                 colour = G.C.RED,
                                 hooked_colour = darken(copy_table(G.C.RED), 0.3),
-                                w = 5,
+                                w = 2,
                                 h = 1,
                                 max_length = 3,
                                 extended_corpus = true,
@@ -85,6 +85,23 @@ TMJ.config_tab = function()
                             }),
                             { n = G.UIT.T, config = { align = "cr", text = "Card size", colour = G.C.WHITE, scale = 0.35 } },
 
+                        }
+                    }
+                }
+            },
+            {
+                n = G.UIT.R,
+                config = { align = "cl" },
+                nodes = {
+                    {
+                        n = G.UIT.C,
+                        config = { align = "cl", padding = 0.2 },
+                        nodes = {
+                            create_toggle {
+                                label = "Hide undiscovered/disabled cards",
+                                ref_table = TMJ.config, 
+                                ref_value = "hide_undiscovered"
+                            },
                         }
                     }
                 }
