@@ -88,13 +88,15 @@ SMODS.Atlas {
     py = 34
 }
 
-local olddraw = G.draw
-G.draw = function(...)
-    if G.TMJUI and G.TMJUI.draw then
-        G.TMJUI:draw()
+SMODS.DrawStep {
+    key = 'tmjui_draw',
+    order = 100,
+    func = function(self)
+        if G.TMJUI and G.TMJUI.draw then
+            G.TMJUI:draw()
+        end
     end
-    olddraw(...)
-end
+}
 
 local oldcuib = create_UIBox_generic_options
 create_UIBox_generic_options = function(arg1, ...) --inserts the text into most collection pages without needing to hook each individual function
