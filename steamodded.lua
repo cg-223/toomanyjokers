@@ -68,7 +68,7 @@ SMODS.Keybind({
 local old = love.keypressed
 local wanted_chars = table_into_hashset(collect(string.gmatch("abcdefghijklmnopqrsuvwxyz{}!", ".")))
 wanted_chars["return"] = true
-local unwanted_chars = collect(string.gmatch("lctrl lshift rctrl rshift lalt ralt", "(.-) "))
+local unwanted_chars = collect(string.gmatch("lctrl rctrl lalt ralt", "(.-) "))
 function love.keypressed(key)
     for _, char in pairs(unwanted_chars) do
         if G.CONTROLLER.held_keys[char] then
