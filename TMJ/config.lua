@@ -15,7 +15,7 @@ TMJ.config_tab = function()
                 nodes = {
                     {
                         n = G.UIT.C,
-                        config = { align = "cl", padding = 0.2 },
+                        config = { align = "cl", padding = 0.1 },
                         nodes = {
                             create_text_input({
                                 colour = G.C.RED,
@@ -41,7 +41,7 @@ TMJ.config_tab = function()
                 nodes = {
                     {
                         n = G.UIT.C,
-                        config = { align = "cl", padding = 0.2 },
+                        config = { align = "cl", padding = 0.1 },
                         nodes = {
                             create_text_input({
                                 colour = G.C.RED,
@@ -68,7 +68,7 @@ TMJ.config_tab = function()
                 nodes = {
                     {
                         n = G.UIT.C,
-                        config = { align = "cl", padding = 0.2 },
+                        config = { align = "cl", padding = 0.1 },
                         nodes = {
                             create_text_input({
                                 align = "cl",
@@ -95,7 +95,7 @@ TMJ.config_tab = function()
                 nodes = {
                     {
                         n = G.UIT.C,
-                        config = { align = "cl", padding = 0.2 },
+                        config = { align = "cl", padding = 0.1 },
                         nodes = {
                             create_toggle {
                                 label = "Hide undiscovered/disabled cards",
