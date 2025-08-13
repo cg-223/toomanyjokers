@@ -159,7 +159,8 @@ end
 Consists of key/value pairs of string/table, where the key is a match string. The table is an array of keys.
 ]]
 TMJ.get_centers_caches = {
-    centers_that_match = {}
+    centers_that_match = {},
+    seen_to_order = {},
 }
 function TMJ.FUNCS.get_centers(match_string, num_ignored, num_wanted)
     if not TMJ.all_centers then
@@ -170,7 +171,16 @@ function TMJ.FUNCS.get_centers(match_string, num_ignored, num_wanted)
     local num_seen = 0
     local centers_that_match = TMJ.get_centers_caches.centers_that_match[match_string] or {}
     TMJ.get_centers_caches.centers_that_match[match_string] = centers_that_match
-    for i = 1, #centers do
+    local seen_to_order = TMJ.get_centers_caches.seen_to_order[match_string] or {}
+    TMJ.get_centers_caches.seen_to_order[match_string] = seen_to_order
+    local attempt_start = seen_to_order[num_ignored] or 1
+    if attempt_start ~= 1 then
+        num_seen = num_ignored
+    end
+    for i = attempt_start, #centers do
+        if #results == num_wanted then
+            break
+        end
         local center = centers[i]
         if center then
             local matches = centers_that_match[center]
@@ -185,6 +195,7 @@ function TMJ.FUNCS.get_centers(match_string, num_ignored, num_wanted)
                 if TMJ.FUNCS.does_match(centers[i], match_string) then
                     num_seen = num_seen + 1
                     centers_that_match[center] = true
+                    seen_to_order[num_seen] = i
                     if i >= num_seen then
                         table.insert(results, center.key)
                     end
