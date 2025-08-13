@@ -161,6 +161,7 @@ Consists of key/value pairs of string/table, where the key is a match string. Th
 TMJ.get_centers_caches = {
     centers_that_match = {},
     seen_to_order = {},
+    inc_seen = {}
 }
 function TMJ.FUNCS.get_centers(match_string, num_ignored, num_wanted)
     if not TMJ.all_centers then
@@ -175,7 +176,7 @@ function TMJ.FUNCS.get_centers(match_string, num_ignored, num_wanted)
     TMJ.get_centers_caches.seen_to_order[match_string] = seen_to_order
     local attempt_start = seen_to_order[num_ignored] or 1
     if attempt_start ~= 1 then
-        num_seen = num_ignored
+        num_seen = num_ignored - 1
     end
     for i = attempt_start, #centers do
         if #results == num_wanted then
@@ -195,7 +196,6 @@ function TMJ.FUNCS.get_centers(match_string, num_ignored, num_wanted)
                 if TMJ.FUNCS.does_match(centers[i], match_string) then
                     num_seen = num_seen + 1
                     centers_that_match[center] = true
-                    seen_to_order[num_seen] = i
                     if i >= num_seen then
                         table.insert(results, center.key)
                     end

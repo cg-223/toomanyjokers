@@ -7,14 +7,16 @@ TMJ.CACHES = {
     sorted_pools = {},
 }
 SMODS.load_mod_config(TMJ)
-if not (TMJ.config and TMJ.config.rows and TMJ.config.columns and TMJ.config.size and TMJ.config.pinned_keys and (TMJ.config.hide_undiscovered ~= nil) and (TMJ.config.close_on_esc ~= nil)) then
+if not (TMJ.config and TMJ.config.rows and TMJ.config.columns and TMJ.config.size and TMJ.config.pinned_keys and (TMJ.config.hide_undiscovered ~= nil) and (TMJ.config.close_on_esc ~= nil) and (TMJ.config.scroll_full_page ~= nil)) then
+    TMJ.config = TMJ.config or {}
     TMJ.config = {
-        rows = 4,
-        columns = 4,
-        size = 0.7,
-        pinned_keys = {},
-        hide_undiscovered = false,
-        close_on_esc = false
+        rows = TMJ.config.rows or 4,
+        columns = TMJ.config.columns or 4,
+        size = TMJ.config.size or 0.7,
+        pinned_keys = TMJ.config.pinned_keys or {},
+        hide_undiscovered = TMJ.config.hide_undiscovered or false,
+        close_on_esc = TMJ.config.close_on_esc or false,
+        scroll_full_page = TMJ.config.scroll_full_page or false
     }
     SMODS.save_mod_config(TMJ)
 end
@@ -49,10 +51,20 @@ local ourref = love.wheelmoved or function() end
 function love.wheelmoved(x, y)
     ourref(x, y)
     if y and G.TMJUI then
-        TMJ.FUNCS.scroll(-y)
+        if TMJ.config.scroll_full_page then
+            TMJ.FUNCS.scroll(-(y * TMJ.config.rows))
+        else
+            TMJ.FUNCS.scroll(-y)
+        end
     end
 end
 
+local toggle_ref = G.FUNCS.toggle
+function G.FUNCS.toggle(e, ...)
+    if e.children and e.children[1] then
+        return toggle_ref(e, ...)
+    end
+end
 
 SMODS.Keybind({
     key = "openTMJ",
