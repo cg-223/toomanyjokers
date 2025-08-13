@@ -7,13 +7,14 @@ TMJ.CACHES = {
     sorted_pools = {},
 }
 SMODS.load_mod_config(TMJ)
-if not (TMJ.config and TMJ.config.rows and TMJ.config.columns and TMJ.config.size and TMJ.config.pinned_keys and TMJ.config.hide_undiscovered) then
+if not (TMJ.config and TMJ.config.rows and TMJ.config.columns and TMJ.config.size and TMJ.config.pinned_keys and (TMJ.config.hide_undiscovered ~= nil) and (TMJ.config.close_on_esc ~= nil)) then
     TMJ.config = {
         rows = 4,
         columns = 4,
         size = 0.7,
         pinned_keys = {},
-        hide_undiscovered = false
+        hide_undiscovered = false,
+        close_on_esc = false
     }
     SMODS.save_mod_config(TMJ)
 end
@@ -70,6 +71,10 @@ local wanted_chars = table_into_hashset(collect(string.gmatch("abcdefghijklmnopq
 wanted_chars["return"] = true
 local unwanted_chars = collect(string.gmatch("lctrl rctrl lalt ralt", "(.-) "))
 function love.keypressed(key)
+    if key == "escape" and G.TMJUI and TMJ.config.close_on_esc then
+        G.FUNCS.CloseTMJ()
+        return
+    end
     for _, char in pairs(unwanted_chars) do
         if G.CONTROLLER.held_keys[char] then
             return old(key)

@@ -105,6 +105,23 @@ TMJ.config_tab = function()
                         }
                     }
                 }
+            },
+                        {
+                n = G.UIT.R,
+                config = { align = "cl" },
+                nodes = {
+                    {
+                        n = G.UIT.C,
+                        config = { align = "cl", padding = 0.1 },
+                        nodes = {
+                            create_toggle {
+                                label = "Close TMJ when 'esc' is pressed",
+                                ref_table = TMJ.config, 
+                                ref_value = "close_on_esc"
+                            },
+                        }
+                    }
+                }
             }
         }
     }
