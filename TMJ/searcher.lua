@@ -208,46 +208,6 @@ function TMJ.FUNCS.get_centers(match_string, num_ignored, num_wanted)
     return results
 end
 
---[[
-TMJ.center_cache_maps = {}
-TMJ.key_to_order = {}
-function TMJ.FUNCS.get_centers(match_string, range_lower, range_upper)
-    if not TMJ.all_centers then
-        TMJ.FUNCS.process_centers()
-    end
-    local centers = {}
-    local cache = TMJ.center_cache_maps[match_string] or {}
-    TMJ.center_cache_maps[match_string] = cache
-    local prev = "";
-    local all_centers = TMJ.all_centers
-    for i = 1, range_upper do
-        if cache[i] then
-            prev = cache[i].key
-            if i >= range_lower then
-                table.insert(centers, cache[i])
-            end
-        else
-            local pos = (TMJ.key_to_order[prev] or 0) + 1
-            while all_centers[pos] do
-                if TMJ.FUNCS.does_match(all_centers[pos], match_string) then
-                    prev = all_centers[pos].key
-                    cache[i] = all_centers[pos]
-                    TMJ.key_to_order[all_centers[pos].key] = pos
-                    if i >= range_lower then
-                        table.insert(centers, all_centers[pos].key)
-                        break
-                    end
-                end
-                pos = pos + 1
-            end
-        end
-    end
-    return centers
-end
-]]
-
-
-TMJ.search_ord_to_all_ord = {}
 ---Mod makers: If your center cannot show up as a Card in TMJ, insert its pool name here. Joker is in here because it is added manually
 function TMJ.FUNCS.add_blacklisted_pool(pool)
     TMJ.blacklisted_pools[pool] = true
