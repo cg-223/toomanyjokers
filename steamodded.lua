@@ -139,6 +139,16 @@ SMODS.Sticker {
     },
 }
 G.localization.misc.labels.tmj_pinned = "Pinned"
+
+local oldcc = copy_card
+function copy_card(card, ...)
+    local ret = oldcc(card, ...)
+    if card.area and card.area.config.tmj then
+        SMODS.Stickers.tmj_pinned:apply(ret, false)
+    end
+    return ret
+end
+
 local oldcuib = create_UIBox_generic_options
 create_UIBox_generic_options = function(arg1, ...) --inserts the text into most collection pages without needing to hook each individual function
     if arg1.back_func == "your_collection" and arg1.contents[1].n == 4 and not TMJ.config.hide_collection_text then
