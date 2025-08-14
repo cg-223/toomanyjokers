@@ -114,6 +114,9 @@ function TMJ.FUNCS.make_cards()
                 local card = Card(G.TMJCOLLECTION[row].T.x + G.TMJCOLLECTION[row].T.w / 2, G.TMJCOLLECTION[row].T.y,
                     G.CARD_W / (size_div or 1),
                     G.CARD_H / (size_div or 1), nil, key)
+                if TMJ.config.pinned_keys[key] then
+                    SMODS.Stickers.tmj_pinned:apply(card, true)
+                end
                 if BANNERMOD and BANNERMOD.is_disabled(key) then
                     card.debuff = true
                 end

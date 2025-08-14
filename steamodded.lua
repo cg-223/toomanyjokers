@@ -30,6 +30,7 @@ function SMODS.save_mod_config(mod)
     end
     old(mod)
 end
+
 TMJ.DEBUG = true
 local scripts = { "utils", "config", "searcher", "ui", "banner" }
 local tests = {}
@@ -115,6 +116,29 @@ SMODS.DrawStep {
     end
 }
 
+SMODS.Atlas {
+    key = "pinned",
+    path = "pinned.png",
+    px = 71,
+    py = 95,
+}
+
+SMODS.Sticker {
+    key = "pinned",
+    atlas = "pinned",
+    default_compat = false,
+    badge_colour = HEX 'fda200',
+    rate = 0,
+    needs_enable_flag = true,
+    should_apply = false, --i REALLY dont want this affecting normal gameplay
+    loc_txt = {
+        name = "Pinned",
+        text = {
+            "Ctrl+click to unpin"
+        }
+    },
+}
+G.localization.misc.labels.tmj_pinned = "Pinned"
 local oldcuib = create_UIBox_generic_options
 create_UIBox_generic_options = function(arg1, ...) --inserts the text into most collection pages without needing to hook each individual function
     if arg1.back_func == "your_collection" and arg1.contents[1].n == 4 and not TMJ.config.hide_collection_text then
