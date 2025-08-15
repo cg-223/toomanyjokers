@@ -72,6 +72,6 @@ match_indent = true
 target = "functions/button_callbacks.lua"
 pattern = '''if args.key == '0' then args.key = 'o' end'''
 position = "at"
-payload = ''''''
+payload = '''if args.key == '0' and G.CONTROLLER.text_input_hook.config.ref_table and G.CONTROLLER.text_input_hook.config.ref_table.ref_value == "setup_seed" then args.key = 'o' end'''
 match_indent = true
 overwrite = false
