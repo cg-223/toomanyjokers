@@ -65,3 +65,13 @@ pattern = '''    if not G.OVERLAY_MENU and old_center and not next(SMODS.find_ca
 position = "at"
 payload = '''    if not G.OVERLAY_MENU and old_center and old_center.key and not next(SMODS.find_card(old_center.key, true)) then'''
 match_indent = true
+
+
+[[patches]]
+[patches.pattern]
+target = "functions/button_callbacks.lua"
+pattern = '''if args.key == '0' then args.key = 'o' end'''
+position = "at"
+payload = ''''''
+match_indent = true
+overwrite = false
