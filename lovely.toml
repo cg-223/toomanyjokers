@@ -75,3 +75,11 @@ position = "at"
 payload = '''if args.key == '0' and G.CONTROLLER.text_input_hook.config.ref_table and G.CONTROLLER.text_input_hook.config.ref_table.ref_value == "setup_seed" then args.key = 'o' end'''
 match_indent = true
 overwrite = false
+
+[[patches]]
+[patches.pattern]
+target = "card.lua"
+pattern = '''if self.ability and old_center and old_center.config.bonus then'''
+position = "at"
+payload = '''if self.ability and old_center and old_center.config and old_center.config.bonus then'''
+match_indent = true
