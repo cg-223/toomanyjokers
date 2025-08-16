@@ -131,6 +131,7 @@ SMODS.Sticker {
     rate = 0,
     needs_enable_flag = true,
     should_apply = false, --i REALLY dont want this affecting normal gameplay
+    no_collection = true,
     loc_txt = {
         name = "Pinned",
         text = {
