@@ -152,7 +152,7 @@ end
 
 local oldcuib = create_UIBox_generic_options
 create_UIBox_generic_options = function(arg1, ...) --inserts the text into most collection pages without needing to hook each individual function
-    if arg1.back_func == "your_collection" and arg1.contents[1].n == 4 and not TMJ.config.hide_collection_text then
+    if arg1 and arg1.back_func == "your_collection" and arg1.contents and arg1.contents[1] and arg1.contents[1].n == 4 and not (TMJ.config and TMJ.config.hide_collection_text) then
         table.insert(arg1.contents, {
             n = G.UIT.R,
             config = { align = "cm", minh = 0.5 },
