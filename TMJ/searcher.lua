@@ -222,15 +222,18 @@ end
 TMJ.blacklisted_sets = table_into_hashset { "Stake", "Seal", "Back", "Sleeve" }
 function TMJ.FUNCS.process_centers()
     TMJ.all_centers = {}
+    local seen = {}
     --insert pinned things first
     for key, v in pairs(TMJ.config.pinned_keys) do
         if v then
+            seen[key] = true
             table.insert(TMJ.all_centers, G.P_CENTERS[key])
         end
     end
     --insert jokers first to be at the top of the list
     for _, center in pairs(G.P_CENTER_POOLS.Joker) do
-        if not TMJ.config.pinned_keys[center.key] then
+        if not TMJ.config.pinned_keys[center.key] and not seen[center.key] then
+            seen[center.key] = true
             table.insert(TMJ.all_centers, center)
         end
     end
@@ -238,7 +241,8 @@ function TMJ.FUNCS.process_centers()
         if not TMJ.blacklisted_pools[poolName] then
             for l, center in pairs(pool) do
                 if not center.set or not TMJ.blacklisted_sets[center.set] then
-                    if not TMJ.config.pinned_keys[center.key] then
+                    if not TMJ.config.pinned_keys[center.key] and not seen[center.key] then
+                        seen[center.key] = true
                         table.insert(TMJ.all_centers, center)
                     end
                 end
