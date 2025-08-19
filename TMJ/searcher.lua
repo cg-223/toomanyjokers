@@ -68,6 +68,8 @@ local main_funcs = {
         end
     end
 }
+
+
 --fun(center) -> string | {string, ...}
 TMJ.SEARCH_FIELD_FUNCS = main_funcs
 TMJ.INVALIDATE_CENTER_FUNCS = {

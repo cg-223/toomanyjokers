@@ -73,7 +73,9 @@ SMODS.Keybind({
     key_pressed = "t",
     action = function()
         if G.TMJUI then
-            G.FUNCS.CloseTMJ()
+            if not TMJ.config.close_on_esc then
+                G.FUNCS.CloseTMJ()
+            end
         else
             TMJ.FUNCS.OPENFROMKEYBIND()
         end
@@ -81,7 +83,7 @@ SMODS.Keybind({
 })
 
 local old = love.keypressed
-local wanted_chars = table_into_hashset(collect(string.gmatch("abcdefghijklmnopqrsuvwxyz[]!", ".")))
+local wanted_chars = table_into_hashset(collect(string.gmatch("abcdefghijklmnopqrstuvwxyz[]!", ".")))
 wanted_chars["return"] = true
 local unwanted_chars = collect(string.gmatch("lctrl rctrl lalt ralt", "(.-) "))
 function love.keypressed(key)
