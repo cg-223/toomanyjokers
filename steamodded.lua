@@ -7,7 +7,7 @@ TMJ.CACHES = {
     sorted_pools = {},
 }
 SMODS.load_mod_config(TMJ)
-if not (TMJ.config and TMJ.config.rows and TMJ.config.columns and TMJ.config.size and TMJ.config.pinned_keys and (TMJ.config.hide_undiscovered ~= nil) and (TMJ.config.close_on_esc ~= nil) and (TMJ.config.scroll_full_page ~= nil)) then
+if not (TMJ.config and TMJ.config.rows and TMJ.config.columns and TMJ.config.size and TMJ.config.pinned_keys and (TMJ.config.disable_ctrl_enter ~= nil) and (TMJ.config.hide_undiscovered ~= nil) and (TMJ.config.close_on_esc ~= nil) and (TMJ.config.scroll_full_page ~= nil)) then
     TMJ.config = TMJ.config or {}
     TMJ.config = {
         rows = TMJ.config.rows or 4,
@@ -16,7 +16,8 @@ if not (TMJ.config and TMJ.config.rows and TMJ.config.columns and TMJ.config.siz
         pinned_keys = TMJ.config.pinned_keys or {},
         hide_undiscovered = TMJ.config.hide_undiscovered or false,
         close_on_esc = TMJ.config.close_on_esc or false,
-        scroll_full_page = TMJ.config.scroll_full_page or false
+        scroll_full_page = TMJ.config.scroll_full_page or false,
+        disable_ctrl_enter = TMJ.config.disable_ctrl_enter or false,
     }
     SMODS.save_mod_config(TMJ)
 end
@@ -85,6 +86,37 @@ wanted_chars["return"] = true
 local unwanted_chars = collect(string.gmatch("lctrl rctrl lalt ralt", "(.-) "))
 function love.keypressed(key)
     if key == "escape" and G.TMJUI and TMJ.config.close_on_esc then
+        G.FUNCS.CloseTMJ()
+        return
+    end
+    if not TMJ.config.disable_ctrl_enter and key == "return" and G.CONTROLLER.held_keys.lctrl and G.TMJUI and G.CONTROLLER.text_input_hook and G.TMJUI:get_UIE_by_ID("TMJTEXTINP") and G.TMJUI:get_UIE_by_ID("TMJTEXTINP").children[1].children[1].children[1] == G.CONTROLLER.text_input_hook then
+        TMJ.thegreatfilter = G.ENTERED_FILTER
+        G.ENTERED_FILTER = ""
+        TMJ.scrolled_amount = 0
+        TMJ.FUNCS.reload()
+        local first_card = G.TMJCOLLECTION[1].cards[1]
+        if first_card then
+            local _area
+            if first_card.ability.set == 'Joker' then
+                _area = G.jokers
+            elseif first_card.playing_card then
+                if G.hand and G.hand.config.card_count ~= 0 then
+                    _area = G.hand
+                else 
+                    _area = G.deck
+                end
+            elseif first_card.ability.consumeable then
+                _area = G.consumeables
+            end
+            if _area then
+                local new_card = copy_card(first_card, nil, nil, first_card.playing_card)
+                new_card:add_to_deck()
+                if first_card.playing_card then
+                    table.insert(G.playing_cards, new_card)
+                end
+                _area:emplace(new_card)
+            end
+        end
         G.FUNCS.CloseTMJ()
         return
     end
