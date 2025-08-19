@@ -80,7 +80,7 @@ SMODS.Keybind({
 })
 
 local old = love.keypressed
-local wanted_chars = table_into_hashset(collect(string.gmatch("abcdefghijklmnopqrsuvwxyz0123456789[]!", ".")))
+local wanted_chars = table_into_hashset(collect(string.gmatch("abcdefghijklmnopqrsuvwxyz[]!", ".")))
 wanted_chars["return"] = true
 local unwanted_chars = collect(string.gmatch("lctrl rctrl lalt ralt", "(.-) "))
 function love.keypressed(key)
