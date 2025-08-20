@@ -146,21 +146,23 @@ TMJ.config_tab = function()
 end
 
 TMJ.FUNCS.CHEAT_TOGGLE = function()
-    return {
-        n = G.UIT.R,
-        config = { align = "cl" },
-        nodes = {
-            {
-                n = G.UIT.C,
-                config = { align = "cl", padding = 0.1 },
-                nodes = {
-                    create_toggle {
-                        label = "Disable auto-creating a joker on ctrl+enter",
-                        ref_table = TMJ.config,
-                        ref_value = "disable_ctrl_enter"
-                    },
+    if not _RELEASE_MODE then
+        return {
+            n = G.UIT.R,
+            config = { align = "cl" },
+            nodes = {
+                {
+                    n = G.UIT.C,
+                    config = { align = "cl", padding = 0.1 },
+                    nodes = {
+                        create_toggle {
+                            label = "Disable auto-creating a joker on ctrl+enter",
+                            ref_table = TMJ.config,
+                            ref_value = "disable_ctrl_enter"
+                        },
+                    }
                 }
             }
         }
-    }
+    end
 end

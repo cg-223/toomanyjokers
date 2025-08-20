@@ -21,6 +21,7 @@ if not (TMJ.config and TMJ.config.rows and TMJ.config.columns and TMJ.config.siz
     }
     SMODS.save_mod_config(TMJ)
 end
+if _RELEASE_MODE then TMJ.config.disable_ctrl_enter = true end
 local old = SMODS.save_mod_config
 function SMODS.save_mod_config(mod)
     if mod == TMJ then
