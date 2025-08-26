@@ -172,7 +172,7 @@ function TMJ.FUNCS.make_tag_stuff()
     local uib = UIBox {
         definition = { n = G.UIT.ROOT, config = { align = 'cm', r = 0.01 }, nodes = {
             UIBox_dyn_container(TMJ.FUNCS.inner_tags()) } },
-        config = { align = 'cri', offset = { x = 1, y = 0 }, major = major, bond = 'Weak' }
+        config = { align = 'cr', offset = { x = 0, y = 0 }, major = major, bond = 'Weak' }
     }
     G.TMJTAGS = uib
 end
@@ -180,9 +180,21 @@ end
 function TMJ.FUNCS.inner_tags()
     local tags = {}
     local mods = TMJ.FUNCS.get_valid_mods()
-    for i, v in pairs(mods) do
-        tags[#tags + 1] = {n = G.UIT.R, nodes = {TMJ.FUNCS.buildModtag(v)}}
+    local max_rows = 12
+    local num_cols = math.ceil(#mods/max_rows)
+    for i = 0, math.ceil(#mods/num_cols) do
+        local cur_mods = {}
+        for j = 1, num_cols do
+            cur_mods[#cur_mods+1] = mods[i*num_cols+j] --lea ?!?!??!
+        end
+        local tags_nodes = {}
+        for _, v in ipairs(cur_mods) do
+            tags_nodes[#tags_nodes+1] = TMJ.FUNCS.buildModtag(v)
+        end
+        tags[#tags+1] = {n = G.UIT.R, nodes = tags_nodes}
     end
+
+
     return {{
         n = G.UIT.C,
         nodes = tags
