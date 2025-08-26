@@ -83,3 +83,12 @@ pattern = '''if self.ability and old_center and old_center.config.bonus then'''
 position = "at"
 payload = '''if self.ability and old_center and old_center.config and old_center.config.bonus then'''
 match_indent = true
+
+
+[[patches]]
+[patches.pattern]
+target = "engine/ui.lua"
+pattern = '''    if self.config.colour[4] > 0.01 then'''
+position = "at"
+payload = '''    if self.config.colour and (self.config.colour[4] > 0.01) then'''
+match_indent = true

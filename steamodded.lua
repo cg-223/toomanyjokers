@@ -44,6 +44,7 @@ for i, v in ipairs(scripts) do
 end
 G.FUNCS.CloseTMJ = function()
     G.TMJUI:remove()
+    G.TMJTAGS:remove()
     G.TMJUI = nil
     for i, v in pairs(G.TMJCOLLECTION) do
         v:remove()
@@ -78,7 +79,7 @@ SMODS.Keybind({
                 G.FUNCS.CloseTMJ()
             end
         else
-            TMJ.FUNCS.OPENFROMKEYBIND()
+            TMJ.FUNCS.reload()
         end
     end
 })
