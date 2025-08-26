@@ -140,7 +140,25 @@ TMJ.config_tab = function()
                     }
                 }
             },
+            {
+                n = G.UIT.R,
+                config = { align = "cl" },
+                nodes = {
+                    {
+                        n = G.UIT.C,
+                        config = { align = "cl", padding = 0.1 },
+                        nodes = {
+                            create_toggle {
+                                label = "Scroll TMJ using arrow keys",
+                                ref_table = TMJ.config,
+                                ref_value = "arrow_key_scroll"
+                            },
+                        }
+                    }
+                }
+            },
             TMJ.FUNCS.CHEAT_TOGGLE(),
+
         }
     }
 end

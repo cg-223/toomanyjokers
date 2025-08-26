@@ -7,20 +7,19 @@ TMJ.CACHES = {
     sorted_pools = {},
 }
 SMODS.load_mod_config(TMJ)
-if not (TMJ.config and TMJ.config.rows and TMJ.config.columns and TMJ.config.size and TMJ.config.pinned_keys and (TMJ.config.disable_ctrl_enter ~= nil) and (TMJ.config.hide_undiscovered ~= nil) and (TMJ.config.close_on_esc ~= nil) and (TMJ.config.scroll_full_page ~= nil)) then
-    TMJ.config = TMJ.config or {}
-    TMJ.config = {
-        rows = TMJ.config.rows or 4,
-        columns = TMJ.config.columns or 4,
-        size = TMJ.config.size or 0.7,
-        pinned_keys = TMJ.config.pinned_keys or {},
-        hide_undiscovered = TMJ.config.hide_undiscovered or false,
-        close_on_esc = TMJ.config.close_on_esc or false,
-        scroll_full_page = TMJ.config.scroll_full_page or false,
-        disable_ctrl_enter = TMJ.config.disable_ctrl_enter or false,
-    }
-    SMODS.save_mod_config(TMJ)
-end
+TMJ.config = TMJ.config or {}
+TMJ.config = {
+    rows = TMJ.config.rows or 4,
+    columns = TMJ.config.columns or 4,
+    size = TMJ.config.size or 0.7,
+    pinned_keys = TMJ.config.pinned_keys or {},
+    hide_undiscovered = TMJ.config.hide_undiscovered or false,
+    close_on_esc = TMJ.config.close_on_esc or false,
+    scroll_full_page = TMJ.config.scroll_full_page or false,
+    disable_ctrl_enter = TMJ.config.disable_ctrl_enter or false,
+    arrow_key_scroll = TMJ.config.arrow_key_scroll or false
+}
+SMODS.save_mod_config(TMJ)
 if _RELEASE_MODE then TMJ.config.disable_ctrl_enter = true end
 local old = SMODS.save_mod_config
 function SMODS.save_mod_config(mod)
@@ -70,6 +69,19 @@ function G.FUNCS.toggle(e, ...)
     end
 end
 
+local upd_ref = love.update
+function love.update(dt)
+    upd_ref(dt)
+    if G.TMJUI and TMJ.held_arrow and TMJ.held_arrow_time and not TMJ.config.scroll_full_page then
+        if love.timer.getTime() - 0.35 > TMJ.held_arrow_time then
+            if love.timer.getTime() - 0.15 > TMJ.last_arrow_time then
+                TMJ.last_arrow_time = love.timer.getTime()
+                TMJ.FUNCS.scroll(TMJ.held_arrow == "up" and -1 or 1)
+            end
+        end
+    end
+end
+
 SMODS.Keybind({
     key = "openTMJ",
     key_pressed = "t",
@@ -93,6 +105,20 @@ function love.keypressed(key)
         G.FUNCS.CloseTMJ()
         return
     end
+    if TMJ.config.arrow_key_scroll and G.TMJUI then
+        local mul = TMJ.config.scroll_full_page and TMJ.config.rows or 1
+        if key == "up" then
+            TMJ.held_arrow = key 
+            TMJ.held_arrow_time = love.timer.getTime()
+            TMJ.last_arrow_time = love.timer.getTime()
+            TMJ.FUNCS.scroll(-1 * mul)
+        elseif key == "down" then
+            TMJ.held_arrow = key 
+            TMJ.held_arrow_time = love.timer.getTime()
+            TMJ.last_arrow_time = love.timer.getTime()
+            TMJ.FUNCS.scroll(1 * mul)
+        end
+    end
     if not TMJ.config.disable_ctrl_enter and key == "return" and G.CONTROLLER.held_keys.lctrl and G.TMJUI and G.CONTROLLER.text_input_hook and G.TMJUI:get_UIE_by_ID("TMJTEXTINP") and G.TMJUI:get_UIE_by_ID("TMJTEXTINP").children[1].children[1].children[1] == G.CONTROLLER.text_input_hook then
         TMJ.thegreatfilter = G.ENTERED_FILTER
         G.ENTERED_FILTER = ""
@@ -106,7 +132,7 @@ function love.keypressed(key)
             elseif first_card.playing_card then
                 if G.hand and G.hand.config.card_count ~= 0 then
                     _area = G.hand
-                else 
+                else
                     _area = G.deck
                 end
             elseif first_card.ability.consumeable then
@@ -133,6 +159,14 @@ function love.keypressed(key)
         G.FUNCS.select_text_input(G.TMJUI:get_UIE_by_ID("TMJTEXTINP").children[1])
     end
     old(key)
+end
+
+local oldrelease = love.keyreleased
+function love.keyreleased(key)
+    oldrelease(key)
+    if key == "up" or key == "down" then
+        TMJ.held_arrow = nil
+    end
 end
 
 SMODS.Atlas {
