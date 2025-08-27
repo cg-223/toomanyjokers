@@ -176,15 +176,6 @@ SMODS.Atlas {
     py = 34
 }
 
-SMODS.DrawStep {
-    key = 'tmjui_draw',
-    order = 100,
-    func = function(self)
-        if G.TMJUI and G.TMJUI.draw then
-            G.TMJUI:draw()
-        end
-    end
-}
 
 SMODS.Atlas {
     key = "pinned",
