@@ -3,7 +3,7 @@ function TMJ.FUNCS.ui_box()
     return UIBox {
         definition = { n = G.UIT.ROOT, config = { align = 'cm', r = 0.01 }, nodes = {
             UIBox_dyn_container(def) } },
-        config = { align = 'cli', offset = { x = -1, y = G.ROOM.T.h - 2.333 }, major = G.ROOM_ATTACH, bond = 'Weak' }
+        config = { align = 'cli', offset = { x = -1, y = G.ROOM.T.h - 2.333 }, instance_type = "POPUP", major = G.ROOM_ATTACH, bond = 'Weak' }
     }
 end
 
@@ -172,7 +172,7 @@ function TMJ.FUNCS.make_tag_stuff()
     local uib = UIBox {
         definition = { n = G.UIT.ROOT, config = { align = 'cm', r = 0.01 }, nodes = {
             UIBox_dyn_container(TMJ.FUNCS.inner_tags()) } },
-        config = { align = 'cr', offset = { x = 0, y = 0 }, major = major, bond = 'Weak' }
+        config = { align = 'cr', offset = { x = 0, y = 0 }, instance_type = "POPUP", major = major, bond = 'Weak' }
     }
     G.TMJTAGS = uib
 end
