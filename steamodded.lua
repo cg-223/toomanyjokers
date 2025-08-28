@@ -45,6 +45,8 @@ G.FUNCS.CloseTMJ = function()
     G.TMJUI:remove()
     G.TMJTAGS:remove()
     G.TMJUI = nil
+    TMJ.thegreatfilter = ""
+    G.ENTERED_FILTER = ""
     for i, v in pairs(G.TMJCOLLECTION) do
         v:remove()
     end
@@ -106,7 +108,7 @@ function love.keypressed(key)
         return
     end
     if TMJ.config.arrow_key_scroll and G.TMJUI then
-        local mul = TMJ.config.scroll_full_page and TMJ.config.rows or 1
+        local mul = ((G.CONTROLLER.held_keys.lctrl or G.CONTROLLER.held_keys.rctrl or TMJ.config.scroll_full_page) and TMJ.config.rows) or 1
         if key == "up" then
             TMJ.held_arrow = key 
             TMJ.held_arrow_time = love.timer.getTime()
