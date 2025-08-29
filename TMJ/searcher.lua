@@ -3,7 +3,11 @@ local main_funcs = {
         return center.name
     end,
     function(center)
-        return "key" .. (center.key or "")
+        local badge = SMODS.Rarity:get_rarity_badge(center.set)
+        if badge == "ERROR" then
+            badge = nil
+        end
+        return "key" .. (badge or center.set or "")
     end,
     function(center)
         local raritystring
