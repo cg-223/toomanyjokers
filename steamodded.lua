@@ -33,7 +33,7 @@ function SMODS.save_mod_config(mod)
 end
 
 TMJ.DEBUG = true
-local scripts = { "utils", "config", "searcher", "ui", "banner" }
+local scripts = { "utils", "config", "searcher", "ui", "banner", "compat" }
 local tests = {}
 for i, v in ipairs(scripts) do
     assert(SMODS.load_file("TMJ/" .. v .. ".lua"))()
