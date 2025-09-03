@@ -12,8 +12,8 @@
 	"badge_colour": "FFFFFF",
 	"badge_text_colour": "FFFFFF",
 	"allow_redistribution": true,
-	"version": "4.6.1",
+	"version": "4.7.0",
 	"dependencies": [
 		"Steamodded (>=1.0.0~BETA-0715a)"
-	],
+	]
 }
