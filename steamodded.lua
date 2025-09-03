@@ -8,17 +8,23 @@ TMJ.CACHES = {
 }
 SMODS.load_mod_config(TMJ)
 TMJ.config = TMJ.config or {}
-TMJ.config = {
-    rows = TMJ.config.rows or 4,
-    columns = TMJ.config.columns or 4,
-    size = TMJ.config.size or 0.7,
-    pinned_keys = TMJ.config.pinned_keys or {},
-    hide_undiscovered = TMJ.config.hide_undiscovered or false,
-    close_on_esc = TMJ.config.close_on_esc or false,
-    scroll_full_page = TMJ.config.scroll_full_page or false,
-    disable_ctrl_enter = TMJ.config.disable_ctrl_enter or false,
-    arrow_key_scroll = TMJ.config.arrow_key_scroll or false
+TMJ.default_config = {
+    rows = 4,
+    columns = 4,
+    size = 0.7,
+    pinned_keys = {},
+    hide_undiscovered = false,
+    close_on_esc = false,
+    scroll_full_page = false,
+    disable_ctrl_enter = false,
+    arrow_key_scroll = false,
+    show_all_tags = false,
 }
+
+for i, v in pairs(TMJ.default_config) do
+    TMJ.config[i] = TMJ.config[i] or v
+end
+
 SMODS.save_mod_config(TMJ)
 if _RELEASE_MODE then TMJ.config.disable_ctrl_enter = true end
 local old = SMODS.save_mod_config

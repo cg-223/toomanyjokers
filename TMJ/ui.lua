@@ -87,7 +87,7 @@ function TMJ.FUNCS.make_card_areas()
             0, 0,                                                                                --position
             card_limit * G.CARD_W / card_scale,                                                  --width of cardarea
             0.95 * G.CARD_H / card_scale,                                                        --height of cardarea
-            { card_limit = card_limit, type = 'title', highlight_limit = 0, collection = true }) --basic config for a cardarea
+            { card_limit = card_limit, type = 'title_2', highlight_limit = 0, collection = true }) --basic config for a cardarea
         area.config.tmj = true
         G.TMJCOLLECTION[i] = area
         table.insert(areas, {
@@ -211,7 +211,7 @@ function TMJ.FUNCS.get_valid_mods()
         end
     end
     for i, v in pairs(SMODS.Mods) do
-        if v.can_load and has_centers[v.id] then
+        if v.can_load and v.name and (has_centers[v.id] or TMJ.config.show_all_tags) then
             table.insert(ret, v)
         end
     end
@@ -281,10 +281,15 @@ function TMJ.FUNCS.buildModtag(mod)
     tag_sprite.click = function(self)
         play_sound('button', 1, 0.3)
         G.ROOM.jiggle = G.ROOM.jiggle + 0.5
-        TMJ.thegreatfilter = "mod:"..mod.name
-        G.ENTERED_FILTER = ""
-        TMJ.scrolled_amount = 0
-        TMJ.FUNCS.reload()
+        if G.CONTROLLER.held_keys.lshift then
+            G.FUNCS.CloseTMJ()
+            G.FUNCS["openModUI_" .. mod.id](self)
+        else
+            TMJ.thegreatfilter = "mod:"..mod.name
+            G.ENTERED_FILTER = ""
+            TMJ.scrolled_amount = 0
+            TMJ.FUNCS.reload()
+        end
     end
     tag_sprite.stop_hover = function(_self) _self.hovering = false; Node.stop_hover(_self); _self.hover_tilt = 0 end
 
