@@ -114,15 +114,15 @@ function TMJ.FUNCS.get_center_strings(center)
 end
 
 function TMJ.FUNCS.does_match(center, match_string)
-    local strings = TMJ.FUNCS.get_center_strings(center)
-    local all_match_strings = string.split(lower_spaceless(match_string), ",")
-    local use_any, use_regex
-    local remove = {}
     for i, v in pairs(TMJ.INVALIDATE_CENTER_FUNCS) do
         if v(center) then
             return false
         end
     end
+    local strings = TMJ.FUNCS.get_center_strings(center)
+    local all_match_strings = string.split(lower_spaceless(match_string), ",")
+    local use_any, use_regex
+    local remove = {}
     --extract magic terms
     for i, v in ipairs(all_match_strings) do
         if v == "{any}" then
