@@ -78,6 +78,9 @@ local main_funcs = {
 TMJ.SEARCH_FIELD_FUNCS = main_funcs
 TMJ.INVALIDATE_CENTER_FUNCS = {
     function(center)
+        return not center.set
+    end,
+    function(center)
         return not center.key
     end,
     function(center)
