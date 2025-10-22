@@ -89,21 +89,6 @@ function love.update(dt)
         end
     end
 end
-
-SMODS.Keybind({
-    key = "openTMJ",
-    key_pressed = "t",
-    action = function()
-        if G.TMJUI then
-            if not TMJ.config.close_on_esc then
-                G.FUNCS.CloseTMJ()
-            end
-        else
-            TMJ.FUNCS.reload()
-        end
-    end
-})
-
 local old = love.keypressed
 local wanted_chars = table_into_hashset(collect(string.gmatch("abcdefghijklmnopqrstuvwxyz[]!", ".")))
 wanted_chars["return"] = true
@@ -112,6 +97,17 @@ function love.keypressed(key)
     if key == "escape" and G.TMJUI and TMJ.config.close_on_esc then
         G.FUNCS.CloseTMJ()
         return
+    end
+    if key == "t" then
+        if G.TMJUI then
+            if not TMJ.config.close_on_esc then
+                G.FUNCS.CloseTMJ()
+                return
+            end
+        else
+            TMJ.FUNCS.reload()
+            return
+        end
     end
     if TMJ.config.arrow_key_scroll and G.TMJUI then
         local mul = ((G.CONTROLLER.held_keys.lctrl or G.CONTROLLER.held_keys.rctrl or TMJ.config.scroll_full_page) and TMJ.config.rows) or 1
