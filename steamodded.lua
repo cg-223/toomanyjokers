@@ -98,7 +98,7 @@ function love.keypressed(key)
         G.FUNCS.CloseTMJ()
         return
     end
-    if key == "t" then
+    if key == "t" and not G.CONTROLLER.text_input_hook then
         if G.TMJUI then
             if not TMJ.config.close_on_esc then
                 G.FUNCS.CloseTMJ()
