@@ -214,6 +214,7 @@ local oldcc = copy_card
 function copy_card(card, ...)
     local ret = oldcc(card, ...)
     if card.area and card.area.config.tmj then
+        ret.ability = ret.ability or {}
         SMODS.Stickers.tmj_pinned:apply(ret, false)
     end
     return ret
