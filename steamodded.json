@@ -14,7 +14,6 @@
 	"allow_redistribution": true,
 	"version": "4.7.1",
 	"dependencies": [
-		"Steamodded (>=1.0.0~BETA-0715a)",
-		"Steamodded (<=1.0.0~BETA-1026a)"
+		"Steamodded (>=1.0.0~BETA-0715a)"
 	]
 }
