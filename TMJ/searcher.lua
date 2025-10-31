@@ -7,7 +7,7 @@ local main_funcs = {
         if badge == "ERROR" then
             badge = nil
         end
-        return "key" .. (badge or center.set or "")
+        return "key:" .. (badge or center.set or "")
     end,
     function(center)
         local raritystring
