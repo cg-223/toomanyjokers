@@ -110,3 +110,22 @@ pattern = '''                card.T.r = 0.1*(-#self.cards/2 - 0.5 + k)/(#self.ca
 position = "at"
 payload = '''                card.T.r = 0.1*(-#self.cards/2 - 0.5 + k)/(#self.cards)+ (((self and self.config and self.config.tmj) or G.SETTINGS.reduced_motion) and 0 or 1)*0.02*math.sin(2*G.TIMERS.REAL+card.T.x)'''
 match_indent = true
+
+
+
+[[patches]]
+[patches.pattern]
+target = "game.lua"
+pattern = '''if self.CONTROLLER.dragging.target and self.CONTROLLER.dragging.target ~= self.CONTROLLER.focused.target then'''
+position = "at"
+payload = '''if self.CONTROLLER.dragging.target and self.CONTROLLER.dragging.target ~= self.CONTROLLER.focused.target and not (self.CONTROLLER.dragging.target.area and self.CONTROLLER.dragging.target.area.config.tmj) then'''
+match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = "cardarea.lua"
+pattern = '''if G.CONTROLLER.dragging.target ~= self.cards[i] then self.cards[i]:draw(v) end'''
+position = "at"
+payload = '''if G.CONTROLLER.dragging.target ~= self.cards[i] or self.config.tmj then self.cards[i]:draw(v) end'''
+match_indent = true
+
