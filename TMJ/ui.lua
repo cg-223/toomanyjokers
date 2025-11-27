@@ -193,6 +193,7 @@ function TMJ.FUNCS.place_tags_before_tmjui()
             local put_tags = math.min(uiindex, tagsindex)
             local put_ui = put_tags == uiindex and tagsindex or uiindex
             G.I.POPUP[put_tags], G.I.POPUP[put_ui] = tmjtags, tmjui
+            break
         end
     end
 end
