@@ -1,3 +1,4 @@
+---@diagnostic disable: unbalanced-assignments
 function TMJ.FUNCS.ui_box()
     local def = TMJ.FUNCS.inner_nodes()
     return UIBox {
@@ -175,6 +176,25 @@ function TMJ.FUNCS.make_tag_stuff()
         config = { align = 'cr', offset = { x = 0, y = 0 }, instance_type = "POPUP", major = major, bond = 'Weak' }
     }
     G.TMJTAGS = uib
+
+    TMJ.FUNCS.place_tags_before_tmjui()
+end
+
+function TMJ.FUNCS.place_tags_before_tmjui()
+    local tmjui, uiindex = G.TMJUI
+    local tmjtags, tagsindex = G.TMJTAGS
+    for i, v in ipairs(G.I.POPUP) do
+        if v == tmjtags then
+            tagsindex = i
+        elseif v == tmjui then
+            uiindex = i
+        end
+        if uiindex and tagsindex then
+            local put_tags = math.min(uiindex, tagsindex)
+            local put_ui = put_tags == uiindex and tagsindex or uiindex
+            G.I.POPUP[put_tags], G.I.POPUP[put_ui] = tmjtags, tmjui
+        end
+    end
 end
 
 function TMJ.FUNCS.inner_tags()
