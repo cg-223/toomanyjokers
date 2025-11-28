@@ -12,20 +12,28 @@ You can use multiple search terms using commas. All provided search terms must m
 
 There are several special search terms, surrounded by braces (`{}`). These allow you to specify more about your search. They MUST come before any normal search terms.
 
-`{any}`
+## `{any}`
 
 {any} specifies that if ANY of the search terms are matched, a card will show up. Using the example above, `{any}, +mult, xmult` will show jokers that give either +mult or xmult.
 
-`{regex}`
+## `{regex}`
 
 {regex} specifies that we should use Lua's pattern matcher instead of just a raw search. Keep in mind this is Lua patterns, not actual regex.
 
-Additionally, any non-special search term can be prefixed with `!` to specify that you want to negate that search term (so if it IS matched, do not show the card)
+## `{edition:modprefix_editionkey}`
 
-A use of all these is as follows:
+{edition} will apply the specified edition to all cards in TMJ. This is useful for mod developers making shaders that want to see how their shader looks on various (or specific) jokers.
 
-`{any}, {regex}, legendary, cryptid, xmult.*hearts, !joker`
+## `{ace:<lua code here>}`
 
-Explanation: Any joker that is either legendary, is from cryptid (or is the Spectral card Cryptid), gives xmult AND has to do with hearts (assuming the xmult came first), or is not a joker.
+{ace} will run the lua code as the block of a function (or just a single expression e.g. `center.pools.Kitties`, or in the case of a full function body `if center.pools.Kitties then return true end`) given the argument of `center`. If it returns `false`, `nil`, or errors (which will be caught), then the center passed into the function will not show in TMJ.
+
+It is okay for the function given to error, it will be treated as if the function returned false.
+
+This is helpful for... uh.... uhm.... idk but it's cool right?
+
+## `!`
+Any non-special search term can be prefixed with `!` to specify that you want to negate that search term (so if it IS matched, do not show the card)
 
 Credits to Dimserene for the idea to create this mod.
+
