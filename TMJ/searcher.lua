@@ -1,3 +1,4 @@
+local hebrewnotation = require("Mods.Talisman.big-num.notations.hebrewnotation")
 local main_funcs = {
     function(center)
         return center.name
@@ -121,6 +122,7 @@ function TMJ.FUNCS.does_match(center, match_string)
     end
     local strings = TMJ.FUNCS.get_center_strings(center)
     local all_match_strings = string.split(lower_spaceless(match_string), ",")
+    local other_match_strings = string.split(match_string, ",")
     local use_any, use_regex
     local remove = {}
     --extract magic terms
@@ -132,6 +134,29 @@ function TMJ.FUNCS.does_match(center, match_string)
             table.insert(remove, i)
             use_regex = true
         elseif string.match(v, "{edition:.+}") then
+            table.insert(remove, i)
+        elseif string.match(v, "{ace:.+}") then
+            local v = other_match_strings[i]
+            local inner = v:sub(1, #v - 1):sub(6)
+            local func_str = "return function(center) return " .. inner .. " end"
+            local func, err = load(func_str, "TMJ_EVAL")
+            if func then
+                local succ, res = pcall(func(), center)
+                if not (succ and res) then
+                    return false
+                end
+            else
+                local func_str = "return function(center) " .. inner .. " end"
+                local func = load(func_str, "TMJ_EVAL")
+                if func then
+                    local succ, res = pcall(func(), center)
+                    if not (succ and res) then
+                        return false
+                    end
+                else
+                    print(func_str, err)
+                end
+            end
             table.insert(remove, i)
         end
     end
