@@ -94,8 +94,8 @@ function collect(iter)
 end
 
 function is_debugplus_console_open()
-    local dbp = require("debugplus.console")
-    if dbp and dbp.isConsoleFocused and dbp.isConsoleFocused() then
+    local succ, dbp = pcall(require, "debugplus.console")
+    if succ and dbp and dbp.isConsoleFocused and dbp.isConsoleFocused() then
         return true
     end
 end
