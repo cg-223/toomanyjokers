@@ -134,7 +134,7 @@ function TMJ.FUNCS.does_match(center, match_string)
             use_regex = true
         elseif string.match(v, "{edition:.+}") then
             table.insert(remove, i)
-        elseif string.match(v, "{ace:.+}") then
+        elseif not TMJ.config.disable_cheats and string.match(v, "{ace:.+}") then
             local v = other_match_strings[i]
             local inner = v:sub(1, #v - 1):sub(6)
             local func_str = "return function(center) return " .. inner .. " end"

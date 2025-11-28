@@ -194,9 +194,9 @@ TMJ.FUNCS.CHEAT_TOGGLE = function()
                     config = { align = "cl", padding = 0.1 },
                     nodes = {
                         create_toggle {
-                            label = "Disable auto-creating a joker on ctrl+enter",
+                            label = "Disable cheats",
                             ref_table = TMJ.config,
-                            ref_value = "disable_ctrl_enter"
+                            ref_value = "disable_cheats"
                         },
                     }
                 }

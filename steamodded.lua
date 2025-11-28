@@ -16,7 +16,7 @@ TMJ.default_config = {
     hide_undiscovered = false,
     close_on_esc = false,
     scroll_full_page = false,
-    disable_ctrl_enter = false,
+    disable_cheats = false,
     arrow_key_scroll = false,
     show_all_tags = false,
 }
@@ -26,7 +26,7 @@ for i, v in pairs(TMJ.default_config) do
 end
 
 SMODS.save_mod_config(TMJ)
-if _RELEASE_MODE then TMJ.config.disable_ctrl_enter = true end
+if _RELEASE_MODE then TMJ.config.disable_cheats = true end
 local old = SMODS.save_mod_config
 function SMODS.save_mod_config(mod)
     if mod == TMJ then
@@ -86,6 +86,10 @@ end
 local upd_ref = love.update
 function love.update(dt)
     upd_ref(dt)
+    if TMJ.config.disable_ctrl_enter then
+        TMJ.config.disable_cheats = true
+    end
+    
     if G.TMJUI and TMJ.held_arrow and TMJ.held_arrow_time and not TMJ.config.scroll_full_page then
         if love.timer.getTime() - 0.35 > TMJ.held_arrow_time then
             if love.timer.getTime() - 0.15 > TMJ.last_arrow_time then
@@ -129,7 +133,7 @@ function love.keypressed(key)
             TMJ.FUNCS.scroll(1 * mul)
         end
     end
-    if not TMJ.config.disable_ctrl_enter and key == "return" and G.CONTROLLER.held_keys.lctrl and G.TMJUI and G.CONTROLLER.text_input_hook and G.TMJUI:get_UIE_by_ID("TMJTEXTINP") and G.TMJUI:get_UIE_by_ID("TMJTEXTINP").children[1].children[1].children[1] == G.CONTROLLER.text_input_hook then
+    if not TMJ.config.disable_cheats and key == "return" and G.CONTROLLER.held_keys.lctrl and G.TMJUI and G.CONTROLLER.text_input_hook and G.TMJUI:get_UIE_by_ID("TMJTEXTINP") and G.TMJUI:get_UIE_by_ID("TMJTEXTINP").children[1].children[1].children[1] == G.CONTROLLER.text_input_hook then
         TMJ.thegreatfilter = G.ENTERED_FILTER
         G.ENTERED_FILTER = ""
         TMJ.scrolled_amount = 0
