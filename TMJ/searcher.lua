@@ -1,4 +1,3 @@
-local hebrewnotation = require("Mods.Talisman.big-num.notations.hebrewnotation")
 local main_funcs = {
     function(center)
         return center.name
