@@ -131,6 +131,8 @@ function TMJ.FUNCS.does_match(center, match_string)
         elseif v == "{regex}" then
             table.insert(remove, i)
             use_regex = true
+        elseif string.match(v, "{edition:.+}") then
+            table.insert(remove, i)
         end
     end
     --slow but whatever

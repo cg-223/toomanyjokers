@@ -105,6 +105,15 @@ function TMJ.FUNCS.make_cards()
     local size_div = 1 / TMJ.config.size
     local initial_offset = TMJ.config.columns * TMJ.scrolled_amount
     local centers = TMJ.FUNCS.get_centers(TMJ.thegreatfilter, initial_offset, TMJ.config.columns * TMJ.config.rows)
+
+
+    local edition
+    local edition_match = string.match(TMJ.thegreatfilter, "{edition:.+}")
+    if edition_match then
+        local subbed = edition_match:gsub("{edition:", "")
+        subbed = string.sub(subbed, 1, #subbed-1)
+        edition = subbed
+    end
     for row = 1, TMJ.config.rows do
         for col = 1, TMJ.config.columns do
             local indice = (row - 1) * TMJ.config.columns + col
@@ -115,6 +124,11 @@ function TMJ.FUNCS.make_cards()
                 local card = Card(G.TMJCOLLECTION[row].T.x + G.TMJCOLLECTION[row].T.w / 2, G.TMJCOLLECTION[row].T.y,
                     G.CARD_W / (size_div or 1),
                     G.CARD_H / (size_div or 1), nil, key)
+                if edition then
+                    card.edition = card.edition or {}
+                    card.edition[edition] = true
+                    card.edition.key = "e_"..edition
+                end
                 if TMJ.config.pinned_keys[key] then
                     SMODS.Stickers.tmj_pinned:apply(card, true)
                 end
@@ -123,7 +137,7 @@ function TMJ.FUNCS.make_cards()
                 end
                 card.sticker = get_joker_win_sticker(key)
                 G.TMJCOLLECTION[row]:emplace(card)
-                if string.sub(key, 1, 1) == "e" then
+                if string.sub(key, 1, 1) == "e" and not edition then
                     if not card.edition then card.edition = {} end
                     card.edition[string.sub(key, 3)] = true
                 end
