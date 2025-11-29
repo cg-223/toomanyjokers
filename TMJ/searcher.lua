@@ -129,7 +129,7 @@ function TMJ.FUNCS.does_match(center, match_string)
     local all_match_strings = string.split(lower_spaceless(match_string), ",")
     local other_match_strings = string.split(match_string, ",")
     local use_any, use_regex
-    local remove = {}
+    local remove = 0
     --extract magic terms
 
 
@@ -161,23 +161,24 @@ function TMJ.FUNCS.does_match(center, match_string)
                 print(func_str, err)
             end
         end
-        table.insert(remove, i)
     end
 
     for i, v in ipairs(other_match_strings) do
         if v == "{any}" then
-            table.insert(remove, i)
+            remove = remove + 1
             use_any = true
         elseif v == "{regex}" then
-            table.insert(remove, i)
+            remove = remove + 1
             use_regex = true
         elseif string.match(v, "{edition:.+}") then
-            table.insert(remove, i)
+            remove = remove + 1
+        else
+            break
         end
     end
     --slow but whatever
     for _, v in pairs(remove) do
-        table.remove(all_match_strings, v)
+        table.remove(all_match_strings, 1)
     end
     local any_flag = false
     local all_flag = true
