@@ -177,7 +177,7 @@ function TMJ.FUNCS.does_match(center, match_string)
         end
     end
     --slow but whatever
-    for _, v in pairs(remove) do
+    for i = 1, remove do
         table.remove(all_match_strings, 1)
     end
     local any_flag = false
