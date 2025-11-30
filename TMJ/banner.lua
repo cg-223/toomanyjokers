@@ -1,8 +1,5 @@
-if not next(SMODS.find_mod("banner")) or not BANNERMOD then
+if not next(SMODS.find_mod("banner")) then
     return
-end
-if false then
-    BANNERMOD = {} --ls
 end
 
 
