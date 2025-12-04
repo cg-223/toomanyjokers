@@ -166,6 +166,23 @@ TMJ.config_tab = function()
                         config = { align = "cl", padding = 0.1 },
                         nodes = {
                             create_toggle {
+                                label = "Autofocus TMJ textbox on type",
+                                ref_table = TMJ.config,
+                                ref_value = "autofocus"
+                            },
+                        }
+                    }
+                }
+            },
+            {
+                n = G.UIT.R,
+                config = { align = "cl" },
+                nodes = {
+                    {
+                        n = G.UIT.C,
+                        config = { align = "cl", padding = 0.1 },
+                        nodes = {
+                            create_toggle {
                                 label = "Show mod tags for mods w/ no centers",
                                 ref_table = TMJ.config,
                                 ref_value = "show_all_tags",

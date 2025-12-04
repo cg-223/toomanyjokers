@@ -19,6 +19,7 @@ TMJ.default_config = {
     disable_cheats = false,
     arrow_key_scroll = false,
     show_all_tags = false,
+    autofocus = true,
 }
 
 for i, v in pairs(TMJ.default_config) do
@@ -169,7 +170,7 @@ function love.keypressed(key)
             return old(key)
         end
     end
-    if G.TMJUI and wanted_chars[key] and G.TMJUI:get_UIE_by_ID("TMJTEXTINP") then
+    if G.TMJUI and wanted_chars[key] and G.TMJUI:get_UIE_by_ID("TMJTEXTINP") and TMJ.config.autofocus then
         G.FUNCS.select_text_input(G.TMJUI:get_UIE_by_ID("TMJTEXTINP").children[1])
     end
     old(key)
