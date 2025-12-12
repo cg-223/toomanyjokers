@@ -194,6 +194,26 @@ TMJ.config_tab = function()
                     }
                 }
             },
+            {
+                n = G.UIT.R,
+                config = { align = "cl" },
+                nodes = {
+                    {
+                        n = G.UIT.C,
+                        config = { align = "cl", padding = 0.1 },
+                        nodes = {
+                            create_toggle {
+                                label = "Hide cards that are hidden in collection",
+                                ref_table = TMJ.config,
+                                ref_value = "hide_no_collection",
+                                callback = function()
+                                    TMJ.MODCACHE = nil
+                                end
+                            },
+                        }
+                    }
+                }
+            },
             TMJ.FUNCS.CHEAT_TOGGLE(),
 
         }

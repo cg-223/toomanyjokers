@@ -84,7 +84,7 @@ TMJ.INVALIDATE_CENTER_FUNCS = {
         return not center.key
     end,
     function(center)
-        return center.no_collection
+        return center.no_collection and TMJ.config.hide_no_collection
     end,
     function(center)
         return TMJ.config.hide_undiscovered and not (center.discovered and center.unlocked)

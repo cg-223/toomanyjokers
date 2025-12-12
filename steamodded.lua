@@ -20,6 +20,7 @@ TMJ.default_config = {
     arrow_key_scroll = false,
     show_all_tags = false,
     autofocus = true,
+    hide_no_collection = true,
 }
 
 for i, v in pairs(TMJ.default_config) do
