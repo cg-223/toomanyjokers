@@ -59,6 +59,7 @@ G.FUNCS.CloseTMJ = function()
     G.TMJUI:remove()
     G.TMJTAGS:remove()
     G.TMJUI = nil
+    G.TMJTAGS = nil
     TMJ.thegreatfilter = ""
     G.ENTERED_FILTER = ""
     for i, v in pairs(G.TMJCOLLECTION) do
