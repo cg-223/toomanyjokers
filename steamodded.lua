@@ -245,6 +245,18 @@ create_UIBox_generic_options = function(arg1, ...) --inserts the text into most 
 end
 
 
+local old = Card.click
+function Card:click(...)
+    if self.area and self.area.config.tmj and G.CONTROLLER.held_keys['lctrl'] then
+        TMJ.config.pinned_keys[self.config.center.key] = not TMJ.config.pinned_keys[self.config.center.key]
+        TMJ.FUNCS.process_centers()
+        TMJ.FUNCS.reload()
+        SMODS.save_mod_config(TMJ)
+    end
+    old(self, ...)
+end
+
+
 for i, v in ipairs(tests) do
     v()
 end
