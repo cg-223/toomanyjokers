@@ -25,7 +25,9 @@ TMJ.default_config = {
 }
 
 for i, v in pairs(TMJ.default_config) do
-    TMJ.config[i] = TMJ.config[i] or v
+    if TMJ.config[i] == nil then
+        TMJ.config[i] = v
+    end
 end
 
 SMODS.save_mod_config(TMJ)
