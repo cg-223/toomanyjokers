@@ -12,6 +12,7 @@ TMJ.default_config = {
     rows = 4,
     columns = 4,
     size = 0.7,
+    sensitivity = 1,
     pinned_keys = {},
     hide_undiscovered = false,
     close_on_esc = false,
@@ -24,7 +25,9 @@ TMJ.default_config = {
 }
 
 for i, v in pairs(TMJ.default_config) do
-    TMJ.config[i] = TMJ.config[i] or v
+    if TMJ.config[i] == nil then
+        TMJ.config[i] = v
+    end
 end
 
 SMODS.save_mod_config(TMJ)
@@ -74,7 +77,7 @@ function love.wheelmoved(x, y)
         if TMJ.config.scroll_full_page then
             TMJ.FUNCS.scroll(-(y * TMJ.config.rows))
         else
-            TMJ.FUNCS.scroll(-y)
+            TMJ.FUNCS.scroll(-y * TMJ.config.sensitivity)
         end
     end
 end

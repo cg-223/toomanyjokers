@@ -149,8 +149,12 @@ end
 
 function TMJ.FUNCS.scroll(y)
     local prev_amt = TMJ.scrolled_amount
-    if TMJ.scrolled_amount + y >= 0 then
-        TMJ.scrolled_amount = TMJ.scrolled_amount + y
+    TMJ.scrolled_amount = TMJ.scrolled_amount + y
+    if math.floor(TMJ.scrolled_amount) == math.floor(prev_amt) then
+        return
+    end
+
+    if TMJ.scrolled_amount >= 0 then
         TMJ.FUNCS.reload()
     else
         TMJ.scrolled_amount = 0
