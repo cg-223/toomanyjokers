@@ -250,7 +250,7 @@ end
 
 function TMJ.FUNCS.getModtagInfo(mod)
     local tag_pos, tag_message, tag_atlas = { x = 0, y = 0 }, "tmj_this_mods_cards", mod.prefix and mod.prefix .. '_modicon' or 'modicon'
-    local specific_vars = {mod.name}
+    local specific_vars = {mod.display_name}
 
     return tag_atlas, tag_pos, tag_message, specific_vars
 end
