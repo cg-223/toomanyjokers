@@ -7,7 +7,7 @@ local main_funcs = {
         if badge == "ERROR" then
             badge = nil
         end
-        return "key:" .. (badge or center.set or "")
+        return badge or center.set or ""
     end,
     function(center)
         local raritystring
@@ -17,10 +17,10 @@ local main_funcs = {
         if raritystring == "ERROR" or not raritystring then
             raritystring = tostring(center.rarity)
         end
-        return "rarity:" .. raritystring
+        return raritystring
     end,
     function(center)
-        return "set:" .. (center.set or "")
+        return center.set or ""
     end,
     function(center)
         local strs = {}
@@ -34,9 +34,9 @@ local main_funcs = {
                     for _, t in ipairs(nameText) do
                         name = name .. t
                     end
-                    table.insert(strs, "name:" .. name)     --this is localized name
+                    table.insert(strs, name)     --this is localized name
                 elseif type(nameText) == "string" then
-                    table.insert(strs, "name:" .. nameText) --this is localized name
+                    table.insert(strs, nameText) --this is localized name
                 end
                 local descText = ourDescription.text or {}  --description
                 local lineConcat = ""
@@ -66,11 +66,15 @@ local main_funcs = {
     function(center)
         if center.original_mod then
             local modname = center.original_mod.name or ""
-            return "mod:" .. modname --match against the name of the mod that implemented this center
+            return modname 
         else
-            return "mod:vanilla"
+            return "vanilla"
         end
-    end
+    end,
+    function(center)
+        return center.key
+    end,
+    
 }
 
 
