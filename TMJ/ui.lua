@@ -314,7 +314,7 @@ function TMJ.FUNCS.buildModtag(mod)
             G.FUNCS.CloseTMJ()
             G.FUNCS["openModUI_" .. mod.id](self)
         else
-            TMJ.thegreatfilter = "mod:"..mod.name
+            TMJ.thegreatfilter = "%%%%"..mod.name
             G.ENTERED_FILTER = ""
             TMJ.scrolled_amount = 0
             TMJ.FUNCS.reload()

@@ -72,9 +72,17 @@ local main_funcs = {
         end
     end,
     function(center)
+        if center.original_mod then
+            local modname = center.original_mod.name or ""
+            return "%%%%"..modname 
+        else
+            return "vanilla"
+        end
+    end,
+    function(center)
         return center.key
     end,
-    
+
 }
 
 
