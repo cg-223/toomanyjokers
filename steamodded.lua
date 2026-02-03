@@ -1,4 +1,4 @@
-local NFS = NFS or require("nativefs")
+local NFS = SMODS.NFS
 TMJ = assert(SMODS.current_mod)
 TMJ.FUNCS = {}
 TMJ.CACHES = {
