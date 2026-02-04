@@ -1,4 +1,4 @@
-local NFS = SMODS.NFS
+local NFS = SMODS.NFS or NFS
 TMJ = assert(SMODS.current_mod)
 TMJ.FUNCS = {}
 TMJ.CACHES = {
@@ -263,3 +263,4 @@ end
 for i, v in ipairs(tests) do
     v()
 end
+
