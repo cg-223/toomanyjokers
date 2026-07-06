@@ -82,6 +82,20 @@ local main_funcs = {
     function(center)
         return center.key
     end,
+    function(center)
+        -- attributes (mf was here) 
+        if not SMODS.get_attribute_pool then return "" end
+        local attributes = {}
+        for attribute, _ in pairs(SMODS.Attributes) do
+            local pool = SMODS.get_attribute_pool(attribute)
+            for _, key in pairs(pool) do
+                if key == center.key then
+                    table.insert(attributes, "attr:"..attribute)
+                end
+            end
+        end
+        return attributes
+    end,
 
 }
 
