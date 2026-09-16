@@ -1,0 +1,9 @@
+{
+  "name": "Too Many Jokers",
+  "version_number": "4.9.2",
+  "website_url": "https://github.com/cg-223/toomanyjokers",
+  "description": "Custom searchable collection",
+  "dependencies": [
+    "Steamodded-Steamodded-1.0715.0"
+  ]
+}
