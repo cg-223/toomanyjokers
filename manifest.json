@@ -1,6 +1,6 @@
 {
   "name": "TooManyJokers",
-  "version_number": "4.9.5",
+  "version_number": "4.9.6",
   "website_url": "https://github.com/cg-223/toomanyjokers",
   "description": "Custom searchable collection",
   "dependencies": [
